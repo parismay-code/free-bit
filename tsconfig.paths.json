@@ -1,0 +1,37 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./resources/ts",
+        "paths": {
+            "@assets/*": [
+                "./assets/*"
+            ],
+            "@components/*": [
+                "./components/*"
+            ],
+            "@configs/*": [
+                "./configs/*"
+            ],
+            "@contexts/*": [
+                "./contexts/*"
+            ],
+            "@interfaces/*": [
+                "./interfaces/*"
+            ],
+            "@pages/*": [
+                "./pages/*"
+            ],
+            "@services/*": [
+                "./services/*"
+            ],
+            "@stores/*": [
+                "./stores/*"
+            ],
+            "@hooks/*": [
+                "./hooks/*"
+            ],
+            "@utils/*": [
+                "./utils/*"
+            ]
+        }
+    }
+}

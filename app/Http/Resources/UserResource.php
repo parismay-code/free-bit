@@ -17,9 +17,12 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'uid' => $this->uid,
             'email' => $this->email,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'phone' => $this->phone,
+            'organizations' => OrganizationResource::collection($this->organizations()),
+            'roles' => RoleResource::collection($this->roles()),
+            'organizationsRoles' => OrganizationRoleResource::collection($this->organizationsRoles()),
         ];
     }
 }

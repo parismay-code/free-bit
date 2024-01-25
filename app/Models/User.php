@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -19,7 +21,9 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'uid',
         'email',
+        'phone',
         'password',
     ];
 
@@ -42,4 +46,39 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'users_roles');
+    }
+
+    public function organizationsRoles(): BelongsToMany
+    {
+        return $this->belongsToMany(OrganizationRole::class, 'employees_roles');
+    }
+
+    public function organizations(): BelongsToMany
+    {
+        return $this->belongsToMany(Organization::class, 'employees');
+    }
+
+    public function ordersCreated(): HasMany
+    {
+        return $this->hasMany(Order::class, 'user_id');
+    }
+
+    public function ordersHandled(): HasMany
+    {
+        return $this->hasMany(Order::class, 'employee_id');
+    }
+
+    public function ordersDelivered(): HasMany
+    {
+        return $this->hasMany(Order::class, 'courier_id');
+    }
+
+    public function shifts(): HasMany
+    {
+        return $this->hasMany(EmployeeShift::class);
+    }
 }

@@ -6,6 +6,8 @@ import { store } from '@stores/rootReducer';
 
 import App from './App';
 
+import './global.scss';
+
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

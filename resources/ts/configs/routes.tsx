@@ -4,6 +4,8 @@ import { ErrorBoundary } from 'react-error-boundary';
 import ProtectedLayout from '@components/ProtectedLayout';
 import GlobalErrors from '@components/GlobalErrors';
 
+import Auth from '@pages/Auth';
+
 const routes: Array<RouteObject> = [
     {
         element: (
@@ -14,7 +16,7 @@ const routes: Array<RouteObject> = [
         children: [
             {
                 path: '/auth',
-                element: <div>Auth</div>,
+                element: <Auth />,
             },
             {
                 element: <ProtectedLayout />,

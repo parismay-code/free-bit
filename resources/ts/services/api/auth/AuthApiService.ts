@@ -17,7 +17,7 @@ export default class AuthApiService
 {
     public login = async <F extends string = string>(
         data: ILoginRequest,
-    ): AuthReturnType<F> => {
+    ): AuthReturnType<F, ILoginRequest> => {
         await this.csrfToken();
 
         const query = await this.fetch<
@@ -45,14 +45,14 @@ export default class AuthApiService
 
     public register = async <F extends string = string>(
         data: IRegisterRequest,
-    ): AuthReturnType<F> => {
+    ): AuthReturnType<F, IRegisterRequest> => {
         await this.csrfToken();
 
         const query = await this.fetch<
             {
                 user: IUser;
             },
-            ILoginRequest,
+            IRegisterRequest,
             IAuthErrors<F>
         >('post', '/register', data);
 
@@ -62,7 +62,7 @@ export default class AuthApiService
 
         if (query instanceof AxiosError) {
             if (query.response && query.response.status === 422) {
-                return new ApiError<IAuthErrors<F>, ILoginRequest>(query);
+                return new ApiError<IAuthErrors<F>, IRegisterRequest>(query);
             }
 
             return false;

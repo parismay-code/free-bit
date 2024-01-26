@@ -1,0 +1,32 @@
+@use '../../vars';
+
+.g-button {
+    outline: none;
+    border: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
+    padding: .5rem;
+
+    border-radius: .5rem;
+
+    background-color: vars.$color-highlight;
+
+    color: vars.$color-text-title;
+    font-size: .8rem;
+    font-weight: 700;
+
+    opacity: .7;
+
+    cursor: pointer;
+
+    transition: opacity .2s;
+
+    &:hover {
+        opacity: 1;
+    }
+}

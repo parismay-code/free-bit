@@ -30,7 +30,7 @@ function ProtectedLayout() {
 
     useEffect(() => {
         if (!authStore.user) {
-            navigate(-1);
+            navigate('/auth');
         }
     }, [navigate, authStore.user]);
 

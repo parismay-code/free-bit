@@ -24,7 +24,7 @@ export interface IApiError<E> {
     data: E | undefined;
 }
 
-export type ApiMethods = 'get' | 'post' | 'patch';
+export type ApiMethods = 'get' | 'post' | 'patch' | 'delete';
 
 export type Paginated<D = unknown> = {
     current_page: number;
@@ -40,4 +40,8 @@ export type Paginated<D = unknown> = {
     prev_page_url: string | null;
     to: number;
     total: number;
+};
+
+export type Collection<D = unknown> = {
+    data: Array<D>;
 };

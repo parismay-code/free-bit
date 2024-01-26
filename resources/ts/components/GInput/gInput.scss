@@ -1,0 +1,44 @@
+@use '../../vars';
+
+.g-input {
+    position: relative;
+
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+
+    &__label {
+        position: absolute;
+        top: 50%;
+        left: 1rem;
+        translate: 0 -50%;
+
+        width: 50%;
+
+        font-size: .8rem;
+        font-weight: 700;
+
+        transition: .2s;
+
+        &_fixed {
+            top: 0;
+            left: 1.5rem;
+        }
+
+        &_focused {
+            top: 0;
+            left: 1.5rem;
+            font-size: .6rem;
+        }
+    }
+
+    &__input {
+        width: 100%;
+        padding: .8rem 1rem .5rem 1rem;
+
+        background-color: vars.$color-background-input;
+        border-radius: .5rem;
+    }
+}

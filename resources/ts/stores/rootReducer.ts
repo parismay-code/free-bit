@@ -4,11 +4,15 @@ import {
 } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 
-import authReducer from '@stores/authReducer';
+import authReducer from './authReducer';
+import notifyReducer from './notifyReducer';
+import popUpReducer from './popUpReducer';
 
 export const store = configureStore({
     reducer: {
         auth: authReducer,
+        notify: notifyReducer,
+        popUp: popUpReducer,
     },
 });
 

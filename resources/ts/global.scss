@@ -47,6 +47,11 @@
 
 body {
     background-color: vars.$color-background-main;
+
+    width: 100dvw;
+    height: 100dvh;
+
+    overflow: hidden;
 }
 
 button,

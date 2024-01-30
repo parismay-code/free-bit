@@ -8,6 +8,12 @@ import AuthApiService from '@services/api/auth/AuthApiService';
 import { setUser } from '@stores/authReducer';
 import { useSelector } from '@stores/rootReducer';
 
+import Header from '@components/Header';
+import PopUp from '@components/PopUp';
+import Notify from '@components/Notify';
+import useNotify from '@hooks/useNotify.tsx';
+import usePopUp from '@hooks/usePopUp.tsx';
+
 const authService = new AuthApiService();
 
 function ProtectedLayout() {
@@ -34,7 +40,17 @@ function ProtectedLayout() {
         }
     }, [navigate, authStore.user]);
 
-    return <Outlet />;
+    return (
+        <div className="layout">
+            <Header />
+            <main className="layout__main">
+                <Outlet />
+
+                <PopUp />
+                <Notify />
+            </main>
+        </div>
+    );
 }
 
 export default ProtectedLayout;

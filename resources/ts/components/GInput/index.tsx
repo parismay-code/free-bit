@@ -6,6 +6,8 @@ import './gInput.scss';
 interface GInputProps extends HTMLProps<HTMLInputElement> {
     handleInput?: (value: string) => void;
     reference?: RefObject<HTMLInputElement>;
+    hint?: string;
+    errors?: Array<string>;
 }
 
 function GInput({
@@ -17,6 +19,8 @@ function GInput({
     handleInput,
     reference,
     autoComplete,
+    hint,
+    errors,
 }: GInputProps) {
     const [focused, setFocused] = useState<boolean>(false);
     const [filled, setFilled] = useState<boolean>(!!defaultValue);
@@ -24,7 +28,13 @@ function GInput({
     const id = useId();
 
     return (
-        <div className="g-input">
+        <div className={cn('g-input', focused && hint && 'g-input_hint')}>
+            {hint && (
+                <div className={cn('g-input__hint', focused && 'visible')}>
+                    {hint}
+                </div>
+            )}
+
             {title && (
                 <label
                     className={cn(
@@ -41,7 +51,10 @@ function GInput({
             )}
 
             <input
-                className="g-input__input"
+                className={cn(
+                    'g-input__input',
+                    errors && 'g-input__input_error',
+                )}
                 ref={reference}
                 autoComplete={autoComplete}
                 id={id}
@@ -65,6 +78,18 @@ function GInput({
                     }
                 }}
             />
+
+            {errors && (
+                <div className="g-input-errors">
+                    {errors.map((el) => {
+                        return (
+                            <div key={el} className="g-input-errors__error">
+                                {el}
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
         </div>
     );
 }
@@ -72,6 +97,8 @@ function GInput({
 GInput.defaultProps = {
     handleInput: undefined,
     reference: undefined,
+    hint: undefined,
+    errors: undefined,
 };
 
 export default GInput;

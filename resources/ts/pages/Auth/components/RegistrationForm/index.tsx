@@ -1,4 +1,4 @@
-import { type SyntheticEvent, useRef } from 'react';
+import { type SyntheticEvent, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,7 +14,17 @@ import GButton from '@components/GButton';
 
 const authService = new AuthApiService();
 
+type FormFields =
+    | 'name'
+    | 'uid'
+    | 'email'
+    | 'phone'
+    | 'password'
+    | 'password_confirmation';
+
 function RegistrationForm() {
+    const [errors, setErrors] = useState<Record<FormFields, Array<string>>>();
+
     const name = useRef<HTMLInputElement>(null);
     const uid = useRef<HTMLInputElement>(null);
     const email = useRef<HTMLInputElement>(null);
@@ -52,6 +62,10 @@ function RegistrationForm() {
         const result = await authService.register(data);
 
         if (result instanceof ApiError) {
+            if (result.data) {
+                setErrors(result.data.errors);
+            }
+
             return;
         }
 
@@ -70,6 +84,8 @@ function RegistrationForm() {
                 name="name"
                 reference={name}
                 autoComplete="off"
+                hint="Имя вашего персонажа"
+                errors={errors?.name}
             />
             <GInput
                 type="text"
@@ -77,6 +93,8 @@ function RegistrationForm() {
                 name="uid"
                 reference={uid}
                 autoComplete="off"
+                hint="Номер вашей ID-карты"
+                errors={errors?.uid}
             />
             <GInput
                 type="text"
@@ -84,6 +102,8 @@ function RegistrationForm() {
                 name="email"
                 reference={email}
                 autoComplete="off"
+                hint="Дискорд, пример: dystopia.there"
+                errors={errors?.email}
             />
             <GInput
                 type="phone"
@@ -91,6 +111,8 @@ function RegistrationForm() {
                 name="phone"
                 reference={phone}
                 autoComplete="off"
+                hint="Номер телефона, пример: 999-9999"
+                errors={errors?.phone}
             />
             <GInput
                 type="password"
@@ -98,6 +120,7 @@ function RegistrationForm() {
                 name="password"
                 reference={password}
                 autoComplete="off"
+                errors={errors?.password}
             />
             <GInput
                 type="password"
@@ -105,6 +128,7 @@ function RegistrationForm() {
                 name="password_confirmation"
                 reference={passwordConfirmation}
                 autoComplete="off"
+                errors={errors?.password_confirmation}
             />
             <GButton title="Продолжить" submit />
         </form>

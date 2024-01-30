@@ -4,7 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Laravel + React template</title>
+    <link rel="shortcut icon" href="/logo.svg" type="image/svg">
+
+    <title>BIT | Home</title>
 </head>
 <body>
 <div id='root'></div>

@@ -1,6 +1,7 @@
-import { type SyntheticEvent, useRef } from 'react';
+import { type SyntheticEvent, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import cn from 'classnames';
 
 import type { ILoginRequest } from '@interfaces/api/IAuthApiService';
 
@@ -14,7 +15,11 @@ import GButton from '@components/GButton';
 
 const authService = new AuthApiService();
 
+type FormFields = 'uid' | 'password';
+
 function LoginForm() {
+    const [isError, setError] = useState<boolean>(false);
+
     const uid = useRef<HTMLInputElement>(null);
     const password = useRef<HTMLInputElement>(null);
 
@@ -34,9 +39,11 @@ function LoginForm() {
             password: password.current.value,
         };
 
-        const result = await authService.login(data);
+        const result = await authService.login<FormFields>(data);
 
         if (result instanceof ApiError) {
+            setError(true);
+
             return;
         }
 
@@ -49,12 +56,17 @@ function LoginForm() {
 
     return (
         <form className="auth-form" autoComplete="off" onSubmit={handleSubmit}>
+            <div className={cn('auth-form__error', !isError && 'hidden')}>
+                Неверные регистрационные данные или пароль
+            </div>
+
             <GInput
                 type="text"
                 title="Рег. данные"
                 name="uid"
                 reference={uid}
                 autoComplete="off"
+                hint="Номер вашей ID-карты"
             />
             <GInput
                 type="password"

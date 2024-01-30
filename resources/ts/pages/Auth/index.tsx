@@ -1,5 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import cn from 'classnames';
+
+import usePopUp from '@hooks/usePopUp';
+
+import logo from '@assets/logo.svg';
 
 import LoginForm from './components/LoginForm';
 import RegistrationForm from './components/RegistrationForm';
@@ -9,8 +13,19 @@ import './auth.scss';
 function Auth() {
     const [form, setForm] = useState<'login' | 'registration'>('login');
 
+    const popUp = usePopUp();
+
+    useEffect(() => {
+        if (!localStorage.getItem('visited')) {
+            popUp('Добро пожаловать', '<div>Информационный текст</div>');
+            localStorage.setItem('visited', '1');
+        }
+    }, []);
+
     return (
         <main className="auth container">
+            <img className="auth__logo" src={logo} alt="" />
+
             <section className="auth-tabs">
                 <div
                     className={cn(

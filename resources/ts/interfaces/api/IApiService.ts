@@ -45,3 +45,7 @@ export type Paginated<D = unknown> = {
 export type Collection<D = unknown> = {
     data: Array<D>;
 };
+
+export interface IAttachWitchCountRequest {
+    count: number;
+}

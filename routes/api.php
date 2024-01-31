@@ -37,7 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/organizations', [OrganizationsController::class, 'getAll']);
     Route::get('/organizations/{organization}', [OrganizationsController::class, 'get']);
     Route::post('/organizations/owner/{user}', [OrganizationsController::class, 'create']);
-    Route::patch('/organizations/{organization}', [OrganizationsController::class, 'update']);
+    Route::patch('/organizations/{organization}/owner/{user}', [OrganizationsController::class, 'update']);
     Route::delete('/organizations/{organization}', [OrganizationsController::class, 'delete']);
 
     Route::get('/organizations/{organization}/employees', [EmployeesController::class, 'getAll']);
@@ -70,6 +70,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/organizations/{organization}/employee/{user}/shifts/{employeeShift}', [EmployeeShiftsController::class, 'delete']);
 
     Route::get('/organizations/{organization}/orders', [OrdersController::class, 'getAll']);
+    Route::get('/organizations/{organization}/orders/{order}', [OrdersController::class, 'get']);
     Route::post('/organizations/{organization}/orders', [OrdersController::class, 'create']);
     Route::patch('/organizations/{organization}/orders/{order}', [OrdersController::class, 'update']);
     Route::delete('/organizations/{organization}/orders/{order}', [OrdersController::class, 'delete']);
@@ -85,10 +86,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/users/{user}/roles/{role}/detach', [RolesController::class, 'detach']);
 
     Route::get('/organizations/{organization}/roles', [EmployeeRolesController::class, 'getAll']);
-    Route::get('/organizations/{organization}/roles/{employeeRole}', [EmployeeRolesController::class, 'get']);
+    Route::get('/organizations/{organization}/roles/{organizationRole}', [EmployeeRolesController::class, 'get']);
     Route::post('/organizations/{organization}/roles', [EmployeeRolesController::class, 'create']);
-    Route::patch('/organizations/{organization}/roles/{employeeRole}', [EmployeeRolesController::class, 'update']);
-    Route::delete('/organizations/{organization}/roles/{employeeRole}', [EmployeeRolesController::class, 'delete']);
+    Route::patch('/organizations/{organization}/roles/{organizationRole}', [EmployeeRolesController::class, 'update']);
+    Route::delete('/organizations/{organization}/roles/{organizationRole}', [EmployeeRolesController::class, 'delete']);
     Route::post('/organizations/{organization}/employees/{user}/roles/{organizationRole}/attach', [EmployeeRolesController::class, 'attach']);
     Route::post('/organizations/{organization}/employees/{user}/roles/{organizationRole}/detach', [EmployeeRolesController::class, 'detach']);
 });

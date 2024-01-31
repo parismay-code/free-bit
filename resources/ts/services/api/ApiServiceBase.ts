@@ -45,7 +45,7 @@ export default class ApiServiceBase implements IApiService {
             if (Object.hasOwn(this.client, method)) {
                 return await this.client[method]<R, AxiosResponse<R, D>, D>(
                     url,
-                    data,
+                    data as (D & AxiosRequestConfig<D>) | undefined,
                     config,
                 );
             }

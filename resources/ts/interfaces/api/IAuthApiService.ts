@@ -1,9 +1,10 @@
+import type IApiService from '@interfaces/api/IApiService';
 import IUser from '@interfaces/models/IUser';
 import IAuthErrors from '@interfaces/api/IAuthErrors';
 
 import ApiError from '@services/api/ApiError';
 
-export default interface IAuthApiService {
+export default interface IAuthApiService extends IApiService {
     login<F extends string = string>(
         data: ILoginRequest,
     ): AuthReturnType<F, ILoginRequest>;

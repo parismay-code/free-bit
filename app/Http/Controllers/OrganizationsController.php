@@ -35,7 +35,7 @@ class OrganizationsController extends Controller
         return response(['organization' => new FullOrganizationResource($organization)]);
     }
 
-    public function update(OrganizationRequest $request, Organization $organization): Response
+    public function update(OrganizationRequest $request, Organization $organization, User $user): Response
     {
         $data = $request->validated();
 
@@ -43,6 +43,14 @@ class OrganizationsController extends Controller
 
         if (!$status) {
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if ($organization->owner_id !== $user->id) {
+            $status = $organization->owner()->associate($user)->save();
+
+            if (!$status) {
+                return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
         }
 
         return response(['organization' => new FullOrganizationResource($organization)]);

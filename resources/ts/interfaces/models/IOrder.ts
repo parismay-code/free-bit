@@ -5,15 +5,18 @@ import type IOrganization from '@interfaces/models/IOrganization';
 
 export default interface IOrder {
     id: number;
-    organization: IOrganization;
-    client: IUser;
     status: OrderStatuses;
     delivery: boolean;
     courier: IUser | null;
     employee: IUser | null;
-    products: Collection<IProduct>;
     created_at: string;
     updated_at: string;
+}
+
+export interface IFullOrder extends IOrder {
+    organization: IOrganization;
+    client: IUser;
+    products: Collection<IProduct>;
 }
 
 export enum OrderStatuses {

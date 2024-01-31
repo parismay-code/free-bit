@@ -11,8 +11,6 @@ import { useSelector } from '@stores/rootReducer';
 import Header from '@components/Header';
 import PopUp from '@components/PopUp';
 import Notify from '@components/Notify';
-import useNotify from '@hooks/useNotify.tsx';
-import usePopUp from '@hooks/usePopUp.tsx';
 
 const authService = new AuthApiService();
 

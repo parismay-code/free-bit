@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EmployeeShift extends Model
 {
-    use HasFactory;
-
     protected $table = 'employees_shifts';
 
     /**

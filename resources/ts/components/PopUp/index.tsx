@@ -1,3 +1,4 @@
+import { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import cn from 'classnames';
 
@@ -5,7 +6,6 @@ import { useSelector } from '@stores/rootReducer';
 import { closePopUp, prevPopUp } from '@stores/popUpReducer';
 
 import './popUp.scss';
-import { useCallback, useEffect } from 'react';
 
 function PopUp() {
     const dispatch = useDispatch();
@@ -40,7 +40,7 @@ function PopUp() {
             id="popUp"
             className={cn('pop-up', popUp && 'pop-up_visible')}
             onClick={(event) => {
-                if (event.target.id === 'popUp') {
+                if (event.target === event.currentTarget) {
                     close();
                 }
             }}
@@ -48,9 +48,7 @@ function PopUp() {
             {popUp && (
                 <div className="pop-up__content">
                     <div className="pop-up-header">
-                        <span className="pop-up-header__title">
-                            {popUp.title}
-                        </span>
+                        <h1 className="pop-up-header__title">{popUp.title}</h1>
 
                         <div className="pop-up-header-controls">
                             {popUpStore.trace.length > 1 && (
@@ -68,12 +66,14 @@ function PopUp() {
                                 className="pop-up-header-controls__close"
                                 onClick={close}
                             >
-                                X
+                                {' '}
                             </button>
                         </div>
                     </div>
 
-                    {popUp.component}
+                    <div className="pop-up__component">
+                        <popUp.component prev={prev} close={close} />
+                    </div>
                 </div>
             )}
         </div>

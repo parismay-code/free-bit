@@ -1,6 +1,11 @@
-import type { ReactNode } from 'react';
+import type { FC } from 'react';
 
 export default interface IPopUp {
     title: string;
-    component: ReactNode;
+    component: FC<IPopUpProps>;
+}
+
+export interface IPopUpProps {
+    prev: () => void;
+    close: () => void;
 }

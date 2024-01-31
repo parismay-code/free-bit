@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class OrganizationRole extends Model
 {
-    use HasFactory;
-
     protected $table = 'organizations_roles';
 
     /**

@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class UserRole extends Model
 {
-    use HasFactory;
-
     protected $table = 'users_roles';
 
     public function user(): BelongsTo

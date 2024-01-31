@@ -20,7 +20,7 @@ class ProductResource extends JsonResource
             'description' => $this->description,
             'ingredients' => IngredientResource::collection($this->ingredients()),
             'price' => $this->price,
-            'count' => $this->pivot->count ?? 1,
+            'count' => $this->pivot->count ?? 0,
         ];
     }
 }

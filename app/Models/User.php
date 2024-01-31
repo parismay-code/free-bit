@@ -4,8 +4,10 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -52,19 +54,24 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class, 'users_roles');
     }
 
-    public function organizationsRoles(): BelongsToMany
+    public function organizationRoles(): BelongsToMany
     {
         return $this->belongsToMany(OrganizationRole::class, 'employees_roles');
     }
 
-    public function organizations(): BelongsToMany
+    public function ownedOrganization(): HasOne
     {
-        return $this->belongsToMany(Organization::class, 'employees');
+        return $this->hasOne(Organization::class, 'owner_id');
     }
 
-    public function ordersCreated(): HasMany
+    public function organization(): BelongsTo
     {
-        return $this->hasMany(Order::class, 'user_id');
+        return $this->belongsTo(Organization::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 
     public function ordersHandled(): HasMany

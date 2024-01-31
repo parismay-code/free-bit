@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Organization extends Model
 {
-    use HasFactory;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -27,9 +25,9 @@ class Organization extends Model
         return $this->belongsTo(User::class, 'owner_id');
     }
 
-    public function employees(): BelongsToMany
+    public function employees(): HasMany
     {
-        return $this->belongsToMany(User::class, 'employees');
+        return $this->hasMany(User::class);
     }
 
     public function orders(): HasMany
@@ -60,5 +58,10 @@ class Organization extends Model
     public function shifts(): HasMany
     {
         return $this->hasMany(EmployeeShift::class);
+    }
+
+    public function storage(): BelongsToMany
+    {
+        return $this->belongsToMany(Ingredient::class, 'organizations_storages');
     }
 }

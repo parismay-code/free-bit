@@ -1,0 +1,88 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\ProductRequest;
+use App\Http\Resources\FullProductResource;
+use App\Http\Resources\ProductResource;
+use App\Models\Category;
+use App\Models\Organization;
+use App\Models\Product;
+use Request;
+use Symfony\Component\HttpFoundation\Response;
+
+class ProductsController extends Controller
+{
+    public function getAll(Request $request, Organization $organization): Response
+    {
+        return response(ProductResource::collection($organization->products()));
+    }
+
+    public function get(Request $request, Organization $organization, Product $product): Response
+    {
+        if ($product->organization_id !== $organization->id) {
+            return response('', Response::HTTP_FORBIDDEN);
+        }
+
+        return response(['product' => new FullProductResource($product)]);
+    }
+
+    public function create(ProductRequest $request, Category $category, Organization $organization): Response
+    {
+        if ($category->organization_id !== $organization->id) {
+            return response('', Response::HTTP_FORBIDDEN);
+        }
+
+        $data = $request->validated();
+
+        $product = $organization->products()->create($data);
+
+        $status = $product->category()->associate($category)->save();
+
+        if (!$status) {
+            return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return response(['product' => new FullProductResource($product)]);
+    }
+
+    public function update(ProductRequest $request, Organization $organization, Category $category, Product $product): Response
+    {
+        if ($product->organization_id !== $organization->id || $category->organization_id !== $organization->id) {
+            return response('', Response::HTTP_FORBIDDEN);
+        }
+
+        $data = $request->validated();
+
+        $status = $product->update($data);
+
+        if (!$status) {
+            return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if ($product->category_id !== $category->id) {
+            $status = $product->category()->associate($category)->save();
+
+            if (!$status) {
+                return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+        }
+
+        return response(['product' => new FullProductResource($product)]);
+    }
+
+    public function delete(Request $request, Organization $organization, Product $product): Response
+    {
+        if ($product->organization_id !== $organization->id) {
+            return response('', Response::HTTP_FORBIDDEN);
+        }
+
+        $status = $product->delete();
+
+        if (!$status) {
+            return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return response();
+    }
+}

@@ -19,7 +19,7 @@ class IngredientResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'cost' => $this->cost,
-            'count' => $this->pivot->count ?? 1,
+            'count' => $this->pivot->count ?? 0,
         ];
     }
 }

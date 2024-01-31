@@ -5,6 +5,9 @@ import usePopUp from '@hooks/usePopUp';
 
 import logo from '@assets/logo.svg';
 
+import PopUp from '@components/PopUp';
+import WelcomePopUp from '@components/PopUp/components/WelcomePopUp';
+
 import LoginForm from './components/LoginForm';
 import RegistrationForm from './components/RegistrationForm';
 
@@ -16,58 +19,61 @@ function Auth() {
     const popUp = usePopUp();
 
     useEffect(() => {
-        if (!localStorage.getItem('visited')) {
-            popUp('Добро пожаловать', '<div>Информационный текст</div>');
-            localStorage.setItem('visited', '1');
+        if (!localStorage.getItem('acknowledged')) {
+            popUp('Добро пожаловать', WelcomePopUp);
         }
-    }, []);
+    }, [popUp]);
 
     return (
-        <main className="auth container">
-            <img className="auth__logo" src={logo} alt="" />
+        <>
+            <main className="auth container">
+                <img className="auth__logo" src={logo} alt="" />
 
-            <section className="auth-tabs">
-                <div
-                    className={cn(
-                        'auth-tabs__slider',
-                        form === 'login'
-                            ? 'auth-tabs__slider_left'
-                            : 'auth-tabs__slider_right',
-                    )}
-                />
+                <section className="auth-tabs">
+                    <div
+                        className={cn(
+                            'auth-tabs__slider',
+                            form === 'login'
+                                ? 'auth-tabs__slider_left'
+                                : 'auth-tabs__slider_right',
+                        )}
+                    />
 
-                <button
-                    className={cn(
-                        'auth-tabs__button',
-                        form === 'login' && 'auth-tabs__button_active',
-                    )}
-                    type="button"
-                    onClick={() => {
-                        setForm('login');
-                    }}
-                >
-                    Вход
-                </button>
+                    <button
+                        className={cn(
+                            'auth-tabs__button',
+                            form === 'login' && 'auth-tabs__button_active',
+                        )}
+                        type="button"
+                        onClick={() => {
+                            setForm('login');
+                        }}
+                    >
+                        Вход
+                    </button>
 
-                <button
-                    className={cn(
-                        'auth-tabs__button',
-                        form === 'registration' && 'auth-tabs__button_active',
-                    )}
-                    type="button"
-                    onClick={() => {
-                        setForm('registration');
-                    }}
-                >
-                    Регистрация
-                </button>
-            </section>
+                    <button
+                        className={cn(
+                            'auth-tabs__button',
+                            form === 'registration' &&
+                                'auth-tabs__button_active',
+                        )}
+                        type="button"
+                        onClick={() => {
+                            setForm('registration');
+                        }}
+                    >
+                        Регистрация
+                    </button>
+                </section>
 
-            <section className="auth__content">
-                {form === 'login' && <LoginForm />}
-                {form === 'registration' && <RegistrationForm />}
-            </section>
-        </main>
+                <section className="auth__content">
+                    {form === 'login' && <LoginForm />}
+                    {form === 'registration' && <RegistrationForm />}
+                </section>
+            </main>
+            <PopUp />
+        </>
     );
 }
 

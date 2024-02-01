@@ -15,6 +15,7 @@ class FullUserResource extends JsonResource
             'uid' => $this->uid,
             'email' => $this->email,
             'phone' => $this->phone,
+            'avatar' => $this->avatar,
             'roles' => new Collection(RoleResource::collection($this->roles)),
             'orders' => [
                 'created' => new Collection(OrderResource::collection($this->orders)),

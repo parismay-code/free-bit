@@ -10,6 +10,8 @@ export default interface IOrganization {
     name: string;
     description: string;
     owner: IUser;
+    avatar: string | null;
+    banner: string | null;
 }
 
 export interface IFullOrganization extends IOrganization {

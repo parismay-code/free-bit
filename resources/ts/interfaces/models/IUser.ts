@@ -11,6 +11,7 @@ export default interface IUser {
     uid: string;
     email: string;
     phone: string;
+    avatar: string | null;
 }
 
 export interface IFullUser extends IUser {

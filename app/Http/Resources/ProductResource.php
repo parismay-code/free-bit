@@ -18,7 +18,7 @@ class ProductResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'ingredients' => IngredientResource::collection($this->ingredients()),
+            'ingredients' => new Collection(IngredientResource::collection($this->ingredients)),
             'price' => $this->price,
             'count' => $this->pivot->count ?? 0,
         ];

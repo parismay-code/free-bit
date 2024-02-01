@@ -18,8 +18,8 @@ class OrderResource extends JsonResource
             'id' => $this->id,
             'status' => $this->status,
             'delivery' => $this->delivery,
-            'courier' => new UserResource($this->courier()),
-            'employee' => new UserResource($this->employee()),
+            'courier' => new UserResource($this->courier),
+            'employee' => new UserResource($this->employee),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

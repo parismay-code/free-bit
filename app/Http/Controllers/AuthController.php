@@ -6,6 +6,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\FullUserResource;
 use App\Http\Resources\UserResource;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -18,6 +19,10 @@ class AuthController extends Controller
         $data = $request->safe()->except(['password_confirmation']);
 
         $user = User::create($data);
+
+        $userRole = Role::where('name', 'user')->first();
+
+        $user->roles()->attach($userRole->id);
 
         $token = $user->createToken('auth_token')->plainTextToken;
 

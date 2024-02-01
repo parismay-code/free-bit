@@ -8,6 +8,7 @@ interface GInputProps extends HTMLProps<HTMLInputElement> {
     reference?: RefObject<HTMLInputElement>;
     hint?: string;
     errors?: Array<string>;
+    customClass?: string;
 }
 
 function GInput({
@@ -21,6 +22,7 @@ function GInput({
     autoComplete,
     hint,
     errors,
+    customClass,
 }: GInputProps) {
     const [focused, setFocused] = useState<boolean>(false);
     const [filled, setFilled] = useState<boolean>(!!defaultValue);
@@ -28,7 +30,13 @@ function GInput({
     const id = useId();
 
     return (
-        <div className={cn('g-input', focused && hint && 'g-input_hint')}>
+        <div
+            className={cn(
+                'g-input',
+                focused && hint && 'g-input_hint',
+                customClass,
+            )}
+        >
             {hint && (
                 <div className={cn('g-input__hint', focused && 'visible')}>
                     {hint}
@@ -99,6 +107,7 @@ GInput.defaultProps = {
     reference: undefined,
     hint: undefined,
     errors: undefined,
+    customClass: undefined,
 };
 
 export default GInput;

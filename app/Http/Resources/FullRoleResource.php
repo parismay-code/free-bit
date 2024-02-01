@@ -18,7 +18,7 @@ class FullRoleResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'users' => UserResource::collection($this->users()),
+            'users' => new Collection(UserResource::collection($this->users)),
         ];
     }
 }

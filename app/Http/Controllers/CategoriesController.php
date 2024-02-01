@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryRequest;
+use App\Http\Resources\Collection;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\FullCategoryResource;
 use App\Models\Category;
@@ -14,12 +15,12 @@ class CategoriesController extends Controller
 {
     public function getAll(Request $request, Organization $organization): Response
     {
-        return response(CategoryResource::collection($organization->categories()));
+        return response(new Collection(CategoryResource::collection($organization->categories)));
     }
 
     public function get(Request $request, Organization $organization, Category $category): Response
     {
-        if ($category->organization_id !== $organization->id) {
+        if ($category->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
@@ -37,7 +38,7 @@ class CategoriesController extends Controller
 
     public function update(CategoryRequest $request, Organization $organization, Category $category): Response
     {
-        if ($category->organization_id !== $organization->id) {
+        if ($category->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
@@ -54,7 +55,7 @@ class CategoriesController extends Controller
 
     public function delete(Request $request, Organization $organization, Category $category): Response
     {
-        if ($category->organization_id !== $organization->id) {
+        if ($category->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 

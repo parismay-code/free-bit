@@ -1,5 +1,5 @@
 import type IApiService from '@interfaces/api/IApiService';
-import IUser from '@interfaces/models/IUser';
+import { type IFullUser } from '@interfaces/models/IUser';
 import IAuthErrors from '@interfaces/api/IAuthErrors';
 
 import ApiError from '@services/api/ApiError';
@@ -15,11 +15,11 @@ export default interface IAuthApiService extends IApiService {
 
     logout(): Promise<boolean>;
 
-    user(): Promise<IUser | false>;
+    user(): Promise<IFullUser | false>;
 }
 
 export type AuthReturnType<F extends string, D> = Promise<
-    IUser | ApiError<IAuthErrors<F>, D> | false
+    IFullUser | ApiError<IAuthErrors<F>, D> | false
 >;
 
 export interface ILoginRequest {

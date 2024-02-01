@@ -18,8 +18,8 @@ class FullCategoryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'organization' => new OrganizationResource($this->organization()),
-            'products' => ProductResource::collection($this->products()),
+            'organization' => new OrganizationResource($this->organization),
+            'products' => new Collection(ProductResource::collection($this->products)),
         ];
     }
 }

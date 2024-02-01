@@ -14,7 +14,7 @@ class EmployeeShiftsController extends Controller
 {
     public function create(EmployeeShiftRequest $request, Organization $organization, User $user): Response
     {
-        if ($user->organization_id !== $organization->id) {
+        if ($user->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
@@ -33,7 +33,7 @@ class EmployeeShiftsController extends Controller
 
     public function update(EmployeeShiftRequest $request, Organization $organization, User $user, EmployeeShift $shift): Response
     {
-        if ($shift->organization_id !== $organization->id || $shift->user_id !== $user->id) {
+        if ($shift->organization()->isNot($organization) || $shift->employee()->isNot($user)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
@@ -50,7 +50,7 @@ class EmployeeShiftsController extends Controller
 
     public function delete(Request $request, Organization $organization, User $user, EmployeeShift $shift): Response
     {
-        if ($shift->organization_id !== $organization->id || $shift->user_id !== $user->id) {
+        if ($shift->organization()->isNot($organization) || $shift->employee()->isNot($user)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 

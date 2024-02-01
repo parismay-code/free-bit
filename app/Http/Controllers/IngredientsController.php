@@ -9,6 +9,7 @@ use App\Http\Resources\IngredientResource;
 use App\Models\Ingredient;
 use App\Models\Organization;
 use App\Models\Product;
+use Illuminate\Support\Collection;
 use Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,12 +17,12 @@ class IngredientsController extends Controller
 {
     public function getAll(Request $request, Organization $organization): Response
     {
-        return response(IngredientResource::collection($organization->ingredients()));
+        return response(new Collection(IngredientResource::collection($organization->ingredients)));
     }
 
     public function get(Request $request, Organization $organization, Ingredient $ingredient): Response
     {
-        if ($ingredient->organization_id !== $organization->id) {
+        if ($ingredient->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
@@ -39,7 +40,7 @@ class IngredientsController extends Controller
 
     public function update(IngredientRequest $request, Organization $organization, Ingredient $ingredient): Response
     {
-        if ($ingredient->organization_id !== $organization->id) {
+        if ($ingredient->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
@@ -56,7 +57,7 @@ class IngredientsController extends Controller
 
     public function delete(Request $request, Organization $organization, Ingredient $ingredient): Response
     {
-        if ($ingredient->organization_id !== $organization->id) {
+        if ($ingredient->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
@@ -71,7 +72,7 @@ class IngredientsController extends Controller
 
     public function attach(AttachWithCountRequest $request, Organization $organization, Product $product, Ingredient $ingredient): Response
     {
-        if ($product->organization_id !== $organization->id || $ingredient->organization_id !== $organization->id) {
+        if ($product->organization()->isNot($organization) || $ingredient->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
@@ -88,7 +89,7 @@ class IngredientsController extends Controller
 
     public function detach(Request $request, Organization $organization, Product $product, Ingredient $ingredient): Response
     {
-        if ($product->organization_id !== $organization->id || $ingredient->organization_id !== $organization->id) {
+        if ($product->organization()->isNot($organization) || $ingredient->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 

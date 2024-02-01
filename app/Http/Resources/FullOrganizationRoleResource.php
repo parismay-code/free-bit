@@ -19,8 +19,8 @@ class FullOrganizationRoleResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'priority' => $this->priority,
-            'organization' => new OrganizationResource($this->organization()),
-            'employees' => UserResource::collection($this->employees()),
+            'organization' => new OrganizationResource($this->organization),
+            'employees' => new Collection(UserResource::collection($this->employees)),
         ];
     }
 }

@@ -21,11 +21,11 @@ export interface IFullUser extends IUser {
         delivered: Collection<IOrder>;
     };
     organization: {
-        data: IOrganization;
+        data: IOrganization | null;
         roles: Collection<IOrganizationRole>;
         shifts: Collection<IOrganizationShift>;
     };
-    ownedOrganization: IOrganization;
+    ownedOrganization: IOrganization | null;
 }
 
 export interface IEmployee extends IUser {

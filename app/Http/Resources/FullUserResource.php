@@ -15,18 +15,18 @@ class FullUserResource extends JsonResource
             'uid' => $this->uid,
             'email' => $this->email,
             'phone' => $this->phone,
-            'roles' => RoleResource::collection($this->roles()),
+            'roles' => new Collection(RoleResource::collection($this->roles)),
             'orders' => [
-                'created' => OrderResource::collection($this->ordersCreated()),
-                'handled' => OrderResource::collection($this->ordersHandled()),
-                'delivered' => OrderResource::collection($this->ordersDelivered()),
+                'created' => new Collection(OrderResource::collection($this->orders)),
+                'handled' => new Collection(OrderResource::collection($this->ordersHandled)),
+                'delivered' => new Collection(OrderResource::collection($this->ordersDelivered)),
             ],
             'organization' => [
-                'data' => new OrganizationResource($this->organization()),
-                'roles' => OrganizationRoleResource::collection($this->organizationRoles()),
-                'shifts' => OrganizationShiftResource::collection($this->shifts()),
+                'data' => new OrganizationResource($this->organization),
+                'roles' => new Collection(OrganizationRoleResource::collection($this->organizationRoles)),
+                'shifts' => new Collection(OrganizationShiftResource::collection($this->shifts)),
             ],
-            'ownedOrganization' => new OrganizationResource($this->ownedOrganization()),
+            'ownedOrganization' => new OrganizationResource($this->ownedOrganization),
         ];
     }
 }

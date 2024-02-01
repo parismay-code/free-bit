@@ -32,6 +32,7 @@
         "@reduxjs/toolkit": "^2.0.1",
         "axios": "^1.6.2",
         "classnames": "^2.3.2",
+        "framer-motion": "^11.0.3",
         "laravel-echo": "^1.15.3",
         "laravel-vite-plugin": "^1.0.1",
         "pusher-js": "^8.4.0-rc2",

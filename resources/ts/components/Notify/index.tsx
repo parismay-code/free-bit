@@ -8,6 +8,7 @@ import { useSelector } from '@stores/rootReducer';
 import { removeNotify } from '@stores/notifyReducer';
 
 import './notify.scss';
+import { AnimatePresence, motion } from 'framer-motion';
 
 function Notify() {
     const [notify, setNotify] = useState<INotify | null>(null);
@@ -47,11 +48,18 @@ function Notify() {
     }, [notifyStore.queue.length, showNotify]);
 
     return (
-        notify && (
-            <div className={cn('notify', `notify_${notify.type}`)}>
-                {notify.text}
-            </div>
-        )
+        <AnimatePresence>
+            {notify && (
+                <motion.div
+                    initial={{ opacity: 0, y: -20, x: 10 }}
+                    animate={{ opacity: 1, y: 0, x: 0 }}
+                    exit={{ opacity: 0, y: 20, x: 10 }}
+                    className={cn('notify', `notify_${notify.type}`)}
+                >
+                    {notify.text}
+                </motion.div>
+            )}
+        </AnimatePresence>
     );
 }
 

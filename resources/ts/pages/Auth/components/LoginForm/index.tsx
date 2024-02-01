@@ -35,7 +35,7 @@ function LoginForm() {
         }
 
         const data: ILoginRequest = {
-            uid: uid.current.value,
+            uid: uid.current.value.toUpperCase(),
             password: password.current.value,
         };
 
@@ -67,6 +67,7 @@ function LoginForm() {
                 reference={uid}
                 autoComplete="off"
                 hint="Номер вашей ID-карты"
+                customClass="auth__input"
             />
             <GInput
                 type="password"

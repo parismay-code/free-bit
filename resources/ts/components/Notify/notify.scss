@@ -1,3 +1,42 @@
-.notify {
+@use '../../vars';
 
+.notify {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 10rem;
+    max-width: 15rem;
+    min-height: 2rem;
+    max-height: 5rem;
+
+    padding: .5rem 1rem;
+
+    border-radius: .5rem;
+
+    font-size: .8rem;
+
+    &_success {
+        background-color: vars.$color-background-success;
+        border: 1px solid vars.$color-success;
+    }
+
+    &_info {
+        background-color: vars.$color-background-info;
+        border: 1px solid vars.$color-info;
+    }
+
+    &_warning {
+        background-color: vars.$color-background-warning;
+        border: 1px solid vars.$color-warning;
+    }
+
+    &_error {
+        background-color: vars.$color-background-error;
+        border: 1px solid vars.$color-error;
+    }
 }

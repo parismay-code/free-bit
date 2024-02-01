@@ -13,8 +13,8 @@ class OrganizationShiftResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'organization' => new OrganizationResource($this->organization()),
-            'employee' => new UserResource($this->employee()),
+            'organization' => new OrganizationResource($this->organization),
+            'employee' => new UserResource($this->employee),
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

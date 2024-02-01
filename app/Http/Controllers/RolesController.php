@@ -7,6 +7,7 @@ use App\Http\Resources\FullRoleResource;
 use App\Http\Resources\RoleResource;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -14,7 +15,7 @@ class RolesController extends Controller
 {
     public function getAll(Request $request): Response
     {
-        return response(RoleResource::collection(Role::all()));
+        return response(new Collection(RoleResource::collection(Role::all())));
     }
 
     public function get(Request $request, Role $role): Response

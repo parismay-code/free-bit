@@ -8,6 +8,7 @@ use App\Http\Resources\OrganizationRoleResource;
 use App\Models\Organization;
 use App\Models\OrganizationRole;
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -15,12 +16,12 @@ class EmployeeRolesController extends Controller
 {
     public function getAll(Request $request, Organization $organization): Response
     {
-        return response(OrganizationRoleResource::collection($organization->roles()));
+        return response(new Collection(OrganizationRoleResource::collection($organization->roles)));
     }
 
     public function get(Request $request, Organization $organization, OrganizationRole $role): Response
     {
-        if ($role->organization_id !== $organization->id) {
+        if ($role->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
@@ -38,7 +39,7 @@ class EmployeeRolesController extends Controller
 
     public function update(OrganizationRoleRequest $request, Organization $organization, OrganizationRole $role): Response
     {
-        if ($role->organization_id !== $organization->id) {
+        if ($role->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
@@ -55,7 +56,7 @@ class EmployeeRolesController extends Controller
 
     public function delete(Request $request, Organization $organization, OrganizationRole $role): Response
     {
-        if ($role->organization_id !== $organization->id) {
+        if ($role->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
@@ -70,7 +71,7 @@ class EmployeeRolesController extends Controller
 
     public function attach(Request $request, Organization $organization, User $user, OrganizationRole $role): Response
     {
-        if ($role->organization_id !== $organization->id || $user->organization_id !== $organization->id) {
+        if ($role->organization()->isNot($organization) || $user->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
@@ -85,7 +86,7 @@ class EmployeeRolesController extends Controller
 
     public function detach(Request $request, Organization $organization, User $user, OrganizationRole $role): Response
     {
-        if ($role->organization_id !== $organization->id || $user->organization_id !== $organization->id) {
+        if ($role->organization()->isNot($organization) || $user->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 

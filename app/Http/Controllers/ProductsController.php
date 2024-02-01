@@ -8,6 +8,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Organization;
 use App\Models\Product;
+use Illuminate\Support\Collection;
 use Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -15,12 +16,12 @@ class ProductsController extends Controller
 {
     public function getAll(Request $request, Organization $organization): Response
     {
-        return response(ProductResource::collection($organization->products()));
+        return response(new Collection(ProductResource::collection($organization->products)));
     }
 
     public function get(Request $request, Organization $organization, Product $product): Response
     {
-        if ($product->organization_id !== $organization->id) {
+        if ($product->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
@@ -29,7 +30,7 @@ class ProductsController extends Controller
 
     public function create(ProductRequest $request, Category $category, Organization $organization): Response
     {
-        if ($category->organization_id !== $organization->id) {
+        if ($category->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
@@ -48,7 +49,7 @@ class ProductsController extends Controller
 
     public function update(ProductRequest $request, Organization $organization, Category $category, Product $product): Response
     {
-        if ($product->organization_id !== $organization->id || $category->organization_id !== $organization->id) {
+        if ($product->organization()->isNot($organization) || $category->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
@@ -60,7 +61,7 @@ class ProductsController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        if ($product->category_id !== $category->id) {
+        if ($product->category()->isNot($category)) {
             $status = $product->category()->associate($category)->save();
 
             if (!$status) {
@@ -73,7 +74,7 @@ class ProductsController extends Controller
 
     public function delete(Request $request, Organization $organization, Product $product): Response
     {
-        if ($product->organization_id !== $organization->id) {
+        if ($product->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 

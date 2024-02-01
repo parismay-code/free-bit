@@ -11,7 +11,7 @@ class OrganizationRoleRequest extends FormRequest
         return [
             'name' => 'required|string|max:28',
             'description' => 'string|max:120',
-            'priority' => 'required|integer',
+            'priority' => 'required|integer|max:900',
         ];
     }
 

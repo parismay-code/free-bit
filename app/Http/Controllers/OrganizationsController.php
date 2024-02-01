@@ -7,6 +7,8 @@ use App\Http\Resources\FullOrganizationResource;
 use App\Http\Resources\OrganizationResource;
 use App\Models\Organization;
 use App\Models\User;
+use Gate;
+use Illuminate\Support\Collection;
 use Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -14,7 +16,7 @@ class OrganizationsController extends Controller
 {
     public function getAll(Request $request): Response
     {
-        return response(OrganizationResource::collection(Organization::all()));
+        return response(new Collection(OrganizationResource::collection(Organization::all())));
     }
 
     public function get(Request $request, Organization $organization): Response
@@ -30,7 +32,19 @@ class OrganizationsController extends Controller
 
         $data = $request->validated();
 
+        /** @var Organization $organization */
         $organization = $user->ownedOrganization()->create($data);
+
+        $ownerRole = $organization->roles()->create(['name' => 'owner', 'description' => 'Владелец заведения', 'priority' => '999']);
+
+        $organization->roles()->createMany([
+            ['name' => 'deputy', 'description' => 'Заместитель владельца заведения', 'priority' => '998'],
+            ['name' => 'admin', 'description' => 'Администратор заведения', 'priority' => '997'],
+            ['name' => 'manager', 'description' => 'Менеджер заведения', 'priority' => '996'],
+            ['name' => 'staff', 'description' => 'Персонал', 'priority' => '1'],
+        ]);
+
+        $user->organizationRoles()->attach($ownerRole->id);
 
         return response(['organization' => new FullOrganizationResource($organization)]);
     }

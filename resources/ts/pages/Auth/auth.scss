@@ -101,4 +101,10 @@
             }
         }
     }
+
+    &__input {
+        & input {
+            text-transform: uppercase;
+        }
+    }
 }

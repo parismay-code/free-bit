@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 import type { IState } from '@interfaces/stores/IAuthReducer';
-import type IUser from '@interfaces/models/IUser';
+import type { IFullUser } from '@interfaces/models/IUser';
 
 const localStorageUser = localStorage.getItem('user');
 
@@ -13,7 +13,7 @@ const authReducer = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        setUser: (state, action: PayloadAction<IUser | false>) => {
+        setUser: (state, action: PayloadAction<IFullUser | false>) => {
             state.user = action.payload;
 
             if (!action.payload) {

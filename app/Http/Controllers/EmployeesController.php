@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\EmployeeResource;
-use App\Http\Resources\FullUserResource;
 use App\Http\Resources\UserResource;
 use App\Models\Organization;
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -14,12 +14,12 @@ class EmployeesController extends Controller
 {
     public function getAll(Request $request, Organization $organization): Response
     {
-        return response(UserResource::collection($organization->employees()));
+        return response(new Collection(UserResource::collection($organization->employees)));
     }
 
     public function get(Request $request, Organization $organization, User $user): Response
     {
-        if ($user->organization_id !== $organization->id) {
+        if ($user->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
@@ -28,7 +28,7 @@ class EmployeesController extends Controller
 
     public function associate(Request $request, Organization $organization, User $user): Response
     {
-        if ($user->organization_id) {
+        if ($user->organization()->exists()) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
@@ -43,7 +43,7 @@ class EmployeesController extends Controller
 
     public function dissociate(Request $request, Organization $organization, User $user): Response
     {
-        if (!$user->organization_id || $user->organization_id !== $organization->id) {
+        if (!$user->organization()->exists() || $user->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 

@@ -8,7 +8,7 @@ import IAuthApiService, {
     ILoginRequest,
     IRegisterRequest,
 } from '@interfaces/api/IAuthApiService';
-import IUser from '@interfaces/models/IUser';
+import { type IFullUser } from '@interfaces/models/IUser';
 import IAuthErrors from '@interfaces/api/IAuthErrors';
 
 export default class AuthApiService
@@ -22,7 +22,7 @@ export default class AuthApiService
 
         const query = await this.fetch<
             {
-                user: IUser;
+                user: IFullUser;
             },
             ILoginRequest,
             IAuthErrors<F>
@@ -50,7 +50,7 @@ export default class AuthApiService
 
         const query = await this.fetch<
             {
-                user: IUser;
+                user: IFullUser;
             },
             IRegisterRequest,
             IAuthErrors<F>
@@ -77,13 +77,13 @@ export default class AuthApiService
         return !(!query || query instanceof ApiError);
     };
 
-    public user = async (): Promise<IUser | false> => {
-        const query = await this.fetch<IUser>('get', '/user');
+    public user = async (): Promise<IFullUser | false> => {
+        const query = await this.fetch<{ user: IFullUser }>('get', '/user');
 
         if (!query || query instanceof AxiosError) {
             return false;
         }
 
-        return query.data;
+        return query.data.user;
     };
 }

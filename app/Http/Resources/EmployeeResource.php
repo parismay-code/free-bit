@@ -15,12 +15,12 @@ class EmployeeResource extends JsonResource
             'uid' => $this->uid,
             'email' => $this->email,
             'phone' => $this->phone,
-            'roles' => RoleResource::collection($this->roles()),
-            'orders' => OrderResource::collection($this->ordersHandled()),
+            'roles' => new Collection(RoleResource::collection($this->roles)),
+            'orders' => new Collection(OrderResource::collection($this->ordersHandled)),
             'organization' => [
-                'data' => new OrganizationResource($this->organization()),
-                'roles' => OrganizationRoleResource::collection($this->organizationRoles()),
-                'shifts' => OrganizationShiftResource::collection($this->shifts()),
+                'data' => new OrganizationResource($this->organization),
+                'roles' => new Collection(OrganizationRoleResource::collection($this->organizationRoles)),
+                'shifts' => new Collection(OrganizationShiftResource::collection($this->shifts)),
             ],
         ];
     }

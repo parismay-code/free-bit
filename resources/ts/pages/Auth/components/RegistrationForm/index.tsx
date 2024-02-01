@@ -52,7 +52,7 @@ function RegistrationForm() {
 
         const data: IRegisterRequest = {
             name: name.current.value,
-            uid: uid.current.value,
+            uid: uid.current.value.toUpperCase(),
             email: email.current.value,
             phone: phone.current.value,
             password: password.current.value,
@@ -95,6 +95,7 @@ function RegistrationForm() {
                 autoComplete="off"
                 hint="Номер вашей ID-карты"
                 errors={errors?.uid}
+                customClass="auth__input"
             />
             <GInput
                 type="text"

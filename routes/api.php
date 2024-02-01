@@ -36,9 +36,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/organizations', [OrganizationsController::class, 'getAll']);
     Route::get('/organizations/{organization}', [OrganizationsController::class, 'get']);
-    Route::post('/organizations/owner/{user}', [OrganizationsController::class, 'create']);
-    Route::patch('/organizations/{organization}/owner/{user}', [OrganizationsController::class, 'update']);
-    Route::delete('/organizations/{organization}', [OrganizationsController::class, 'delete']);
+    Route::post('/organizations/owner/{user}', [OrganizationsController::class, 'create'])
+        ->can('isAdmin');
+    Route::patch('/organizations/{organization}/owner/{user}', [OrganizationsController::class, 'update'])
+        ->can('isAdmin');
+    Route::delete('/organizations/{organization}', [OrganizationsController::class, 'delete'])
+        ->can('isAdmin');
 
     Route::get('/organizations/{organization}/employees', [EmployeesController::class, 'getAll']);
     Route::get('/organizations/{organization}/employees/{user}', [EmployeesController::class, 'get']);

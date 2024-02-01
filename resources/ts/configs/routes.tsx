@@ -5,6 +5,10 @@ import ProtectedLayout from '@components/ProtectedLayout';
 import GlobalErrors from '@components/GlobalErrors';
 
 import Auth from '@pages/Auth';
+import Home from '@pages/Home';
+import Profile from '@pages/Profile';
+import Admin from '@pages/Admin';
+import Organization from '@pages/Organization';
 
 const routes: Array<RouteObject> = [
     {
@@ -23,7 +27,19 @@ const routes: Array<RouteObject> = [
                 children: [
                     {
                         path: '/',
-                        element: <div>Home Page</div>,
+                        element: <Home />,
+                    },
+                    {
+                        path: '/profile',
+                        element: <Profile />,
+                    },
+                    {
+                        path: '/admin',
+                        element: <Admin />,
+                    },
+                    {
+                        path: '/organization/:id',
+                        element: <Organization />,
                     },
                 ],
             },

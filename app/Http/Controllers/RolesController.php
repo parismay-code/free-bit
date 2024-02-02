@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RoleRequest;
+use App\Http\Resources\Collection;
 use App\Http\Resources\FullRoleResource;
 use App\Http\Resources\RoleResource;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Support\Collection;
 use Request;
 use Symfony\Component\HttpFoundation\Response;
 

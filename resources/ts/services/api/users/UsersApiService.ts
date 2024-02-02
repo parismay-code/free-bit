@@ -32,4 +32,23 @@ export default class UsersApiService
 
         return query.data.user;
     };
+
+    public update = async (userId: number): Promise<IFullUser | false> => {
+        const query = await this.fetch<{ user: IFullUser }>(
+            'patch',
+            `/user/${userId}`,
+        );
+
+        if (!query || query instanceof AxiosError) {
+            return false;
+        }
+
+        return query.data.user;
+    };
+
+    public delete = async (userId: number): Promise<boolean> => {
+        const query = await this.fetch('delete', `/user/${userId}`);
+
+        return !(!query || query instanceof AxiosError);
+    };
 }

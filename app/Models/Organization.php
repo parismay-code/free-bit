@@ -59,9 +59,4 @@ class Organization extends Model
     {
         return $this->hasMany(EmployeeShift::class);
     }
-
-    public function storage(): BelongsToMany
-    {
-        return $this->belongsToMany(Ingredient::class, 'organizations_storages');
-    }
 }

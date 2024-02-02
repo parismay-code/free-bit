@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OrganizationRoleRequest;
+use App\Http\Resources\Collection;
 use App\Http\Resources\FullOrganizationRoleResource;
 use App\Http\Resources\OrganizationRoleResource;
 use App\Models\Organization;
 use App\Models\OrganizationRole;
 use App\Models\User;
-use Illuminate\Support\Collection;
 use Request;
 use Symfony\Component\HttpFoundation\Response;
 

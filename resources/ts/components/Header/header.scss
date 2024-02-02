@@ -1,0 +1,72 @@
+@use '../../vars';
+
+.header {
+    position: sticky;
+    top: 0;
+
+    &-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: .5rem 0;
+
+        &__link {
+            opacity: .7;
+
+            transition: .2s;
+
+            &:hover,
+            &_active {
+                opacity: 1;
+            }
+        }
+
+        &__group {
+            flex-basis: 100%;
+
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+
+            &:last-child {
+                justify-content: flex-end;
+            }
+        }
+    }
+
+    &__title {
+        flex-shrink: 0;
+
+        padding: 0 2rem;
+        filter: drop-shadow(0 0 2rem vars.$color-text-base);
+    }
+
+    &__logo {
+        height: 2.5rem;
+
+        filter: drop-shadow(0 0 .2rem vars.$color-highlight);
+    }
+
+    &-profile {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 100%;
+        padding: 2px;
+
+        border: 1px solid vars.$color-text-base;
+        filter: drop-shadow(0 0 .5rem vars.$color-text-base);
+
+        &__placeholder,
+        &__avatar {
+            width: 100%;
+            height: 100%;
+
+            border-radius: 100%;
+        }
+
+        &__placeholder {
+            background: linear-gradient(135deg, vars.$color-button-gradient-left, vars.$color-button-gradient-right);
+        }
+    }
+}

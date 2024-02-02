@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -21,9 +22,11 @@ class FullProductResource extends JsonResource
             'ingredients' => new Collection(IngredientResource::collection($this->ingredients)),
             'price' => $this->price,
             'count' => $this->pivot->count ?? 0,
-            'organization' => new OrganizationResource($this->organization),
-            'orders' => new Collection(OrderResource::collection($this->orders)),
             'category' => new CategoryResource($this->category),
+            'organization' => new OrganizationResource($this->organization),
+            $this->mergeWhen(($request->user() && $request->user()->organization()->exists() && $request->user()->organization()->is($this->organization)) || Gate::allows('isManager'), [
+                'orders' => new Collection(OrderResource::collection($this->orders)),
+            ]),
         ];
     }
 }

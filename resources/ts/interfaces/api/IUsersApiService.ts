@@ -6,4 +6,8 @@ export default interface IUsersApiService {
     getAll(): Promise<Collection<IUser> | false>;
 
     get(userId: number): Promise<IFullUser | false>;
+
+    update(userId: number): Promise<IFullUser | false>;
+
+    delete(userId: number): Promise<boolean>;
 }

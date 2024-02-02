@@ -20,5 +20,4 @@ export interface IFullOrganization extends IOrganization {
     categories: Collection<ICategory>;
     products: Collection<IProduct>;
     ingredients: Collection<IIngredient>;
-    storage: Collection<IIngredient>;
 }

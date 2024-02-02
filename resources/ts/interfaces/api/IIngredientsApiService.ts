@@ -45,4 +45,5 @@ export interface IIngredientRequest {
     name: string;
     description?: string;
     cost: number;
+    storage?: number;
 }

@@ -2,10 +2,10 @@ import type { FC } from 'react';
 
 export default interface IPopUp {
     title: string;
-    component: FC<IPopUpProps>;
+    component: FC<PopUpProps>;
 }
 
-export interface IPopUpProps {
+export interface PopUpProps {
     prev: () => void;
     close: () => void;
 }

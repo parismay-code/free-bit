@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OrganizationRequest;
+use App\Http\Resources\Collection;
 use App\Http\Resources\FullOrganizationResource;
 use App\Http\Resources\OrganizationResource;
 use App\Models\Organization;
 use App\Models\User;
 use Gate;
-use Illuminate\Support\Collection;
 use Request;
 use Symfony\Component\HttpFoundation\Response;
 

@@ -8,6 +8,7 @@ export default interface IIngredient {
     description: string;
     cost: number;
     count: number;
+    storage: number;
 }
 
 export interface IFullIngredient extends IIngredient {

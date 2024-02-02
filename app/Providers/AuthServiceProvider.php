@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
+use App\Enums\OrderStatuses;
+use App\Models\Order;
 use App\Models\OrganizationRole;
 use App\Models\User;
 use Gate;
@@ -19,6 +21,48 @@ class AuthServiceProvider extends ServiceProvider
         //
     ];
 
+    private array $adminRoles = ['developer', 'admin'];
+
+    private array $closedOrderStatuses = [
+        OrderStatuses::CLOSED_BY_CLIENT,
+        OrderStatuses::CLOSED_BY_ORGANIZATION,
+        OrderStatuses::CLOSED_BY_ADMINISTRATION,
+    ];
+
+    private array $availableOrderStatuses = [
+        'created' => [
+            OrderStatuses::ACCEPTED,
+            OrderStatuses::DECLINED,
+        ],
+        'accepted' => [
+            OrderStatuses::COOKING,
+        ],
+        'cooking' => [
+            OrderStatuses::DELIVERING,
+        ],
+        'delivering' => [
+            OrderStatuses::FINISHED,
+        ],
+    ];
+
+    private function isAdmin(User $user): bool
+    {
+        return $user->roles()->whereIn('name', $this->adminRoles)->exists();
+    }
+
+    private function checkAccess(User $user, array $allowedRoles, bool $isOrganization = false): bool
+    {
+        if ($this->isAdmin($user)) {
+            return true;
+        }
+
+        if ($isOrganization) {
+            return $user->organizationRoles()->whereIn('name', $allowedRoles)->exists();
+        }
+
+        return $user->roles()->whereIn('name', $allowedRoles)->exists();
+    }
+
     /**
      * Register any authentication / authorization services.
      */
@@ -27,27 +71,49 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::define('isAdmin', function (User $user) {
-            $allowedRoles = ['developer', 'admin'];
-
-            return $user->roles()->whereIn('name', $allowedRoles)->exists();
+            return $this->isAdmin($user);
         });
 
         Gate::define('isManager', function (User $user) {
-            return $user->roles()->where('name', 'manager')->exists();
+            $allowedRoles = ['manager'];
+
+            return $this->checkAccess($user, $allowedRoles);
+        });
+
+        Gate::define('isOrganizationOwner', function (User $user) {
+            $allowedRoles = ['owner'];
+
+            return $this->checkAccess($user, $allowedRoles, true);
+        });
+
+        Gate::define('isOrganizationDeputy', function (User $user) {
+            $allowedRoles = ['owner', 'deputy'];
+
+            return $this->checkAccess($user, $allowedRoles, true);
         });
 
         Gate::define('isOrganizationAdmin', function (User $user) {
             $allowedRoles = ['owner', 'deputy', 'admin'];
 
-            return $user->organizationRoles()
-                ->whereIn('name', $allowedRoles)
-                ->exists();
+            return $this->checkAccess($user, $allowedRoles, true);
         });
 
         Gate::define('isOrganizationManager', function (User $user) {
-            return $user->organizationRoles()
-                ->where('name', 'manager')
-                ->exists();
+            $allowedRoles = ['owner', 'deputy', 'admin', 'manager'];
+
+            return $this->checkAccess($user, $allowedRoles, true);
+        });
+
+        Gate::define('updateOrder', function (User $user, Order $order, string $status) {
+            if ($order->status === $status) {
+                return true;
+            }
+
+            if (!empty($this->availableOrderStatuses[$order->status])) {
+                return in_array($status, $this->availableOrderStatuses);
+            }
+
+            return false;
         });
     }
 }

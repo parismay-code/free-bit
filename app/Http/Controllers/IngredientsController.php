@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AttachWithCountRequest;
 use App\Http\Requests\IngredientRequest;
+use App\Http\Resources\Collection;
 use App\Http\Resources\FullIngredientResource;
 use App\Http\Resources\IngredientResource;
 use App\Models\Ingredient;
 use App\Models\Organization;
 use App\Models\Product;
-use Illuminate\Support\Collection;
 use Request;
 use Symfony\Component\HttpFoundation\Response;
 

@@ -1,8 +1,8 @@
-import type { IPopUpProps } from '@interfaces/models/IPopUp';
+import type { PopUpProps } from '@interfaces/models/IPopUp';
 
 import './welcomePopUp.scss';
 
-function WelcomePopUp({ close }: IPopUpProps) {
+function WelcomePopUp({ close }: PopUpProps) {
     return (
         <div className="welcome-pop-up">
             <p>

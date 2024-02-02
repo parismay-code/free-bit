@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 
 import useNotify from '@hooks/useNotify';
+import useHeaderTitle from '@hooks/useHeaderTitle';
 
 import { NotifyTypes } from '@interfaces/models/INotify';
 
@@ -25,9 +26,13 @@ function Organization() {
                 navigate('/');
             }
         },
+        staleTime: 120 * 60 * 1000,
+        cacheTime: 120 * 60 * 1000,
         keepPreviousData: true,
         retry: false,
     });
+
+    useHeaderTitle(data ? data.name : undefined);
 
     return data && <div className="organization">Organization Page</div>;
 }

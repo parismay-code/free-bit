@@ -20,6 +20,7 @@ class FullIngredientResource extends JsonResource
             'description' => $this->description,
             'cost' => $this->cost,
             'count' => $this->pivot->count ?? 0,
+            'storage' => $this->storage,
             'organization' => new OrganizationResource($this->organization),
             'products' => new Collection(ProductResource::collection($this->products)),
         ];

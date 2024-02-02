@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Collection;
 use App\Http\Resources\EmployeeResource;
 use App\Http\Resources\UserResource;
 use App\Models\Organization;
 use App\Models\User;
-use Illuminate\Support\Collection;
 use Request;
 use Symfony\Component\HttpFoundation\Response;
 

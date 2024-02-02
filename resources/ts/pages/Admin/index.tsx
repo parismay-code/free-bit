@@ -9,6 +9,7 @@ import { NotifyTypes } from '@interfaces/models/INotify';
 import checkRole from '@utils/checkRole';
 
 import roles from '@configs/roles';
+import useHeaderTitle from '@hooks/useHeaderTitle.tsx';
 
 const accessRoles = roles.app.admin.concat(roles.app.manager);
 
@@ -28,7 +29,9 @@ function Admin() {
         }
     }, [isAdmin, navigate, notify]);
 
-    return isAdmin && <div className="admin">Admin Page</div>;
+    useHeaderTitle('Административная панель');
+
+    return isAdmin && <div className="admin container">Admin Page</div>;
 }
 
 export default Admin;

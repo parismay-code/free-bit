@@ -3,7 +3,10 @@ import { AxiosError } from 'axios';
 import ApiServiceBase from '@services/api/ApiServiceBase';
 
 import type IOrdersApiService from '@interfaces/api/IOrdersApiService';
-import type { IOrderRequest } from '@interfaces/api/IOrdersApiService';
+import type {
+    OrderRequestStatuses,
+    IOrderRequest,
+} from '@interfaces/api/IOrdersApiService';
 import type { Collection } from '@interfaces/api/IApiService';
 import type IOrder from '@interfaces/models/IOrder';
 import type { IFullOrder } from '@interfaces/models/IOrder';
@@ -14,8 +17,9 @@ export default class OrdersApiService
 {
     public getAll = async (
         organizationId: number,
+        status: OrderRequestStatuses,
     ): Promise<Collection<IOrder> | false> => {
-        const endpoint = `/organizations/${organizationId}/orders`;
+        const endpoint = `/organizations/${organizationId}/orders?status=${status}`;
 
         const query = await this.fetch<Collection<IOrder>>('get', endpoint);
 

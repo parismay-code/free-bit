@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { type Dispatch, type SetStateAction, useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
@@ -14,7 +14,13 @@ import Notify from '@components/Notify';
 
 const authService = new AuthApiService();
 
+export type LayoutContext = {
+    setHeaderTitle: Dispatch<SetStateAction<string | undefined>>;
+};
+
 function ProtectedLayout() {
+    const [headerTitle, setHeaderTitle] = useState<string>();
+
     const dispatch = useDispatch();
 
     const authStore = useSelector((state) => state.auth);
@@ -40,9 +46,9 @@ function ProtectedLayout() {
 
     return (
         <div className="layout">
-            <Header />
+            <Header title={headerTitle} />
             <main className="layout__main">
-                <Outlet />
+                <Outlet context={{ setHeaderTitle } satisfies LayoutContext} />
 
                 <PopUp />
                 <Notify />

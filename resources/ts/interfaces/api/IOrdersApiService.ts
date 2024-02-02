@@ -6,7 +6,10 @@ import IOrder, {
 } from '@interfaces/models/IOrder';
 
 export default interface IOrdersApiService extends IApiService {
-    getAll(organizationId: number): Promise<Collection<IOrder> | false>;
+    getAll(
+        organizationId: number,
+        status: OrderRequestStatuses,
+    ): Promise<Collection<IOrder> | false>;
 
     get(organizationId: number, orderId: number): Promise<IFullOrder | false>;
 
@@ -40,3 +43,5 @@ export interface IOrderRequest {
     status: OrderStatuses;
     delivery?: boolean;
 }
+
+export type OrderRequestStatuses = 'active' | 'finished' | 'closed';

@@ -12,6 +12,7 @@ class IngredientRequest extends FormRequest
             'name' => 'required|string|max:28',
             'description' => 'string|max:120',
             'cost' => 'required|numeric',
+            'storage' => 'numeric',
         ];
     }
 

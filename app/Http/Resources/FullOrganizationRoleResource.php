@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,7 +21,9 @@ class FullOrganizationRoleResource extends JsonResource
             'description' => $this->description,
             'priority' => $this->priority,
             'organization' => new OrganizationResource($this->organization),
-            'employees' => new Collection(UserResource::collection($this->employees)),
+            $this->mergeWhen(($request->user() && $request->user()->organization()->exists() && $request->user()->organization()->is($this->organization)) || Gate::allows('isManager'), [
+                'employees' => new Collection(UserResource::collection($this->employees)),
+            ]),
         ];
     }
 }

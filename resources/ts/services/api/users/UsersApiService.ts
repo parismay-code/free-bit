@@ -33,10 +33,19 @@ export default class UsersApiService
         return query.data.user;
     };
 
-    public update = async (userId: number): Promise<IFullUser | false> => {
-        const query = await this.fetch<{ user: IFullUser }>(
-            'patch',
+    public update = async (
+        userId: number,
+        data: FormData,
+    ): Promise<IFullUser | false> => {
+        const query = await this.fetch<{ user: IFullUser }, FormData>(
+            'postForm',
             `/user/${userId}`,
+            data,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            },
         );
 
         if (!query || query instanceof AxiosError) {

@@ -3,6 +3,8 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
 
+import type { IFullUser } from '@interfaces/models/IUser';
+
 import AuthApiService from '@services/api/auth/AuthApiService';
 
 import { setUser } from '@stores/authReducer';
@@ -16,6 +18,7 @@ const authService = new AuthApiService();
 
 export type LayoutContext = {
     setHeaderTitle: Dispatch<SetStateAction<string | undefined>>;
+    user: IFullUser;
 };
 
 function ProtectedLayout() {
@@ -48,7 +51,14 @@ function ProtectedLayout() {
         <div className="layout">
             <Header title={headerTitle} />
             <main className="layout__main">
-                <Outlet context={{ setHeaderTitle } satisfies LayoutContext} />
+                <Outlet
+                    context={
+                        {
+                            setHeaderTitle,
+                            user: authStore.user as IFullUser,
+                        } satisfies LayoutContext
+                    }
+                />
 
                 <PopUp />
                 <Notify />

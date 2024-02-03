@@ -34,7 +34,9 @@ function Organization() {
 
     useHeaderTitle(data ? data.name : undefined);
 
-    return data && <div className="organization">Organization Page</div>;
+    return (
+        data && <div className="organization container">Organization Page</div>
+    );
 }
 
 export default Organization;

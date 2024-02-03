@@ -24,7 +24,13 @@ export interface IApiError<E> {
     data: E | undefined;
 }
 
-export type ApiMethods = 'get' | 'post' | 'patch' | 'delete';
+export type ApiMethods =
+    | 'get'
+    | 'post'
+    | 'postForm'
+    | 'patch'
+    | 'patchForm'
+    | 'delete';
 
 export type Paginated<D = unknown> = {
     current_page: number;

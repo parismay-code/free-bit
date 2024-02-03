@@ -10,6 +10,7 @@ use App\Models\Organization;
 use App\Models\User;
 use Gate;
 use Request;
+use Storage;
 use Symfony\Component\HttpFoundation\Response;
 
 class OrganizationsController extends Controller
@@ -30,10 +31,21 @@ class OrganizationsController extends Controller
             return response('', Response::HTTP_FORBIDDEN);
         }
 
-        $data = $request->validated();
+        $data = $request->safe()->except(['avatar', 'banner']);
+
+        $avatarUrl = null;
+        $bannerUrl = null;
+
+        if ($request->file('avatar')->isValid()) {
+            $avatarUrl = $request->file('avatar')->store('public/images/avatars/organizations');
+        }
+
+        if ($request->file('banner')->isValid()) {
+            $bannerUrl = $request->file('banner')->store('public/images/banners');
+        }
 
         /** @var Organization $organization */
-        $organization = $user->ownedOrganization()->create($data);
+        $organization = $user->ownedOrganization()->create([...$data, 'avatar' => $avatarUrl, 'banner' => $bannerUrl]);
 
         $ownerRole = $organization->roles()->create(['name' => 'owner', 'description' => 'Владелец заведения', 'priority' => '999']);
 
@@ -51,9 +63,28 @@ class OrganizationsController extends Controller
 
     public function update(OrganizationRequest $request, Organization $organization, User $user): Response
     {
-        $data = $request->validated();
+        $data = $request->safe()->except(['avatar', 'banner']);
 
-        $status = $organization->update($data);
+        $avatarUrl = null;
+        $bannerUrl = null;
+
+        if ($request->file('avatar')->isValid()) {
+            if ($organization->avatar) {
+                Storage::delete($organization->avatar);
+            }
+
+            $avatarUrl = $request->file('avatar')->store('public/images/avatars/organizations');
+        }
+
+        if ($request->file('banner')->isValid()) {
+            if ($organization->banner) {
+                Storage::delete($organization->banner);
+            }
+
+            $bannerUrl = $request->file('banner')->store('public/images/banners');
+        }
+
+        $status = $organization->update([...$data, 'avatar' => $avatarUrl, 'banner' => $bannerUrl]);
 
         if (!$status) {
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);

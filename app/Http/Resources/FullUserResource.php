@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class FullUserResource extends JsonResource
 {
@@ -18,7 +19,7 @@ class FullUserResource extends JsonResource
             'phone' => $this->phone,
             'avatar' => $this->avatar,
             'roles' => new Collection(RoleResource::collection($this->roles)),
-            $this->mergeWhen(($request->user() &&  $request->user()->is($this)) || Gate::allows('isManager'), [
+            $this->mergeWhen(($request->user() && $request->user()->is($this)) || Gate::allows('isManager'), [
                 'orders' => [
                     'created' => new Collection(OrderResource::collection($this->orders)),
                     'handled' => new Collection(OrderResource::collection($this->ordersHandled)),

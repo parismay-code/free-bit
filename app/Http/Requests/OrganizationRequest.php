@@ -11,6 +11,8 @@ class OrganizationRequest extends FormRequest
         return [
             'name' => 'required|string|max:28',
             'description' => 'string|max:120',
+            'avatar' => 'file|image|mimes:jpeg,jpg,png|max:2048',
+            'banner' => 'file|image|mimes:jpeg,jpg,png|max:6144',
         ];
     }
 

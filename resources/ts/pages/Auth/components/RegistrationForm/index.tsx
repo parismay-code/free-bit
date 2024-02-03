@@ -107,7 +107,7 @@ function RegistrationForm() {
                 errors={errors?.email}
             />
             <GInput
-                type="phone"
+                type="text"
                 title="Номер телефона"
                 name="phone"
                 reference={phone}

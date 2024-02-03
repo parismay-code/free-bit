@@ -8,7 +8,10 @@ use App\Http\Resources\FullUserResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Gate;
-use Request;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class UsersController extends Controller
@@ -31,9 +34,34 @@ class UsersController extends Controller
 
         $data = $request->validated();
 
-        if (!$user->update($data)) {
-            return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
+        if (!Gate::allows('isAdmin')) {
+            if (!empty($data['password']) && !Hash::check($data['password'], $user->password)) {
+                return response('', Response::HTTP_UNAUTHORIZED);
+            }
         }
+
+        if (!empty($request->file('avatar')) && $request->file('avatar')->isValid()) {
+            if ($user->avatar) {
+                Storage::delete($user->avatar);
+            }
+
+            $user->avatar = $request->file('avatar')->store('public/images/avatars/users');
+        }
+
+        $user->name = !empty($data['name']) ? $data['name'] : $user->name;
+        $user->uid = !empty($data['uid']) ? $data['uid'] : $user->uid;
+        $user->email = !empty($data['email']) ? $data['email'] : $user->email;
+        $user->phone = !empty($data['phone']) ? $data['phone'] : $user->phone;
+
+        if (!empty($data['new_password'])) {
+            $user->password = $data['new_password'];
+        }
+
+        if ($user->isDirty('password') && $request->user()->isNot($user)) {
+            $user->tokens()->delete();
+        }
+
+        $user->save();
 
         return response(['user' => new FullUserResource($user)]);
     }

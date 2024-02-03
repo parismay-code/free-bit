@@ -7,7 +7,18 @@ export default interface IUsersApiService {
 
     get(userId: number): Promise<IFullUser | false>;
 
-    update(userId: number): Promise<IFullUser | false>;
+    update(userId: number, data: FormData): Promise<IFullUser | false>;
 
     delete(userId: number): Promise<boolean>;
+}
+
+export interface IUserRequest {
+    name?: string;
+    uid?: string;
+    email?: string;
+    phone?: string;
+    avatar?: string;
+    password: string;
+    new_password?: string;
+    new_password_confirmation?: string;
 }

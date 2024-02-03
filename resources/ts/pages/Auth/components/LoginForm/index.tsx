@@ -41,17 +41,15 @@ function LoginForm() {
 
         const result = await authService.login<FormFields>(data);
 
-        if (result instanceof ApiError) {
+        if (result instanceof ApiError || !result) {
             setError(true);
 
             return;
         }
 
-        if (result) {
-            dispatch(setUser(result));
+        dispatch(setUser(result));
 
-            navigate('/');
-        }
+        navigate('/');
     };
 
     return (

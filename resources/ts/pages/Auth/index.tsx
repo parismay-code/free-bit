@@ -5,6 +5,7 @@ import usePopUp from '@hooks/usePopUp';
 
 import logo from '@assets/logo.svg';
 
+import Notify from '@components/Notify';
 import PopUp from '@components/PopUp';
 import WelcomePopUp from '@components/PopUp/components/WelcomePopUp';
 
@@ -73,6 +74,7 @@ function Auth() {
                 </section>
             </main>
             <PopUp />
+            <Notify />
         </>
     );
 }

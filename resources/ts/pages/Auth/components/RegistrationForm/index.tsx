@@ -59,7 +59,7 @@ function RegistrationForm() {
             password_confirmation: passwordConfirmation.current.value,
         };
 
-        const result = await authService.register(data);
+        const result = await authService.register<FormFields>(data);
 
         if (result instanceof ApiError) {
             if (result.data) {

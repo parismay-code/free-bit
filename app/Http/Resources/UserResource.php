@@ -21,7 +21,7 @@ class UserResource extends JsonResource
             'uid' => $this->uid,
             'email' => $this->email,
             'phone' => $this->phone,
-            'avatar' => Storage::url($this->avatar),
+            'avatar' => $this->avatar ? Storage::url($this->avatar) : null,
         ];
     }
 }

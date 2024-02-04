@@ -14,6 +14,8 @@ import Header from '@components/Header';
 import PopUp from '@components/PopUp';
 import Notify from '@components/Notify';
 
+import './layout.scss';
+
 const authService = new AuthApiService();
 
 export type LayoutContext = {
@@ -51,14 +53,16 @@ function ProtectedLayout() {
         <div className="layout">
             <Header title={headerTitle} />
             <main className="layout__main">
-                <Outlet
-                    context={
-                        {
-                            setHeaderTitle,
-                            user: authStore.user as IFullUser,
-                        } satisfies LayoutContext
-                    }
-                />
+                <div className="layout__scrollable">
+                    <Outlet
+                        context={
+                            {
+                                setHeaderTitle,
+                                user: authStore.user as IFullUser,
+                            } satisfies LayoutContext
+                        }
+                    />
+                </div>
 
                 <PopUp />
                 <Notify />

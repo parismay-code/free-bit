@@ -59,15 +59,17 @@ function Header({ title }: HeaderProps) {
                     {authStore.user && (
                         <Link to="/profile" className="header-nav__link">
                             <div className="header-profile">
-                                {authStore.user.avatar ? (
-                                    <img
-                                        className="header-profile__avatar"
-                                        src={authStore.user.avatar}
-                                        alt={authStore.user.uid}
-                                    />
-                                ) : (
-                                    <div className="header-profile__placeholder" />
-                                )}
+                                <div className="header-profile__content">
+                                    {authStore.user.avatar ? (
+                                        <img
+                                            className="header-profile__avatar"
+                                            src={authStore.user.avatar}
+                                            alt={authStore.user.uid}
+                                        />
+                                    ) : (
+                                        <div className="header-profile__placeholder" />
+                                    )}
+                                </div>
                             </div>
                         </Link>
                     )}

@@ -1,12 +1,18 @@
 import { type SyntheticEvent, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
+import cn from 'classnames';
 
 import useHeaderTitle from '@hooks/useHeaderTitle';
+import useNotify from '@hooks/useNotify';
+
+import { NotifyTypes } from '@interfaces/models/INotify';
 
 import type { LayoutContext } from '@components/ProtectedLayout';
 
 import UsersApiService from '@services/api/users/UsersApiService';
+import AuthApiService from '@services/api/auth/AuthApiService';
+import ApiError from '@services/api/ApiError';
 
 import { setUser } from '@stores/authReducer';
 
@@ -16,13 +22,29 @@ import GButton from '@components/GButton';
 import './profile.scss';
 
 const usersService = new UsersApiService();
+const authService = new AuthApiService();
+
+type FormFields =
+    | 'avatar'
+    | 'name'
+    | 'uid'
+    | 'email'
+    | 'phone'
+    | 'password'
+    | 'new_password'
+    | 'new_password_confirmation';
 
 function Profile() {
     const { user } = useOutletContext<LayoutContext>();
 
+    const [errors, setErrors] =
+        useState<Record<FormFields, Array<string> | undefined>>();
     const [preview, setPreview] = useState<string | null>(user.avatar);
 
     const dispatch = useDispatch();
+
+    const notify = useNotify();
+    const navigate = useNavigate();
 
     const form = useRef<HTMLFormElement>(null);
     const uid = useRef<HTMLInputElement>(null);
@@ -71,21 +93,69 @@ function Profile() {
             data.delete('new_password_confirmation');
         }
 
-        const response = await usersService.update(user.id, data);
+        const result = await usersService.update<FormFields>(user.id, data);
 
-        if (response) {
-            dispatch(setUser(response));
+        if (result instanceof ApiError) {
+            if (result.data) {
+                setErrors(result.data.errors);
+            }
+
+            return;
+        }
+
+        if (result) {
+            dispatch(setUser(result));
+            setErrors(undefined);
+            notify('Данные профиля успешно изменены', NotifyTypes.SUCCESS);
+
+            password.current.value = '';
+            newPassword.current.value = '';
+            newPasswordConfirmation.current.value = '';
+        } else {
+            setErrors({
+                password: ['Wrong password'],
+                uid: undefined,
+                new_password: undefined,
+                new_password_confirmation: undefined,
+                name: undefined,
+                email: undefined,
+                phone: undefined,
+                avatar: undefined,
+            });
+        }
+    };
+
+    const handleLogout = async () => {
+        const result = await authService.logout();
+
+        if (result) {
+            dispatch(setUser(false));
+            navigate('/auth');
+            notify('Вы вышли из аккаунта', NotifyTypes.INFO);
         }
     };
 
     return (
         <div className="profile container">
+            <button
+                className="profile__logout"
+                type="button"
+                onClick={handleLogout}
+            >
+                Выйти
+            </button>
+
             <form ref={form} className="profile-edit" onSubmit={handleSubmit}>
                 <div className="profile-edit__group">
                     <h3>Основная информация</h3>
 
                     <div className="profile-edit__horizontal">
-                        <div className="profile-edit-avatar">
+                        <div
+                            className={cn(
+                                'profile-edit-avatar',
+                                errors?.avatar && 'profile-edit-avatar_error',
+                            )}
+                        >
                             <label
                                 htmlFor="avatarInput"
                                 className="profile-edit-avatar__label"
@@ -131,6 +201,7 @@ function Profile() {
                                 name="name"
                                 autoComplete="off"
                                 customClass="profile-edit__input"
+                                errors={errors?.name}
                             />
 
                             <GInput
@@ -142,6 +213,7 @@ function Profile() {
                                 hint="Номер вашей ID-карты"
                                 customClass="profile-edit__input"
                                 reference={uid}
+                                errors={errors?.uid}
                             />
 
                             <GInput
@@ -151,6 +223,7 @@ function Profile() {
                                 name="email"
                                 autoComplete="off"
                                 hint="Дискорд, пример: dystopia.there"
+                                errors={errors?.email}
                             />
 
                             <GInput
@@ -160,6 +233,7 @@ function Profile() {
                                 name="phone"
                                 autoComplete="off"
                                 hint="Номер телефона, пример: 999-9999"
+                                errors={errors?.phone}
                             />
                         </div>
                     </div>
@@ -175,6 +249,7 @@ function Profile() {
                         reference={newPassword}
                         autoComplete="off"
                         customClass="profile-edit__input"
+                        errors={errors?.new_password}
                     />
 
                     <GInput
@@ -184,6 +259,7 @@ function Profile() {
                         reference={newPasswordConfirmation}
                         autoComplete="off"
                         customClass="profile-edit__input"
+                        errors={errors?.new_password_confirmation}
                     />
                 </div>
 
@@ -194,6 +270,7 @@ function Profile() {
                     reference={password}
                     autoComplete="off"
                     customClass="profile-edit__input"
+                    errors={errors?.password}
                 />
 
                 <GButton title="Сохранить" submit />

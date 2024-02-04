@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\FullUserResource;
-use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -56,7 +55,7 @@ class AuthController extends Controller
 
         $cookie = cookie()->forget('token');
 
-        return response()->withCookie($cookie);
+        return response('')->withCookie($cookie);
     }
 
     public function user(Request $request): Response

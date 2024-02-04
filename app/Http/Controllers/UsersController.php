@@ -7,6 +7,7 @@ use App\Http\Resources\Collection;
 use App\Http\Resources\FullUserResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Carbon\Carbon;
 use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -28,6 +29,8 @@ class UsersController extends Controller
 
     public function update(UserRequest $request, User $user): Response
     {
+        $path = 'public/images/avatars/users/';
+
         if ($request->user()->isNot($user) && !Gate::allows('isAdmin')) {
             return response('', Response::HTTP_FORBIDDEN);
         }
@@ -42,10 +45,15 @@ class UsersController extends Controller
 
         if (!empty($request->file('avatar')) && $request->file('avatar')->isValid()) {
             if ($user->avatar) {
-                Storage::delete($user->avatar);
+                Storage::delete($path . $user->avatar);
             }
 
-            $user->avatar = $request->file('avatar')->store('public/images/avatars/users');
+            $file = $request->file('avatar');
+            $fileName = (new Carbon())->format('Ymd_his') . '_' . $user->uid . '.' . $file->getClientOriginalExtension();
+
+            $file->storeAs($path, $fileName);
+
+            $user->avatar = $path . $fileName;
         }
 
         $user->name = !empty($data['name']) ? $data['name'] : $user->name;

@@ -8,6 +8,7 @@ use App\Http\Resources\FullOrganizationResource;
 use App\Http\Resources\OrganizationResource;
 use App\Models\Organization;
 use App\Models\User;
+use Carbon\Carbon;
 use Gate;
 use Request;
 use Storage;
@@ -27,6 +28,9 @@ class OrganizationsController extends Controller
 
     public function create(OrganizationRequest $request, User $user): Response
     {
+        $avatarsPath = 'public/images/avatars/organizations/';
+        $bannersPath = 'public/images/banners/';
+
         if ($user->ownedOrganization()->exists()) {
             return response('', Response::HTTP_FORBIDDEN);
         }
@@ -37,11 +41,21 @@ class OrganizationsController extends Controller
         $bannerUrl = null;
 
         if ($request->file('avatar')->isValid()) {
-            $avatarUrl = $request->file('avatar')->store('public/images/avatars/organizations');
+            $avatarFile = $request->file('avatar');
+            $avatarName = (new Carbon())->format('Ymd_his') . '_' . $user->uid . '.' . $avatarFile->getClientOriginalExtension();
+
+            $avatarFile->storeAs($avatarsPath, $avatarName);
+
+            $avatarUrl = $avatarsPath . $avatarName;
         }
 
         if ($request->file('banner')->isValid()) {
-            $bannerUrl = $request->file('banner')->store('public/images/banners');
+            $bannerFile = $request->file('banner');
+            $bannerName = (new Carbon())->format('Ymd_his') . '_' . $user->uid . '.' . $bannerFile->getClientOriginalExtension();
+
+            $bannerFile->storeAs($bannersPath, $bannerName);
+
+            $bannerUrl = $bannersPath . $bannerName;
         }
 
         /** @var Organization $organization */
@@ -63,6 +77,9 @@ class OrganizationsController extends Controller
 
     public function update(OrganizationRequest $request, Organization $organization, User $user): Response
     {
+        $avatarsPath = 'public/images/avatars/organizations/';
+        $bannersPath = 'public/images/banners/';
+
         $data = $request->safe()->except(['avatar', 'banner']);
 
         $avatarUrl = null;
@@ -70,18 +87,28 @@ class OrganizationsController extends Controller
 
         if ($request->file('avatar')->isValid()) {
             if ($organization->avatar) {
-                Storage::delete($organization->avatar);
+                Storage::delete($avatarsPath . $organization->avatar);
             }
 
-            $avatarUrl = $request->file('avatar')->store('public/images/avatars/organizations');
+            $avatarFile = $request->file('avatar');
+            $avatarName = (new Carbon())->format('Ymd_his') . '_' . $user->uid . '.' . $avatarFile->getClientOriginalExtension();
+
+            $avatarFile->storeAs($avatarsPath, $avatarName);
+
+            $avatarUrl = $avatarsPath . $avatarName;
         }
 
         if ($request->file('banner')->isValid()) {
             if ($organization->banner) {
-                Storage::delete($organization->banner);
+                Storage::delete($bannersPath . $organization->banner);
             }
 
-            $bannerUrl = $request->file('banner')->store('public/images/banners');
+            $bannerFile = $request->file('banner');
+            $bannerName = (new Carbon())->format('Ymd_his') . '_' . $user->uid . '.' . $bannerFile->getClientOriginalExtension();
+
+            $bannerFile->storeAs($bannersPath, $bannerName);
+
+            $bannerUrl = $bannersPath . $bannerName;
         }
 
         $status = $organization->update([...$data, 'avatar' => $avatarUrl, 'banner' => $bannerUrl]);

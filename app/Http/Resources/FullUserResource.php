@@ -17,7 +17,7 @@ class FullUserResource extends JsonResource
             'uid' => $this->uid,
             'email' => $this->email,
             'phone' => $this->phone,
-            'avatar' => $this->avatar,
+            'avatar' => $this->avatar ? Storage::url($this->avatar) : null,
             'roles' => new Collection(RoleResource::collection($this->roles)),
             $this->mergeWhen(($request->user() && $request->user()->is($this)) || Gate::allows('isManager'), [
                 'orders' => [

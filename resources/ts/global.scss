@@ -106,6 +106,20 @@ h3 {
     height: 100%;
 }
 
+::-webkit-scrollbar {
+    appearance: none;
+    width: .5rem;
+    height: .5rem;
+    border-radius: .5rem;
+
+    background-color: vars.$color-background-scrollbar;
+
+    &-thumb {
+        background-color: vars.$color-highlight;
+        border-radius: .5rem;
+    }
+}
+
 .container {
     max-width: min(#{vars.$container-max-width-percent}, #{vars.$container-max-width-pixels});
     width: 100%;

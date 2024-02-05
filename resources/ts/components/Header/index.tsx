@@ -42,6 +42,22 @@ function Header({ title }: HeaderProps) {
                 </div>
 
                 <div className="header-nav__group">
+                    {authStore.user &&
+                        authStore.user.organization &&
+                        authStore.user.organization.data && (
+                            <NavLink
+                                to={`/organization/${authStore.user.organization.data.id}`}
+                                className={({ isActive }) =>
+                                    cn(
+                                        'header-nav__link',
+                                        isActive && 'header-nav__link_active',
+                                    )
+                                }
+                            >
+                                {authStore.user.organization.data.name}
+                            </NavLink>
+                        )}
+
                     {isAdmin && (
                         <NavLink
                             to="/admin"
@@ -57,7 +73,7 @@ function Header({ title }: HeaderProps) {
                     )}
 
                     {authStore.user && (
-                        <Link to="/profile" className="header-nav__link">
+                        <Link to="/profile/view" className="header-nav__link">
                             <div className="header-profile">
                                 <div className="header-profile__content">
                                     {authStore.user.avatar ? (

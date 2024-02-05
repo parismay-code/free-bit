@@ -9,6 +9,7 @@ use App\Http\Resources\OrganizationRoleResource;
 use App\Models\Organization;
 use App\Models\OrganizationRole;
 use App\Models\User;
+use Gate;
 use Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -39,7 +40,7 @@ class EmployeeRolesController extends Controller
 
     public function update(OrganizationRoleRequest $request, Organization $organization, OrganizationRole $role): Response
     {
-        if ($role->organization()->isNot($organization)) {
+        if ($role->organization()->isNot($organization) || ($role->priority >= 900 && !Gate::allows('isAdmin'))) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 

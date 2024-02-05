@@ -68,10 +68,12 @@ function Auth() {
                     </button>
                 </section>
 
-                <section className="auth__content">
-                    {form === 'login' && <LoginForm />}
-                    {form === 'registration' && <RegistrationForm />}
-                </section>
+                <div className="auth__wrapper">
+                    <section className="auth__content">
+                        {form === 'login' && <LoginForm />}
+                        {form === 'registration' && <RegistrationForm />}
+                    </section>
+                </div>
             </main>
             <PopUp />
             <Notify />

@@ -9,7 +9,7 @@ const initialState: IState = {
 };
 
 const popUpReducer = createSlice({
-    name: 'auth',
+    name: 'popUp',
     initialState,
     reducers: {
         openPopUp: (state, action: PayloadAction<IPopUp>) => {

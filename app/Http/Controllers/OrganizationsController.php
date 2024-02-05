@@ -61,15 +61,19 @@ class OrganizationsController extends Controller
         /** @var Organization $organization */
         $organization = $user->ownedOrganization()->create([...$data, 'avatar' => $avatarUrl, 'banner' => $bannerUrl]);
 
+        $user->organization()->associate($organization);
+
+        $staffRole = $organization->roles()->create(['name' => 'staff', 'description' => 'Персонал', 'priority' => '1']);
+
         $ownerRole = $organization->roles()->create(['name' => 'owner', 'description' => 'Владелец заведения', 'priority' => '999']);
 
         $organization->roles()->createMany([
             ['name' => 'deputy', 'description' => 'Заместитель владельца заведения', 'priority' => '998'],
             ['name' => 'admin', 'description' => 'Администратор заведения', 'priority' => '997'],
             ['name' => 'manager', 'description' => 'Менеджер заведения', 'priority' => '996'],
-            ['name' => 'staff', 'description' => 'Персонал', 'priority' => '1'],
         ]);
 
+        $user->organizationRoles()->attach($staffRole->id);
         $user->organizationRoles()->attach($ownerRole->id);
 
         return response(['organization' => new FullOrganizationResource($organization)]);
@@ -118,6 +122,10 @@ class OrganizationsController extends Controller
         }
 
         if ($organization->owner_id !== $user->id) {
+            $ownerRole = $organization->roles()->where('name', 'owner')->first();
+
+            $organization->owner->organizationRoles()->detach($ownerRole->id);
+
             $status = $organization->owner()->associate($user)->save();
 
             if (!$status) {

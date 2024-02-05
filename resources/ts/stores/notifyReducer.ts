@@ -8,7 +8,7 @@ const initialState: IState = {
 };
 
 const notifyReducer = createSlice({
-    name: 'auth',
+    name: 'notify',
     initialState,
     reducers: {
         addNotify: (state, action: PayloadAction<INotify>) => {

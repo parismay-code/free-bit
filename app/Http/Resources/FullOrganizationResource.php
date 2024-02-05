@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Organization;
 use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -20,7 +21,7 @@ class FullOrganizationResource extends JsonResource
             $this->mergeWhen(Gate::allows('isManager'), [
                 'owner' => new UserResource($this->owner),
             ]),
-            $this->mergeWhen(($request->user() && $request->user()->organization()->exists() && $request->user()->organization()->is($this)) || Gate::allows('isManager'), [
+            $this->mergeWhen(($request->user() && $request->user()->organization()->exists() && $request->user()->organization()->is(Organization::find($this->id))) || Gate::allows('isManager'), [
                 'roles' => new Collection(OrganizationRoleResource::collection($this->roles)),
                 'employees' => new Collection(UserResource::collection($this->employees)),
                 'orders' => new Collection(OrderResource::collection($this->orders)),

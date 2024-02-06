@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Enums\OrderStatuses;
 use App\Http\Filters\OrdersFilter;
 use App\Http\Requests\OrderRequest;
-use App\Http\Resources\Collection;
 use App\Http\Resources\FullOrderResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Ingredient;
@@ -22,7 +21,7 @@ class OrdersController extends Controller
     {
         $orders = Order::filter(new OrdersFilter($request))->where('organization_id', $organization->id)->paginate(10);
 
-        return response(new Collection(OrderResource::collection($orders)));
+        return response(['data' => OrderResource::collection($orders)]);
     }
 
     public function get(Request $request, Organization $organization, Order $order): Response

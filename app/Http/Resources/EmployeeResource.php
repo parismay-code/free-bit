@@ -2,10 +2,12 @@
 
 namespace App\Http\Resources;
 
+use App\Models\User;
 use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/** @mixin User */
 class EmployeeResource extends JsonResource
 {
     public function toArray(Request $request): array
@@ -16,14 +18,14 @@ class EmployeeResource extends JsonResource
             'uid' => $this->uid,
             'email' => $this->email,
             'phone' => $this->phone,
-            'roles' => new Collection(RoleResource::collection($this->roles)),
+            'roles' => ['data' => RoleResource::collection($this->roles)],
             $this->mergeWhen(($request->user() && $request->user()->organization()->exists() && $request->user()->organization()->is($this->organization)) || Gate::allows('isManager'), [
-                'orders' => new Collection(OrderResource::collection($this->ordersHandled)),
+                'orders' => ['data' => OrderResource::collection($this->ordersHandled)],
                 'organization' => [
                     'data' => new OrganizationResource($this->organization),
-                    'roles' => new Collection(OrganizationRoleResource::collection($this->organizationRoles)),
+                    'roles' => ['data' => OrganizationRoleResource::collection($this->organizationRoles)],
                     $this->mergeWhen(Gate::allows('isOrganizationManager'), [
-                        'shifts' => new Collection(OrganizationShiftResource::collection($this->shifts)),
+                        'shifts' => ['data' => OrganizationShiftResource::collection($this->shifts)],
                     ]),
                 ],
             ]),

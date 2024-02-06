@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OrganizationRoleRequest;
-use App\Http\Resources\Collection;
 use App\Http\Resources\FullOrganizationRoleResource;
 use App\Http\Resources\OrganizationRoleResource;
 use App\Models\Organization;
@@ -17,7 +16,7 @@ class EmployeeRolesController extends Controller
 {
     public function getAll(Request $request, Organization $organization): Response
     {
-        return response(new Collection(OrganizationRoleResource::collection($organization->roles)));
+        return response(['data' => OrganizationRoleResource::collection($organization->roles)]);
     }
 
     public function get(Request $request, Organization $organization, OrganizationRole $role): Response

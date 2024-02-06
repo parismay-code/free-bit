@@ -65,6 +65,34 @@ function Profile() {
                     Профиль
                 </NavLink>
 
+                {user.organization && user.organization.data && (
+                    <NavLink
+                        to="/profile/organization"
+                        className={({ isActive }) =>
+                            cn(
+                                'profile-nav__link',
+                                'highlight-text',
+                                isActive && 'profile-nav__link_active',
+                            )
+                        }
+                    >
+                        {user.organization.data.name}
+                    </NavLink>
+                )}
+
+                <NavLink
+                    to="/profile/orders"
+                    className={({ isActive }) =>
+                        cn(
+                            'profile-nav__link',
+                            'highlight-text',
+                            isActive && 'profile-nav__link_active',
+                        )
+                    }
+                >
+                    Мои заказы
+                </NavLink>
+
                 <NavLink
                     to="/profile/edit"
                     className={({ isActive }) =>

@@ -2,9 +2,11 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/** @mixin Order */
 class FullOrderResource extends JsonResource
 {
     /**
@@ -22,7 +24,7 @@ class FullOrderResource extends JsonResource
             'delivery' => $this->delivery,
             'courier' => new UserResource($this->courier),
             'employee' => new UserResource($this->employee),
-            'products' => new Collection(ProductResource::collection($this->products)),
+            'products' => ['data' => ProductResource::collection($this->products)],
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

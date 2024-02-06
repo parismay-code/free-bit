@@ -30,13 +30,13 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
-    Route::post('/user/{user}', [UsersController::class, 'update']);
-    Route::delete('/user/{user}', [UsersController::class, 'delete']);
 
     Route::get('/users', [UsersController::class, 'getAll'])
         ->can('isManager');
     Route::get('/users/{user}', [UsersController::class, 'get'])
         ->can('isManager');
+    Route::post('/users/{user}', [UsersController::class, 'update']);
+    Route::delete('/users/{user}', [UsersController::class, 'delete']);
 
     Route::get('/organizations', [OrganizationsController::class, 'getAll']);
     Route::get('/organizations/{organization}', [OrganizationsController::class, 'get']);

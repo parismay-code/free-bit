@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OrganizationRequest;
-use App\Http\Resources\Collection;
 use App\Http\Resources\FullOrganizationResource;
 use App\Http\Resources\OrganizationResource;
 use App\Models\Organization;
@@ -18,7 +17,7 @@ class OrganizationsController extends Controller
 {
     public function getAll(Request $request): Response
     {
-        return response(new Collection(OrganizationResource::collection(Organization::all())));
+        return response(['data' => OrganizationResource::collection(Organization::all())]);
     }
 
     public function get(Request $request, Organization $organization): Response

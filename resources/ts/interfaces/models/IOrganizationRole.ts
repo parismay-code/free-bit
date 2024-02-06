@@ -1,5 +1,5 @@
 import type IOrganization from '@interfaces/models/IOrganization';
-import type { Collection } from '@interfaces/api/IApiService';
+import type { Paginated } from '@interfaces/api/IApiService';
 import type IUser from '@interfaces/models/IUser';
 
 export default interface IOrganizationRole {
@@ -11,5 +11,5 @@ export default interface IOrganizationRole {
 
 export interface IFullOrganizationRole extends IOrganizationRole {
     organization: IOrganization;
-    employees: Collection<IUser>;
+    employees: Paginated<IUser>;
 }

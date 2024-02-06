@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
-use App\Http\Resources\Collection;
 use App\Http\Resources\FullProductResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Category;
@@ -16,7 +15,7 @@ class ProductsController extends Controller
 {
     public function getAll(Request $request, Organization $organization): Response
     {
-        return response(new Collection(ProductResource::collection($organization->products)));
+        return response(['data' => ProductResource::collection($organization->products)]);
     }
 
     public function get(Request $request, Organization $organization, Product $product): Response

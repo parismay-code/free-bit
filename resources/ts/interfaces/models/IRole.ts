@@ -1,4 +1,4 @@
-import type { Collection } from '@interfaces/api/IApiService';
+import type { Paginated } from '@interfaces/api/IApiService';
 import type IUser from '@interfaces/models/IUser';
 
 export default interface IRole {
@@ -7,6 +7,6 @@ export default interface IRole {
     description: string;
 }
 
-export interface IFullRole {
-    users: Collection<IUser>;
+export interface IFullRole extends IRole {
+    users: Paginated<IUser>;
 }

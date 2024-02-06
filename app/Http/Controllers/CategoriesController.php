@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryRequest;
-use App\Http\Resources\Collection;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\FullCategoryResource;
 use App\Models\Category;
@@ -15,7 +14,7 @@ class CategoriesController extends Controller
 {
     public function getAll(Request $request, Organization $organization): Response
     {
-        return response(new Collection(CategoryResource::collection($organization->categories)));
+        return response(['data' => CategoryResource::collection($organization->categories)]);
     }
 
     public function get(Request $request, Organization $organization, Category $category): Response

@@ -1,10 +1,10 @@
-import type { Collection } from '@interfaces/api/IApiService';
+import type { Paginated } from '@interfaces/api/IApiService';
 import type IUser from '@interfaces/models/IUser';
 import type { IFullUser } from '@interfaces/models/IUser';
-import type { AuthReturnType } from '@interfaces/api/IAuthApiService.ts';
+import type { AuthReturnType } from '@interfaces/api/IAuthApiService';
 
 export default interface IUsersApiService {
-    getAll(): Promise<Collection<IUser> | false>;
+    getAll(page: number): Promise<Paginated<IUser> | false>;
 
     get(userId: number): Promise<IFullUser | false>;
 

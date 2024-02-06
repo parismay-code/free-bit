@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AttachWithCountRequest;
 use App\Http\Requests\IngredientRequest;
-use App\Http\Resources\Collection;
 use App\Http\Resources\FullIngredientResource;
 use App\Http\Resources\IngredientResource;
 use App\Models\Ingredient;
@@ -17,7 +16,7 @@ class IngredientsController extends Controller
 {
     public function getAll(Request $request, Organization $organization): Response
     {
-        return response(new Collection(IngredientResource::collection($organization->ingredients)));
+        return response(['data' => IngredientResource::collection($organization->ingredients)]);
     }
 
     public function get(Request $request, Organization $organization, Ingredient $ingredient): Response

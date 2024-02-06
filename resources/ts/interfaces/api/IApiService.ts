@@ -32,24 +32,22 @@ export type ApiMethods =
     | 'patchForm'
     | 'delete';
 
-export type Paginated<D = unknown> = {
-    current_page: number;
-    data: Array<D>;
-    first_page_url: string;
-    from: number;
-    last_page: number;
-    last_page_url: string;
-    links: Array<unknown>;
-    next_page_url: string | null;
-    path: string;
-    per_page: number;
-    prev_page_url: string | null;
-    to: number;
-    total: number;
-};
-
 export type Collection<D = unknown> = {
     data: Array<D>;
+};
+
+export type Paginated<D = unknown> = {
+    data: Array<D>;
+    links: {
+        next: string | null;
+        prev: string | null;
+    };
+    meta: {
+        current_page: number;
+        last_page: number;
+        per_page: number;
+        total: number;
+    };
 };
 
 export interface IAttachWitchCountRequest {

@@ -2,9 +2,11 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Ingredient;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/** @mixin Ingredient */
 class FullIngredientResource extends JsonResource
 {
     /**
@@ -22,7 +24,7 @@ class FullIngredientResource extends JsonResource
             'count' => $this->pivot->count ?? 0,
             'storage' => $this->storage,
             'organization' => new OrganizationResource($this->organization),
-            'products' => new Collection(ProductResource::collection($this->products)),
+            'products' => ['data' => ProductResource::collection($this->products)],
         ];
     }
 }

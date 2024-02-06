@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Storage;
 
+/** @mixin Organization */
 class FullOrganizationResource extends JsonResource
 {
     public function toArray(Request $request): array
@@ -18,16 +19,17 @@ class FullOrganizationResource extends JsonResource
             'description' => $this->description,
             'avatar' => $this->avatar ? Storage::url($this->avatar) : null,
             'banner' => $this->banner ? Storage::url($this->banner) : null,
-            $this->mergeWhen(Gate::allows('isManager'), [
+            'employees_count' => $this->employees()->count(),
+            $this->mergeWhen(($request->user() && $request->user()->organization()->is(Organization::find($this->id))) || Gate::allows('isManager'), [
                 'owner' => new UserResource($this->owner),
             ]),
             $this->mergeWhen(($request->user() && $request->user()->organization()->exists() && $request->user()->organization()->is(Organization::find($this->id))) || Gate::allows('isManager'), [
-                'roles' => new Collection(OrganizationRoleResource::collection($this->roles)),
-                'employees' => new Collection(UserResource::collection($this->employees)),
-                'orders' => new Collection(OrderResource::collection($this->orders)),
-                'categories' => new Collection(CategoryResource::collection($this->categories)),
-                'products' => new Collection(ProductResource::collection($this->products)),
-                'ingredients' => new Collection(IngredientResource::collection($this->ingredients)),
+                'roles' => ['data' => OrganizationRoleResource::collection($this->roles)],
+                'employees' => new UserCollection($this->employees()->paginate(5)),
+                'orders' => ['data' => OrderResource::collection($this->orders)],
+                'categories' => ['data' => CategoryResource::collection($this->categories)],
+                'products' => ['data' => ProductResource::collection($this->products)],
+                'ingredients' => ['data' => IngredientResource::collection($this->ingredients)],
             ]),
         ];
     }

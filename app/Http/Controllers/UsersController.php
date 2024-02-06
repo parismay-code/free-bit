@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
-use App\Http\Resources\Collection;
 use App\Http\Resources\FullUserResource;
+use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Carbon\Carbon;
@@ -19,7 +19,7 @@ class UsersController extends Controller
 {
     public function getAll(Request $request): Response
     {
-        return response(new Collection(UserResource::collection(User::all())));
+        return response(new UserCollection(User::paginate(5)));
     }
 
     public function get(Request $request, User $user): Response

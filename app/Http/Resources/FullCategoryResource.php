@@ -2,9 +2,11 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/** @mixin Category */
 class FullCategoryResource extends JsonResource
 {
     /**
@@ -19,7 +21,7 @@ class FullCategoryResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'organization' => new OrganizationResource($this->organization),
-            'products' => new Collection(ProductResource::collection($this->products)),
+            'products' => ['data' => ProductResource::collection($this->products)],
         ];
     }
 }

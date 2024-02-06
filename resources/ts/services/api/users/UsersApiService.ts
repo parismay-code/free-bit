@@ -6,15 +6,18 @@ import ApiError from '@services/api/ApiError';
 import IAuthErrors from '@interfaces/api/IAuthErrors';
 import type IUsersApiService from '@interfaces/api/IUsersApiService';
 import IUser, { type IFullUser } from '@interfaces/models/IUser';
-import type { Collection } from '@interfaces/api/IApiService';
+import type { Paginated } from '@interfaces/api/IApiService';
 import { type AuthReturnType } from '@interfaces/api/IAuthApiService';
 
 export default class UsersApiService
     extends ApiServiceBase
     implements IUsersApiService
 {
-    public getAll = async (): Promise<Collection<IUser> | false> => {
-        const query = await this.fetch<Collection<IUser>>('get', '/users');
+    public getAll = async (page: number): Promise<Paginated<IUser> | false> => {
+        const query = await this.fetch<Paginated<IUser>>(
+            'get',
+            `/users?page=${page}`,
+        );
 
         if (!query || query instanceof AxiosError) {
             return false;
@@ -26,7 +29,7 @@ export default class UsersApiService
     public get = async (userId: number): Promise<IFullUser | false> => {
         const query = await this.fetch<{ user: IFullUser }>(
             'get',
-            `/user/${userId}`,
+            `/users/${userId}`,
         );
 
         if (!query || query instanceof AxiosError) {
@@ -44,7 +47,7 @@ export default class UsersApiService
             { user: IFullUser },
             FormData,
             IAuthErrors<F>
-        >('postForm', `/user/${userId}`, data);
+        >('postForm', `/users/${userId}`, data);
 
         if (!query) {
             return false;
@@ -62,7 +65,7 @@ export default class UsersApiService
     };
 
     public delete = async (userId: number): Promise<boolean> => {
-        const query = await this.fetch('delete', `/user/${userId}`);
+        const query = await this.fetch('delete', `/users/${userId}`);
 
         return !(!query || query instanceof AxiosError);
     };

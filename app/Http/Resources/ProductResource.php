@@ -2,9 +2,11 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/** @mixin Product */
 class ProductResource extends JsonResource
 {
     /**
@@ -18,7 +20,7 @@ class ProductResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'ingredients' => new Collection(IngredientResource::collection($this->ingredients)),
+            'ingredients' => ['data' => IngredientResource::collection($this->ingredients)],
             'price' => $this->price,
             'count' => $this->pivot->count ?? 0,
         ];

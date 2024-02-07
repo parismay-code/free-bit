@@ -52,28 +52,28 @@ class RolesController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response();
+        return response('');
     }
 
     public function attach(Request $request, User $user, Role $role): Response
     {
         if ($user->roles()->find($role->id)->exists()) {
-            return response();
+            return response('');
         }
 
         $user->roles()->attach($role->id);
 
-        return response();
+        return response('');
     }
 
     public function detach(Request $request, User $user, Role $role): Response
     {
         if (!$user->roles()->find($role->id)->exists()) {
-            return response();
+            return response('');
         }
 
         $user->roles()->detach($role->id);
 
-        return response();
+        return response('');
     }
 }

@@ -107,7 +107,7 @@ class OrdersController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response();
+        return response('');
     }
 
     public function associateCourier(Request $request, Organization $organization, Order $order, User $user): Response
@@ -122,7 +122,7 @@ class OrdersController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response();
+        return response('');
     }
 
     public function associateEmployee(Request $request, Organization $organization, Order $order, User $user): Response
@@ -137,6 +137,6 @@ class OrdersController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response();
+        return response('');
     }
 }

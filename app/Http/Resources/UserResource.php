@@ -2,7 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Organization;
 use App\Models\User;
+use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Storage;

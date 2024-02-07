@@ -66,7 +66,7 @@ class EmployeeRolesController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response();
+        return response('');
     }
 
     public function attach(Request $request, Organization $organization, User $user, OrganizationRole $role): Response
@@ -76,12 +76,12 @@ class EmployeeRolesController extends Controller
         }
 
         if ($user->organizationRoles()->find($role->id)->exists()) {
-            return response();
+            return response('');
         }
 
         $user->organizationRoles()->attach($role->id);
 
-        return response();
+        return response('');
     }
 
     public function detach(Request $request, Organization $organization, User $user, OrganizationRole $role): Response
@@ -91,11 +91,11 @@ class EmployeeRolesController extends Controller
         }
 
         if (!$user->organizationRoles()->find($role->id)->exists()) {
-            return response();
+            return response('');
         }
 
         $user->organizationRoles()->detach($role->id);
 
-        return response();
+        return response('');
     }
 }

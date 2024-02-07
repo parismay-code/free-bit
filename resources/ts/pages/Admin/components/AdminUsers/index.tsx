@@ -27,7 +27,7 @@ function AdminUsers() {
                             <Link
                                 to={`/admin/users/${user.id}`}
                                 key={user.id}
-                                className="admin-users-list-user highlight-text"
+                                className="admin-users-list-user highlight-background highlight-text"
                             >
                                 <div className="admin-users-list-user-avatar">
                                     <div className="admin-users-list-user-avatar__content">
@@ -43,6 +43,16 @@ function AdminUsers() {
                                     </div>
                                 </div>
 
+                                <div className="admin-users-list-user__group">
+                                    <span className="admin-users-list-user__name">
+                                        {user.name}
+                                    </span>
+
+                                    <span className="admin-users-list-user__email">
+                                        {user.email}
+                                    </span>
+                                </div>
+
                                 <span className="admin-users-list-user__id">
                                     {user.id}
                                 </span>
@@ -50,48 +60,46 @@ function AdminUsers() {
                                 <span className="admin-users-list-user__uid">
                                     {user.uid}
                                 </span>
-
-                                <span className="admin-users-list-user__name">
-                                    {user.name}
-                                </span>
                             </Link>
                         );
                     })}
                 </div>
 
-                <div className="admin-users-paginator">
-                    <button
-                        type="button"
-                        className="admin-users-paginator__button admin-users-paginator__button_prev"
-                        onClick={() => {
-                            if (page === 1) {
-                                return;
-                            }
+                {data.meta.total > data.meta.per_page && (
+                    <div className="admin-users-paginator">
+                        <button
+                            type="button"
+                            className="admin-users-paginator__button admin-users-paginator__button_prev"
+                            onClick={() => {
+                                if (page === 1) {
+                                    return;
+                                }
 
-                            setPage((prev) => prev - 1);
-                        }}
-                    >
-                        Назад
-                    </button>
+                                setPage((prev) => prev - 1);
+                            }}
+                        >
+                            Назад
+                        </button>
 
-                    <div className="admin-users-paginator__page">
-                        {data.meta.current_page}/{data.meta.last_page}
+                        <div className="admin-users-paginator__page">
+                            {data.meta.current_page}/{data.meta.last_page}
+                        </div>
+
+                        <button
+                            type="button"
+                            className="admin-users-paginator__button admin-users-paginator__button_next"
+                            onClick={() => {
+                                if (page === data.meta.last_page) {
+                                    return;
+                                }
+
+                                setPage((prev) => prev + 1);
+                            }}
+                        >
+                            Далее
+                        </button>
                     </div>
-
-                    <button
-                        type="button"
-                        className="admin-users-paginator__button admin-users-paginator__button_next"
-                        onClick={() => {
-                            if (page === data.meta.last_page) {
-                                return;
-                            }
-
-                            setPage((prev) => prev + 1);
-                        }}
-                    >
-                        Далее
-                    </button>
-                </div>
+                )}
             </div>
         )
     );

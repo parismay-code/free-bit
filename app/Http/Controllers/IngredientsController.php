@@ -66,7 +66,7 @@ class IngredientsController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response();
+        return response('');
     }
 
     public function attach(AttachWithCountRequest $request, Organization $organization, Product $product, Ingredient $ingredient): Response
@@ -83,7 +83,7 @@ class IngredientsController extends Controller
 
         $product->ingredients()->attach($ingredient->id, $data);
 
-        return response();
+        return response('');
     }
 
     public function detach(Request $request, Organization $organization, Product $product, Ingredient $ingredient): Response
@@ -93,11 +93,11 @@ class IngredientsController extends Controller
         }
 
         if (!$product->ingredients()->find($ingredient->id)->exists()) {
-            return response();
+            return response('');
         }
 
         $product->ingredients()->detach($ingredient->id);
 
-        return response();
+        return response('');
     }
 }

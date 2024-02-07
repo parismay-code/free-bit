@@ -19,7 +19,7 @@ class UsersController extends Controller
 {
     public function getAll(Request $request): Response
     {
-        return response(new UserCollection(User::paginate(5)));
+        return response(new UserCollection(User::paginate(10)));
     }
 
     public function get(Request $request, User $user): Response
@@ -87,9 +87,9 @@ class UsersController extends Controller
         $user->delete();
 
         if ($request->user()->is($user)) {
-            return response()->withCookie($cookie);
+            return response('')->withCookie($cookie);
         }
 
-        return response();
+        return response('');
     }
 }

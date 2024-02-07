@@ -22,7 +22,7 @@ class FullRoleResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             $this->mergeWhen(Gate::allows('isOrganizationManager'), [
-                'users' => new UserCollection($this->users()->paginate(5)),
+                'users' => new UserCollection($this->users()->paginate(10)),
             ]),
         ];
     }

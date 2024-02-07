@@ -25,7 +25,7 @@ class FullOrganizationResource extends JsonResource
             ]),
             $this->mergeWhen(($request->user() && $request->user()->organization()->exists() && $request->user()->organization()->is(Organization::find($this->id))) || Gate::allows('isManager'), [
                 'roles' => ['data' => OrganizationRoleResource::collection($this->roles)],
-                'employees' => new UserCollection($this->employees()->paginate(5)),
+                'employees' => new UserCollection($this->employees()->paginate(10)),
                 'orders' => ['data' => OrderResource::collection($this->orders)],
                 'categories' => ['data' => CategoryResource::collection($this->categories)],
                 'products' => ['data' => ProductResource::collection($this->products)],

@@ -24,7 +24,7 @@ class FullOrganizationRoleResource extends JsonResource
             'priority' => $this->priority,
             'organization' => new OrganizationResource($this->organization),
             $this->mergeWhen(($request->user() && $request->user()->organization()->exists() && $request->user()->organization()->is($this->organization)) || Gate::allows('isManager'), [
-                'employees' => new UserCollection($this->employees()->paginate(5)),
+                'employees' => new UserCollection($this->employees()->paginate(10)),
             ]),
         ];
     }

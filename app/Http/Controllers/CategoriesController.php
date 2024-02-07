@@ -64,6 +64,6 @@ class CategoriesController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response();
+        return response('');
     }
 }

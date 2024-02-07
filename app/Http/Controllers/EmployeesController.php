@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\EmployeeResource;
 use App\Http\Resources\UserResource;
 use App\Models\Organization;
+use App\Models\OrganizationRole;
 use App\Models\User;
 use Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,7 +38,11 @@ class EmployeesController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response();
+        $staffRole = OrganizationRole::where('priority', '1')->first();
+
+        $user->organizationRoles()->attach($staffRole->id);
+
+        return response('');
     }
 
     public function dissociate(Request $request, Organization $organization, User $user): Response
@@ -52,6 +57,10 @@ class EmployeesController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response();
+        foreach ($user->organizationRoles as $role) {
+            $user->organizationRoles()->detach($role->id);
+        }
+
+        return response('');
     }
 }

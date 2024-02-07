@@ -1,0 +1,52 @@
+@use '../../../../vars';
+
+.admin-user {
+    &__group {
+        position: relative;
+    }
+
+    &__remove {
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        padding: .5rem 1rem;
+
+        border: 1px solid vars.$color-error;
+        border-radius: .5rem;
+
+        color: vars.$color-error;
+        font-size: .8rem;
+        font-weight: 700;
+
+        opacity: .7;
+
+        transition: .2s;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    &-role {
+        position: relative;
+
+        &__delete {
+            position: absolute;
+            top: .2rem;
+            right: .3rem;
+
+            font-size: .7rem;
+            font-weight: 700;
+            color: vars.$color-error;
+
+            opacity: .7;
+
+            transition: .2s;
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+}

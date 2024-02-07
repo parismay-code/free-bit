@@ -9,7 +9,7 @@ import RolesApiService from '@services/api/roles/RolesApiService';
 
 const rolesService = new RolesApiService();
 
-function AdminOrganizations() {
+function AdminRole() {
     const { id } = useParams();
 
     const notify = useNotify();
@@ -31,4 +31,4 @@ function AdminOrganizations() {
     return data && <div className="admin-role">{data.name}</div>;
 }
 
-export default AdminOrganizations;
+export default AdminRole;

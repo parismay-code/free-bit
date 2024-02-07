@@ -9,7 +9,7 @@ import OrganizationsApiService from '@services/api/organizations/OrganizationsAp
 
 const organizationsService = new OrganizationsApiService();
 
-function AdminOrganizations() {
+function AdminOrganization() {
     const { id } = useParams();
 
     const notify = useNotify();
@@ -33,4 +33,4 @@ function AdminOrganizations() {
     return data && <div className="admin-organization">{data.name}</div>;
 }
 
-export default AdminOrganizations;
+export default AdminOrganization;

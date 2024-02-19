@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\UsersFilter;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\FullUserResource;
 use App\Http\Resources\UserCollection;
-use App\Http\Resources\UserResource;
 use App\Models\User;
 use Carbon\Carbon;
 use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class UsersController extends Controller
 {
     public function getAll(Request $request): Response
     {
-        return response(new UserCollection(User::paginate(10)));
+        $users = User::filter(new UsersFilter($request))->paginate(10);
+
+        return response(new UserCollection($users));
     }
 
     public function get(Request $request, User $user): Response

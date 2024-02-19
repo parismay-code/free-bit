@@ -7,7 +7,7 @@ use App\Http\Resources\OrganizationShiftResource;
 use App\Models\EmployeeShift;
 use App\Models\Organization;
 use App\Models\User;
-use Request;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class EmployeeShiftsController extends Controller

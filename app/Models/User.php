@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Http\Filters\QueryFilter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -87,5 +89,10 @@ class User extends Authenticatable
     public function shifts(): HasMany
     {
         return $this->hasMany(EmployeeShift::class);
+    }
+
+    public function scopeFilter(Builder $builder, QueryFilter $filter): void
+    {
+        $filter->apply($builder);
     }
 }

@@ -9,7 +9,7 @@ use App\Http\Resources\IngredientResource;
 use App\Models\Ingredient;
 use App\Models\Organization;
 use App\Models\Product;
-use Request;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class IngredientsController extends Controller

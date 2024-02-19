@@ -108,4 +108,29 @@
     &__component {
         flex-grow: 1;
     }
+
+    &-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-top: 2rem;
+
+        &__close {
+            padding: .5rem 1rem;
+            background-color: vars.$color-highlight;
+            border-radius: .5rem;
+
+            font-size: .8rem;
+            font-weight: 700;
+
+            opacity: .7;
+
+            transition: opacity .2s;
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
 }

@@ -40,9 +40,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/organizations', [OrganizationsController::class, 'getAll']);
     Route::get('/organizations/{organization}', [OrganizationsController::class, 'get']);
-    Route::post('/organizations/owner/{user}', [OrganizationsController::class, 'create'])
+    Route::post('/organizations', [OrganizationsController::class, 'create'])
         ->can('isAdmin');
-    Route::patch('/organizations/{organization}/owner/{user}', [OrganizationsController::class, 'update'])
+    Route::post('/organizations/{organization}', [OrganizationsController::class, 'update'])
         ->can('isAdmin');
     Route::delete('/organizations/{organization}', [OrganizationsController::class, 'delete'])
         ->can('isAdmin');

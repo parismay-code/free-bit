@@ -81,7 +81,7 @@ function GInput({
 
                     setFilled(!!value);
 
-                    if (value && handleInput) {
+                    if (handleInput) {
                         handleInput(value);
                     }
                 }}

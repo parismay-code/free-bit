@@ -1,17 +1,20 @@
 import { useDispatch } from 'react-redux';
 
-import type { PopUpProps } from '@interfaces/models/IPopUp';
-
-import { openPopUp } from '@stores/popUpReducer';
+import { closePopUp, openPopUp, prevPopUp } from '@stores/popUpReducer';
+import type { ReactElement } from 'react';
 
 const usePopUp = () => {
     const dispatch = useDispatch();
 
-    return (
-        title: string,
-        component: ({ prev, close }: PopUpProps) => JSX.Element,
-    ) => {
-        dispatch(openPopUp({ title, component }));
+    const close = () => dispatch(closePopUp());
+    const prev = () => dispatch(prevPopUp());
+
+    return {
+        close,
+        prev,
+        open: (title: string, component: ReactElement) => {
+            dispatch(openPopUp({ title, component }));
+        },
     };
 };
 

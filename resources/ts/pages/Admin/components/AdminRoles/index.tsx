@@ -24,9 +24,9 @@ function AdminRoles() {
         <div className="admin-roles">
             <button
                 type="button"
-                className="admin-roles__create"
+                className="admin-roles__create highlight-background highlight-text"
                 onClick={() => {
-                    popUp('Создать роль', () => <div>123</div>);
+                    popUp.open('Создать роль', <div>123</div>);
                 }}
             >
                 +
@@ -41,7 +41,7 @@ function AdminRoles() {
                                 key={role.id}
                                 className="admin-roles-list-role highlight-text"
                             >
-                                {role.name}
+                                {role.description}
                             </Link>
                         );
                     })}

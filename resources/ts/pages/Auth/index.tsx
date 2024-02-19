@@ -21,7 +21,7 @@ function Auth() {
 
     useEffect(() => {
         if (!localStorage.getItem('acknowledged')) {
-            popUp('Добро пожаловать', WelcomePopUp);
+            popUp.open('Добро пожаловать', <WelcomePopUp />);
         }
     }, [popUp]);
 

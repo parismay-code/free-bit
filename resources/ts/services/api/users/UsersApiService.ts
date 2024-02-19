@@ -3,20 +3,23 @@ import { AxiosError } from 'axios';
 import ApiServiceBase from '@services/api/ApiServiceBase';
 import ApiError from '@services/api/ApiError';
 
-import IAuthErrors from '@interfaces/api/IAuthErrors';
+import IValidatedErrors from '@interfaces/api/IValidatedErrors';
 import type IUsersApiService from '@interfaces/api/IUsersApiService';
 import IUser, { type IFullUser } from '@interfaces/models/IUser';
 import type { Paginated } from '@interfaces/api/IApiService';
-import { type AuthReturnType } from '@interfaces/api/IAuthApiService';
+import { type ValidatedReturnType } from '@interfaces/api/IAuthApiService';
 
 export default class UsersApiService
     extends ApiServiceBase
     implements IUsersApiService
 {
-    public getAll = async (page: number): Promise<Paginated<IUser> | false> => {
+    public getAll = async (
+        page: number,
+        q: undefined | string,
+    ): Promise<Paginated<IUser> | false> => {
         const query = await this.fetch<Paginated<IUser>>(
             'get',
-            `/users?page=${page}`,
+            `/users?page=${page}${q ? `&query=${q}` : ''}`,
         );
 
         if (!query || query instanceof AxiosError) {
@@ -42,11 +45,11 @@ export default class UsersApiService
     public update = async <F extends string = string>(
         userId: number,
         data: FormData,
-    ): AuthReturnType<F, FormData> => {
+    ): ValidatedReturnType<F, IFullUser, FormData> => {
         const query = await this.fetch<
             { user: IFullUser },
             FormData,
-            IAuthErrors<F>
+            IValidatedErrors<F>
         >('postForm', `/users/${userId}`, data);
 
         if (!query) {
@@ -55,7 +58,7 @@ export default class UsersApiService
 
         if (query instanceof AxiosError) {
             if (query.response && query.response.status === 422) {
-                return new ApiError<IAuthErrors<F>, FormData>(query);
+                return new ApiError<IValidatedErrors<F>, FormData>(query);
             }
 
             return false;

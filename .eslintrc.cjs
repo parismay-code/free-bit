@@ -33,5 +33,6 @@ module.exports = {
                 'state',
             ],
         }],
+        "react/jsx-props-no-spreading": 0,
     },
 };

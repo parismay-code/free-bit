@@ -4,12 +4,12 @@ import ApiServiceBase from '@services/api/ApiServiceBase';
 import ApiError from '@services/api/ApiError';
 
 import IAuthApiService, {
-    AuthReturnType,
+    ValidatedReturnType,
     ILoginRequest,
     IRegisterRequest,
 } from '@interfaces/api/IAuthApiService';
 import { type IFullUser } from '@interfaces/models/IUser';
-import IAuthErrors from '@interfaces/api/IAuthErrors';
+import IValidatedErrors from '@interfaces/api/IValidatedErrors';
 
 export default class AuthApiService
     extends ApiServiceBase
@@ -17,7 +17,7 @@ export default class AuthApiService
 {
     public login = async <F extends string = string>(
         data: ILoginRequest,
-    ): AuthReturnType<F, ILoginRequest> => {
+    ): ValidatedReturnType<F, IFullUser, ILoginRequest> => {
         await this.csrfToken();
 
         const query = await this.fetch<
@@ -25,7 +25,7 @@ export default class AuthApiService
                 user: IFullUser;
             },
             ILoginRequest,
-            IAuthErrors<F>
+            IValidatedErrors<F>
         >('post', '/login', data);
 
         if (!query) {
@@ -34,7 +34,7 @@ export default class AuthApiService
 
         if (query instanceof AxiosError) {
             if (query.response && query.response.status === 422) {
-                return new ApiError<IAuthErrors<F>, ILoginRequest>(query);
+                return new ApiError<IValidatedErrors<F>, ILoginRequest>(query);
             }
 
             return false;
@@ -45,7 +45,7 @@ export default class AuthApiService
 
     public register = async <F extends string = string>(
         data: IRegisterRequest,
-    ): AuthReturnType<F, IRegisterRequest> => {
+    ): ValidatedReturnType<F, IFullUser, IRegisterRequest> => {
         await this.csrfToken();
 
         const query = await this.fetch<
@@ -53,7 +53,7 @@ export default class AuthApiService
                 user: IFullUser;
             },
             IRegisterRequest,
-            IAuthErrors<F>
+            IValidatedErrors<F>
         >('post', '/register', data);
 
         if (!query) {
@@ -62,7 +62,9 @@ export default class AuthApiService
 
         if (query instanceof AxiosError) {
             if (query.response && query.response.status === 422) {
-                return new ApiError<IAuthErrors<F>, IRegisterRequest>(query);
+                return new ApiError<IValidatedErrors<F>, IRegisterRequest>(
+                    query,
+                );
             }
 
             return false;

@@ -13,6 +13,7 @@ class OrganizationRequest extends FormRequest
             'description' => 'string|max:120',
             'avatar' => 'file|image|mimes:jpeg,jpg,png|max:2048',
             'banner' => 'file|image|mimes:jpeg,jpg,png|max:6144',
+            'owner_uid' => 'required|string|exists:users,uid',
         ];
     }
 

@@ -3,7 +3,7 @@
 namespace App\Http\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
-use Request;
+use Illuminate\Http\Request;
 
 abstract class QueryFilter
 {

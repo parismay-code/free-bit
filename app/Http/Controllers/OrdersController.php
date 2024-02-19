@@ -12,7 +12,7 @@ use App\Models\Order;
 use App\Models\Organization;
 use App\Models\User;
 use Gate;
-use Request;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class OrdersController extends Controller

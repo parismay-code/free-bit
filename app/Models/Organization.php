@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Http\Filters\QueryFilter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,6 +20,8 @@ class Organization extends Model
     protected $fillable = [
         'name',
         'description',
+        'avatar',
+        'banner',
     ];
 
     public function owner(): BelongsTo
@@ -58,5 +62,10 @@ class Organization extends Model
     public function shifts(): HasMany
     {
         return $this->hasMany(EmployeeShift::class);
+    }
+
+    public function scopeFilter(Builder $builder, QueryFilter $filter): void
+    {
+        $filter->apply($builder);
     }
 }

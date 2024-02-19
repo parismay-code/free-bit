@@ -9,6 +9,7 @@ use App\Models\OrganizationRole;
 use App\Models\User;
 use Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Log;
 
 class AuthServiceProvider extends ServiceProvider
 {

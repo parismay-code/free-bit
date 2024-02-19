@@ -1,0 +1,28 @@
+@use '../../../../vars';
+
+.add-role-pop-up {
+    &-roles {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        &__role {
+            padding: .5rem 1rem;
+
+            background-color: vars.$color-highlight;
+            border-radius: .5rem;
+
+            font-size: .8rem;
+            font-weight: 700;
+
+            opacity: .7;
+
+            transition: .2s;
+
+            &:hover,
+            &_active {
+                opacity: 1;
+            }
+        }
+    }
+}

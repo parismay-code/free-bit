@@ -7,7 +7,7 @@ use App\Http\Resources\UserResource;
 use App\Models\Organization;
 use App\Models\OrganizationRole;
 use App\Models\User;
-use Request;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class EmployeesController extends Controller

@@ -14,6 +14,9 @@ export const store = configureStore({
         notify: notifyReducer,
         popUp: popUpReducer,
     },
+    middleware: (getDefaultMiddleware) => {
+        return getDefaultMiddleware({ serializableCheck: false });
+    },
 });
 
 export type IRootState = ReturnType<typeof store.getState>;

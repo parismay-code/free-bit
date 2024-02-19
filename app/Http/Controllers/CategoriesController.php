@@ -7,7 +7,7 @@ use App\Http\Resources\CategoryResource;
 use App\Http\Resources\FullCategoryResource;
 use App\Models\Category;
 use App\Models\Organization;
-use Request;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class CategoriesController extends Controller

@@ -1,8 +1,10 @@
-import type { PopUpProps } from '@interfaces/models/IPopUp';
+import usePopUp from '@hooks/usePopUp';
 
 import './welcomePopUp.scss';
 
-function WelcomePopUp({ close }: PopUpProps) {
+function WelcomePopUp() {
+    const { close } = usePopUp();
+
     return (
         <div className="welcome-pop-up">
             <p>
@@ -19,10 +21,10 @@ function WelcomePopUp({ close }: PopUpProps) {
                 - ваш дискорд.
             </p>
 
-            <div className="welcome-pop-up-controls">
+            <div className="pop-up-controls">
                 <button
                     type="button"
-                    className="welcome-pop-up-controls__close"
+                    className="pop-up-controls__close"
                     onClick={() => {
                         localStorage.setItem('acknowledged', '1');
                         close();

@@ -1,26 +1,18 @@
-import { useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 import cn from 'classnames';
 
+import usePopUp from '@hooks/usePopUp';
+
 import { useSelector } from '@stores/rootReducer';
-import { closePopUp, prevPopUp } from '@stores/popUpReducer';
 
 import './popUp.scss';
 
 function PopUp() {
-    const dispatch = useDispatch();
+    const { close, prev } = usePopUp();
 
     const popUpStore = useSelector((state) => state.popUp);
 
     const popUp = popUpStore.current;
-
-    const close = useCallback(() => {
-        dispatch(closePopUp());
-    }, [dispatch]);
-
-    const prev = () => {
-        dispatch(prevPopUp());
-    };
 
     useEffect(() => {
         window.onkeydown = (event) => {
@@ -71,9 +63,7 @@ function PopUp() {
                         </div>
                     </div>
 
-                    <div className="pop-up__component">
-                        <popUp.component prev={prev} close={close} />
-                    </div>
+                    <div className="pop-up__component">{popUp.component}</div>
                 </div>
             )}
         </div>

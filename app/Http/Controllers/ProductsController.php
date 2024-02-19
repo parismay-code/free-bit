@@ -8,7 +8,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Organization;
 use App\Models\Product;
-use Request;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProductsController extends Controller

@@ -7,7 +7,7 @@ use App\Http\Resources\FullRoleResource;
 use App\Http\Resources\RoleResource;
 use App\Models\Role;
 use App\Models\User;
-use Request;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class RolesController extends Controller
@@ -57,7 +57,7 @@ class RolesController extends Controller
 
     public function attach(Request $request, User $user, Role $role): Response
     {
-        if ($user->roles()->find($role->id)->exists()) {
+        if ($user->roles()->find($role->id)) {
             return response('');
         }
 
@@ -68,7 +68,7 @@ class RolesController extends Controller
 
     public function detach(Request $request, User $user, Role $role): Response
     {
-        if (!$user->roles()->find($role->id)->exists()) {
+        if (!$user->roles()->find($role->id)) {
             return response('');
         }
 

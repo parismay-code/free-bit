@@ -1,11 +1,6 @@
-import type { FC } from 'react';
+import type { ReactElement } from 'react';
 
 export default interface IPopUp {
     title: string;
-    component: FC<PopUpProps>;
-}
-
-export interface PopUpProps {
-    prev: () => void;
-    close: () => void;
+    component: ReactElement;
 }

@@ -9,7 +9,7 @@ use App\Models\Organization;
 use App\Models\OrganizationRole;
 use App\Models\User;
 use Gate;
-use Request;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class EmployeeRolesController extends Controller
@@ -19,48 +19,48 @@ class EmployeeRolesController extends Controller
         return response(['data' => OrganizationRoleResource::collection($organization->roles)]);
     }
 
-    public function get(Request $request, Organization $organization, OrganizationRole $role): Response
+    public function get(Request $request, Organization $organization, OrganizationRole $organizationRole): Response
     {
-        if ($role->organization()->isNot($organization)) {
+        if ($organizationRole->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
-        return response(['role' => new FullOrganizationRoleResource($role)]);
+        return response(['role' => new FullOrganizationRoleResource($organizationRole)]);
     }
 
     public function create(OrganizationRoleRequest $request, Organization $organization): Response
     {
         $data = $request->validated();
 
-        $role = $organization->roles()->create($data);
+        $organizationRole = $organization->roles()->create($data);
 
-        return response(['role' => new FullOrganizationRoleResource($role)]);
+        return response(['role' => new FullOrganizationRoleResource($organizationRole)]);
     }
 
-    public function update(OrganizationRoleRequest $request, Organization $organization, OrganizationRole $role): Response
+    public function update(OrganizationRoleRequest $request, Organization $organization, OrganizationRole $organizationRole): Response
     {
-        if ($role->organization()->isNot($organization) || ($role->priority >= 900 && !Gate::allows('isAdmin'))) {
+        if ($organizationRole->organization()->isNot($organization) || ($organizationRole->priority >= 900 && !Gate::allows('isAdmin'))) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
         $data = $request->validated();
 
-        $status = $role->update($data);
+        $status = $organizationRole->update($data);
 
         if (!$status) {
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response(['role' => new FullOrganizationRoleResource($role)]);
+        return response(['role' => new FullOrganizationRoleResource($organizationRole)]);
     }
 
-    public function delete(Request $request, Organization $organization, OrganizationRole $role): Response
+    public function delete(Request $request, Organization $organization, OrganizationRole $organizationRole): Response
     {
-        if ($role->organization()->isNot($organization)) {
+        if ($organizationRole->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
-        $status = $role->delete();
+        $status = $organizationRole->delete();
 
         if (!$status) {
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -69,32 +69,32 @@ class EmployeeRolesController extends Controller
         return response('');
     }
 
-    public function attach(Request $request, Organization $organization, User $user, OrganizationRole $role): Response
+    public function attach(Request $request, Organization $organization, User $user, OrganizationRole $organizationRole): Response
     {
-        if ($role->organization()->isNot($organization) || $user->organization()->isNot($organization)) {
+        if ($organizationRole->organization()->isNot($organization) || $user->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
-        if ($user->organizationRoles()->find($role->id)->exists()) {
+        if ($user->organizationRoles()->find($organizationRole->id)) {
             return response('');
         }
 
-        $user->organizationRoles()->attach($role->id);
+        $user->organizationRoles()->attach($organizationRole->id);
 
         return response('');
     }
 
-    public function detach(Request $request, Organization $organization, User $user, OrganizationRole $role): Response
+    public function detach(Request $request, Organization $organization, User $user, OrganizationRole $organizationRole): Response
     {
-        if ($role->organization()->isNot($organization) || $user->organization()->isNot($organization)) {
+        if ($organizationRole->organization()->isNot($organization) || $user->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
-        if (!$user->organizationRoles()->find($role->id)->exists()) {
+        if (!$user->organizationRoles()->find($organizationRole->id)) {
             return response('');
         }
 
-        $user->organizationRoles()->detach($role->id);
+        $user->organizationRoles()->detach($organizationRole->id);
 
         return response('');
     }

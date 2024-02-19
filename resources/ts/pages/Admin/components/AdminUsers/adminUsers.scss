@@ -5,6 +5,10 @@
 
     height: 20rem;
 
+    &__query {
+        padding: 1rem 0 2rem 0;
+    }
+
     &-list {
         display: flex;
         flex-wrap: wrap;

@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import cn from 'classnames';
 
 import useNotify from '@hooks/useNotify';
+import usePopUp from '@hooks/usePopUp';
 
 import { NotifyTypes } from '@interfaces/models/INotify';
 import type IOrganization from '@interfaces/models/IOrganization';
@@ -16,6 +17,7 @@ import ApiError from '@services/api/ApiError';
 
 import GInput from '@components/GInput';
 import GButton from '@components/GButton';
+import AddRolePopUp from '@components/PopUp/components/AddRolePopUp';
 
 import calculateShifts, { type Days } from '@utils/calculateShifts';
 import formatDate from '@utils/formatDate';
@@ -83,6 +85,7 @@ function AdminUser() {
 
     const notify = useNotify();
     const navigate = useNavigate();
+    const popUp = usePopUp();
 
     const { data, refetch } = useQuery({
         queryKey: ['user', id],
@@ -180,6 +183,19 @@ function AdminUser() {
                         <h3>Роли</h3>
 
                         <div className="profile-view-roles">
+                            <button
+                                type="button"
+                                className="admin-user__add"
+                                onClick={async () => {
+                                    popUp.open(
+                                        'Добавление роли',
+                                        <AddRolePopUp user={data} />,
+                                    );
+                                }}
+                            >
+                                +
+                            </button>
+
                             {data.roles.data
                                 .slice()
                                 .sort((roleA, roleB) => roleA.id - roleB.id)
@@ -393,6 +409,22 @@ function AdminUser() {
                                 <h4>Роли</h4>
 
                                 <div className="profile-view-roles">
+                                    <button
+                                        type="button"
+                                        className="admin-user__add"
+                                        onClick={async () => {
+                                            popUp.open(
+                                                'Добавление роли организации',
+                                                <AddRolePopUp
+                                                    user={data}
+                                                    organization
+                                                />,
+                                            );
+                                        }}
+                                    >
+                                        +
+                                    </button>
+
                                     {data.organization.roles.data
                                         .slice()
                                         .sort(

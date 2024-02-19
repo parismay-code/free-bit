@@ -1,26 +1,49 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 
 import UsersApiService from '@services/api/users/UsersApiService';
 
 import './adminUsers.scss';
+import GInput from '@components/GInput';
 
 const usersService = new UsersApiService();
 
 function AdminUsers() {
+    const [query, setQuery] = useState<string>();
     const [page, setPage] = useState<number>(1);
 
+    const queryTimeout = useRef<number>();
+
     const { data } = useQuery({
-        queryKey: ['users', page],
-        queryFn: () => usersService.getAll(page),
+        queryKey: ['users', page, query],
+        queryFn: () => usersService.getAll(page, query),
         keepPreviousData: true,
         retry: false,
     });
 
+    const handleQuery = (value: string) => {
+        if (queryTimeout.current) {
+            clearTimeout(queryTimeout.current);
+        }
+
+        queryTimeout.current = setTimeout(() => {
+            setQuery(value);
+        }, 1000);
+    };
+
     return (
         data && (
             <div className="admin-users">
+                <div className="admin-users__query">
+                    <GInput
+                        type="text"
+                        title="Поиск"
+                        hint="Имя, рег. данные или почта"
+                        handleInput={handleQuery}
+                    />
+                </div>
+
                 <div className="admin-users-list">
                     {data.data.map((user) => {
                         return (

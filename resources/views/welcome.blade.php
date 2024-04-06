@@ -12,6 +12,6 @@
 <div id='root'></div>
 
 @vitereactrefresh
-@vite(['resources/ts/main.tsx'])
+@vite(['resources/fsd-ts/src/app/index.tsx'])
 </body>
 </html>

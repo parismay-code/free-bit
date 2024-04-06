@@ -1,23 +1,18 @@
 {
     "compilerOptions": {
         "target": "ESNext",
-        "useDefineForClassFields": true,
         "lib": [
-            "ESNext",
             "DOM",
-            "DOM.Iterable"
+            "DOM.Iterable",
+            "ESNext"
         ],
-        "types": [
-            "vite/client"
-        ],
-        "allowJs": true,
-        "skipLibCheck": true,
-        "esModuleInterop": false,
-        "allowSyntheticDefaultImports": true,
-        "forceConsistentCasingInFileNames": true,
         "module": "ESNext",
+        "skipLibCheck": true,
         /* Bundler mode */
-        "moduleResolution": "Node",
+        "moduleResolution": "bundler",
+        "types": [
+            "vitest/globals"
+        ],
         "allowImportingTsExtensions": true,
         "resolveJsonModule": true,
         "isolatedModules": true,
@@ -27,16 +22,59 @@
         "strict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "noFallthroughCasesInSwitch": true
+        "noFallthroughCasesInSwitch": true,
+        "typeRoots": [
+            "./node_modules/@types",
+            "./types/",
+            "./node_modules"
+        ],
+        "baseUrl": "./resources/fsd-ts/src",
+        "paths": {
+            "~app": [
+                "./app"
+            ],
+            "~app/*": [
+                "./app/*"
+            ],
+            "~pages": [
+                "./pages"
+            ],
+            "~pages/*": [
+                "./pages/*"
+            ],
+            "~widgets": [
+                "./widgets"
+            ],
+            "~widgets/*": [
+                "./widgets/*"
+            ],
+            "~features": [
+                "./features"
+            ],
+            "~features/*": [
+                "./features/*"
+            ],
+            "~entities": [
+                "./entities"
+            ],
+            "~entities/*": [
+                "./entities/*"
+            ],
+            "~shared": [
+                "./shared"
+            ],
+            "~shared/*": [
+                "./shared/*"
+            ]
+        }
     },
     "include": [
-        "./resources/ts",
-        ".eslintrc.cjs"
+        "resources/fsd-ts/src",
+        "resources/fsd-ts/types"
     ],
     "references": [
         {
             "path": "./tsconfig.node.json"
         }
-    ],
-    "extends": "./tsconfig.paths.json"
+    ]
 }

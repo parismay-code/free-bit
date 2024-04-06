@@ -1,38 +1,136 @@
 module.exports = {
-    root: true,
-    env: { browser: true, es2020: true },
-    extends: [
-        'airbnb',
-        'airbnb-typescript',
-        'airbnb/hooks',
-        'eslint:recommended',
-        'plugin:react/recommended',
-        'plugin:@typescript-eslint/recommended',
-        'plugin:prettier/recommended',
-    ],
-    ignorePatterns: ['dist', '.eslintrc.cjs'],
     parser: '@typescript-eslint/parser',
     parserOptions: {
-        ecmaFeatures: {
-            jsx: true,
-        },
         ecmaVersion: 'latest',
         sourceType: 'module',
-        project: './tsconfig.json',
     },
-    plugins: ['react-refresh', 'react', '@typescript-eslint', 'prettier'],
+    plugins: ['react-refresh'],
+    extends: [
+        'plugin:eslint-plugin-import/recommended',
+        'plugin:react-hooks/recommended',
+        'eslint-config-prettier',
+        'eslint-config-airbnb',
+        'prettier',
+    ],
+    env: {
+        browser: true,
+        es2020: true,
+    },
     rules: {
-        'react-refresh/only-export-components': [
-            'warn',
-            { allowConstantExport: true },
+        'react/react-in-jsx-scope': 'off',
+        'react/require-default-props': 'off',
+        'react/destructuring-assignment': 'off',
+        'react/jsx-props-no-spreading': 'off',
+        'consistent-return': 'off',
+        'import/order': [
+            'error',
+            {
+                pathGroups: [
+                    {pattern: 'react', group: 'builtin'},
+                    {pattern: 'vite', group: 'builtin'},
+                    {pattern: '~shared/**', group: 'internal'},
+                    {pattern: '~entities/**', group: 'internal'},
+                    {pattern: '~features/**', group: 'internal'},
+                    {pattern: '~widgets/**', group: 'internal'},
+                    {pattern: '~pages/**', group: 'internal'},
+                ],
+                pathGroupsExcludedImportTypes: ['builtin'],
+                groups: [
+                    'builtin',
+                    'external',
+                    'internal',
+                    'parent',
+                    'sibling',
+                    'index',
+                ],
+                'newlines-between': 'never',
+                alphabetize: {order: 'asc', caseInsensitive: true},
+            },
         ],
-        'react/react-in-jsx-scope': 0,
-        'no-param-reassign': ['error', {
-            props: true,
-            ignorePropertyModificationsFor: [
-                'state',
+        'no-restricted-imports': [
+            'error',
+            {
+                patterns: [
+                    {
+                        group: [
+                            '~shared/*/*/**',
+                            '~entities/*/**',
+                            '~features/*/**',
+                            '~widgets/*/**',
+                            '~pages/*/**',
+                            '~app/**',
+                        ],
+                        message:
+                            'Direct access to the internal parts of the module is prohibited',
+                    },
+                    {
+                        group: [
+                            '../**/shared',
+                            '../**/entities',
+                            '../**/features',
+                            '../**/widgets',
+                            '../**/pages',
+                            '../**/app',
+                        ],
+                        message: 'Prefer absolute imports instead of relatives',
+                    },
+                ],
+            },
+        ],
+        'import/no-extraneous-dependencies': [
+            'error',
+            {devDependencies: ['./vite.config.ts']},
+        ],
+        'import/prefer-default-export': 'off',
+    },
+    overrides: [
+        {
+            files: ['./resources/fsd-ts/src/**/*.ts', './resources/fsd-ts/src/**/*.tsx'],
+            extends: [
+                'plugin:eslint-plugin-import/typescript',
+                'eslint-config-airbnb-typescript',
             ],
-        }],
-        "react/jsx-props-no-spreading": 0,
+            parserOptions: {
+                ecmaVersion: 'latest',
+                sourceType: 'module',
+                project: ['tsconfig.json'],
+            },
+            plugins: ['@typescript-eslint/eslint-plugin'],
+            rules: {
+                '@typescript-eslint/no-use-before-define': 'off',
+                '@typescript-eslint/no-throw-literal': 'off',
+                '@typescript-eslint/no-shadow': 'off',
+                'object-curly-newline': 'off',
+                '@typescript-eslint/indent': 'off',
+                'import/no-extraneous-dependencies': [
+                    'error',
+                    {
+                        devDependencies: [
+                            '**/msw/**',
+                            '**/react-query/utils.tsx',
+                            '**/react-router/utils.ts',
+                        ],
+                    },
+                ],
+            },
+        },
+        {
+            files: ['**/__tests__/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
+            extends: ['plugin:testing-library/react'],
+            rules: {
+                'testing-library/no-debugging-utils': 'warn',
+                'import/no-extraneous-dependencies': [
+                    'error',
+                    {devDependencies: true},
+                ],
+            },
+        },
+    ],
+    settings: {
+        'import/resolver': {
+            typescript: {
+                alwaysTryTypes: true,
+            },
+        },
     },
 };

@@ -6,7 +6,7 @@ import { Header } from '~widgets/header';
 
 export function GenericLayout() {
     const { data: user } = useSuspenseQuery(
-        sessionQueries.userService.queryOptions(),
+        sessionQueries.sessionService.queryOptions(),
     );
 
     if (!user) {
@@ -23,7 +23,7 @@ export function GenericLayout() {
 
 export function GuestLayout() {
     const { data: user } = useSuspenseQuery(
-        sessionQueries.userService.queryOptions(),
+        sessionQueries.sessionService.queryOptions(),
     );
 
     if (user) {

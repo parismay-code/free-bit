@@ -5,11 +5,11 @@ import { pathKeys } from '~shared/lib/react-router';
 import { HomePage } from './ui';
 
 export const homePageRoute: RouteObject = {
-  path: pathKeys.home(),
-  element: createElement(HomePage),
-  loader: async (args) => {
-    await Promise.all([sessionQueries.userService.prefetchQuery()]);
+    path: pathKeys.home(),
+    element: createElement(HomePage),
+    loader: async (args) => {
+        await Promise.all([sessionQueries.sessionService.prefetchQuery()]);
 
-    return args;
-  },
+        return args;
+    },
 };

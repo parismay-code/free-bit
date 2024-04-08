@@ -1,7 +1,5 @@
-import { User, UserDto } from './types';
+import { getCookie } from '~shared/lib/cookie';
 
-export function mapUser(userDto: UserDto): User {
-    return {
-        ...userDto.user,
-    };
+export function hasToken(): boolean {
+    return !!getCookie('token');
 }

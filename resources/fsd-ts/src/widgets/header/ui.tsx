@@ -5,7 +5,7 @@ import { pathKeys } from '~shared/lib/react-router';
 
 export function Header() {
     const { data: user } = useSuspenseQuery(
-        sessionQueries.userService.queryOptions(),
+        sessionQueries.sessionService.queryOptions(),
     );
 
     const { mutate: deleteUser } = sessionQueries.useLogoutMutation();
@@ -34,7 +34,7 @@ export function Header() {
 
                 {user && (
                     <div>
-                        <span>{user.login}</span>
+                        <span>{user.name}</span>
                     </div>
                 )}
 

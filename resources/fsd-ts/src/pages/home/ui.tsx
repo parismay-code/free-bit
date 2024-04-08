@@ -3,12 +3,12 @@ import { sessionQueries } from '~entities/session';
 
 export function HomePage() {
     const { data: user } = useSuspenseQuery(
-        sessionQueries.userService.queryOptions(),
+        sessionQueries.sessionService.queryOptions(),
     );
 
     return (
         <div className="home-page">
-            Home Page | Nickname: {user?.login || 'Login first'}
+            Home Page | Nickname: {user?.name || 'Login first'}
         </div>
     );
 }

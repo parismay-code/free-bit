@@ -3,59 +3,77 @@ import {
     useMutation,
 } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { userTypes } from '~entities/user';
 import { queryClient } from '~shared/lib/react-query';
 import { pathKeys } from '~shared/lib/react-router';
-import { currentUserQuery, loginUserMutation } from './api';
-import { hasToken, sessionStore } from './model';
-import { User } from './types';
+import {
+    currentUserQuery,
+    loginUserMutation,
+    registerUserMutation,
+} from './api';
+import { hasToken } from './lib';
 
 const keys = {
     root: () => ['session'] as const,
-    currentUser: () => [...keys.root(), 'currentUser'] as const,
-    loginUser: () => [...keys.root(), 'loginUser'] as const,
-    deleteUser: () => [...keys.root(), 'deleteUser'] as const,
+    current: () => [...keys.root(), 'current'] as const,
+    login: () => [...keys.root(), 'login'] as const,
+    register: () => [...keys.root(), 'register'] as const,
+    delete: () => [...keys.root(), 'delete'] as const,
 };
 
-export const userService = {
-    queryKey: () => keys.currentUser(),
+export const sessionService = {
+    queryKey: () => keys.current(),
 
-    getCache: () => queryClient.getQueryData<User>(userService.queryKey()),
+    getCache: () =>
+        queryClient.getQueryData<userTypes.User>(sessionService.queryKey()),
 
-    setCache: (user: User | null) =>
-        queryClient.setQueryData(userService.queryKey(), user),
+    setCache: (user: userTypes.User | null) =>
+        queryClient.setQueryData(sessionService.queryKey(), user),
 
     removeCache: () =>
-        queryClient.removeQueries({ queryKey: userService.queryKey() }),
+        queryClient.removeQueries({ queryKey: sessionService.queryKey() }),
 
     queryOptions: () => {
-        const userKey = userService.queryKey();
+        const userKey = sessionService.queryKey();
         return tsqQueryOptions({
             queryKey: userKey,
             queryFn: async ({ signal }) =>
                 hasToken() ? currentUserQuery(signal) : null,
-            initialData: () => userService.getCache()!,
+            initialData: () => sessionService.getCache()!,
             initialDataUpdatedAt: () =>
                 queryClient.getQueryState(userKey)?.dataUpdatedAt,
         });
     },
 
     prefetchQuery: async () => {
-        await queryClient.prefetchQuery(userService.queryOptions());
+        await queryClient.prefetchQuery(sessionService.queryOptions());
     },
 
     ensureQueryData: async () =>
-        queryClient.ensureQueryData(userService.queryOptions()),
+        queryClient.ensureQueryData(sessionService.queryOptions()),
 };
 
 export function useLoginUserMutation() {
     const navigate = useNavigate();
 
     return useMutation({
-        mutationKey: keys.loginUser(),
+        mutationKey: keys.login(),
         mutationFn: loginUserMutation,
         onSuccess: async (user) => {
-            sessionStore.setState({ token: user.token });
-            userService.setCache(user);
+            sessionService.setCache(user);
+            navigate(pathKeys.home());
+        },
+    });
+}
+
+export function useRegisterUserMutation() {
+    const navigate = useNavigate();
+
+    return useMutation({
+        mutationKey: keys.register(),
+        mutationFn: registerUserMutation,
+        onSuccess: async (user) => {
+            sessionService.setCache(user);
             navigate(pathKeys.home());
         },
     });
@@ -65,10 +83,9 @@ export function useLogoutMutation() {
     const navigate = useNavigate();
 
     return useMutation({
-        mutationKey: keys.deleteUser(),
+        mutationKey: keys.delete(),
         onSettled: async () => {
-            sessionStore.getState().updateToken(null);
-            userService.setCache(null);
+            sessionService.setCache(null);
             await queryClient.invalidateQueries();
             navigate(pathKeys.home());
         },

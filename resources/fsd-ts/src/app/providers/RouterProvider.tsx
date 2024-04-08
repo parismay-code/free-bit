@@ -4,19 +4,10 @@ import {
     RouterProvider,
     useRouteError,
 } from 'react-router-dom';
-import { configsPageRoute } from '~pages/configs';
 import { homePageRoute } from '~pages/home';
 import { GenericLayout, GuestLayout, NakedLayout } from '~pages/layouts';
 import { loginPageRoute } from '~pages/login';
 import { page404Route } from '~pages/page-404';
-import {
-    scenarioAddPageRoute,
-    scenariosPageRoute,
-    scenariosViewPageRoute,
-} from '~pages/scenarios';
-import { settingsPageRoute } from '~pages/settings';
-import { switchersPageRoute } from '~pages/switchers';
-import { titleCreatePageRoute, titlesViewPageRoute } from '~pages/titles';
 import { pathKeys } from '~shared/lib/react-router';
 
 function BubbleError() {
@@ -31,17 +22,7 @@ const router = createBrowserRouter([
         children: [
             {
                 element: <GenericLayout />,
-                children: [
-                    homePageRoute,
-                    configsPageRoute,
-                    scenariosPageRoute,
-                    scenariosViewPageRoute,
-                    scenarioAddPageRoute,
-                    settingsPageRoute,
-                    switchersPageRoute,
-                    titleCreatePageRoute,
-                    titlesViewPageRoute,
-                ],
+                children: [homePageRoute],
             },
             {
                 element: <GuestLayout />,

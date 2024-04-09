@@ -1,4 +1,6 @@
 import { z } from 'zod';
-import { OrganizationSchema } from './contracts';
+import { OrganizationDtoSchema, OrganizationSchema } from './contracts';
 
 export type Organization = z.infer<typeof OrganizationSchema>;
+
+export type OrganizationDto = z.infer<typeof OrganizationDtoSchema>;

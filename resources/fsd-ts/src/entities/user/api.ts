@@ -58,7 +58,7 @@ export async function deleteUserMutation(params: { userId: number }) {
     return createJsonMutation({
         request: {
             url: baseUrl(`/users/${params.userId}`),
-            method: 'POST',
+            method: 'DELETE',
         },
     });
 }

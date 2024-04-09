@@ -8,3 +8,11 @@ export const OrganizationSchema = z.object({
     phone: z.string(),
     avatar: z.string(),
 });
+
+export const OrganizationDtoSchema = z.object({
+    name: z.string(),
+    description: z.string(),
+    avatar: z.string(),
+    banner: z.string(),
+    owner_uid: z.string(),
+});

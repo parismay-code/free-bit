@@ -13,8 +13,8 @@ export const UserSchema = z.object({
     roles: z.object({
         data: z.array(roleContracts.RoleSchema),
     }),
-    orders: z
-        .object({
+    orders: z.optional(
+        z.object({
             created: z.object({
                 data: z.array(orderContracts.OrderSchema),
             }),
@@ -24,10 +24,10 @@ export const UserSchema = z.object({
             delivered: z.object({
                 data: z.array(orderContracts.OrderSchema),
             }),
-        })
-        .nullable(),
-    organization: z
-        .object({
+        }),
+    ),
+    organization: z.optional(
+        z.object({
             data: organizationContracts.OrganizationSchema,
             roles: z.object({
                 data: z.array(z.any()),
@@ -37,8 +37,8 @@ export const UserSchema = z.object({
                     data: z.array(z.any()),
                 })
                 .nullable(),
-        })
-        .nullable(),
+        }),
+    ),
     ownedOrganization: z
         .object({
             data: organizationContracts.OrganizationSchema,

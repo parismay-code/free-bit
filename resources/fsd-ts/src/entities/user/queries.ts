@@ -23,55 +23,57 @@ export const userService = {
     allQueryKey: () => keys.getAll(),
     userQueryKey: (userId: number) => keys.get(userId),
 
-    getAllCache: () =>
-        queryClient.getQueryData<Array<User>>(userService.allQueryKey()),
-    getUserCache: (userId: number) =>
-        queryClient.getQueryData<User>(userService.userQueryKey(userId)),
+    getCache: (userId: number = -1) => {
+        if (userId >= 0) {
+            return queryClient.getQueryData<User>(
+                userService.userQueryKey(userId),
+            );
+        }
 
-    setAllCache: (users: Array<User> | null) =>
-        queryClient.setQueryData(userService.allQueryKey(), users),
-    setUserCache: (userId: number, user: User | null) =>
-        queryClient.setQueryData(userService.userQueryKey(userId), user),
+        return queryClient.getQueryData<Array<User>>(userService.allQueryKey());
+    },
 
-    removeAllCache: () =>
-        queryClient.removeQueries({ queryKey: userService.allQueryKey() }),
-    removeUserCache: (userId: number) =>
-        queryClient.removeQueries({
-            queryKey: userService.userQueryKey(userId),
-        }),
+    setCache: (data: Array<User> | User | null, userId?: number) => {
+        const queryKey = userId
+            ? userService.userQueryKey(userId)
+            : userService.allQueryKey();
 
-    allQueryOptions: (search: string) => {
-        const usersKey = userService.allQueryKey();
+        return queryClient.setQueryData(queryKey, data);
+    },
+
+    removeCache: (userId: number = -1) => {
+        const queryKey =
+            userId >= 0
+                ? userService.userQueryKey(userId)
+                : userService.allQueryKey();
+
+        queryClient.removeQueries({ queryKey });
+    },
+
+    queryOptions: (arg: string | number) => {
+        const isAllQuery = typeof arg === 'string';
+
+        const queryKey = isAllQuery
+            ? userService.allQueryKey()
+            : userService.userQueryKey(arg);
+
         return tsqQueryOptions({
-            queryKey: usersKey,
-            queryFn: async ({ signal }) => getAllUsersQuery(search, signal),
-            initialData: () => userService.getAllCache()!,
+            queryKey,
+            queryFn: async ({ signal }) =>
+                isAllQuery
+                    ? getAllUsersQuery(arg, signal)
+                    : getUserQuery(arg, signal),
+            initialData: () => userService.getCache(isAllQuery ? -1 : arg)!,
             initialDataUpdatedAt: () =>
-                queryClient.getQueryState(usersKey)?.dataUpdatedAt,
+                queryClient.getQueryState(queryKey)?.dataUpdatedAt,
         });
     },
-    userQueryOptions: (userId: number) => {
-        const userKey = userService.userQueryKey(userId);
-        return tsqQueryOptions({
-            queryKey: userKey,
-            queryFn: async ({ signal }) => getUserQuery(userId, signal),
-            initialData: () => userService.getUserCache(userId)!,
-            initialDataUpdatedAt: () =>
-                queryClient.getQueryState(userKey)?.dataUpdatedAt,
-        });
-    },
 
-    prefetchAllQuery: async (search: string) => {
-        await queryClient.prefetchQuery(userService.allQueryOptions(search));
-    },
-    prefetchUserQuery: async (userId: number) => {
-        await queryClient.prefetchQuery(userService.userQueryOptions(userId));
-    },
+    prefetchQuery: async (arg: string | number) =>
+        queryClient.prefetchQuery(userService.queryOptions(arg)),
 
-    ensureAllQueryData: async (search: string) =>
-        queryClient.ensureQueryData(userService.allQueryOptions(search)),
-    ensureUserQueryData: async (userId: number) =>
-        queryClient.ensureQueryData(userService.userQueryOptions(userId)),
+    ensureQueryData: async (arg: string | number) =>
+        queryClient.ensureQueryData(userService.queryOptions(arg)),
 };
 
 export function useUpdateUserMutation(userId: number) {
@@ -79,7 +81,7 @@ export function useUpdateUserMutation(userId: number) {
         mutationKey: keys.update(userId),
         mutationFn: updateUserMutation,
         onSuccess: async (user) => {
-            userService.setUserCache(userId, user);
+            userService.setCache(user, userId);
         },
     });
 }
@@ -89,7 +91,7 @@ export function useDeleteUserMutation(userId: number) {
         mutationKey: keys.delete(userId),
         mutationFn: deleteUserMutation,
         onSettled: async () => {
-            userService.setUserCache(userId, null);
+            userService.setCache(null, userId);
             await queryClient.invalidateQueries();
         },
     });

@@ -8,3 +8,8 @@ export const OrderSchema = z.object({
     phone: z.string(),
     avatar: z.string(),
 });
+
+export const OrderDtoSchema = z.object({
+    status: z.string(),
+    delivery: z.boolean(),
+});

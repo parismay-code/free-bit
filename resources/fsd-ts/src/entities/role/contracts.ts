@@ -5,3 +5,8 @@ export const RoleSchema = z.object({
     name: z.string(),
     description: z.string(),
 });
+
+export const RoleDtoSchema = z.object({
+    name: z.string(),
+    description: z.string(),
+});

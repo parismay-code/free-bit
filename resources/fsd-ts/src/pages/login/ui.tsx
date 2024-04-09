@@ -36,7 +36,7 @@ function Page() {
                                 <fieldset disabled={isPending}>
                                     <fieldset className="form-group">
                                         <Field
-                                            name="email"
+                                            name="uid"
                                             className="form-control form-control-lg"
                                             type="text"
                                             placeholder="Email"
@@ -64,7 +64,7 @@ function Page() {
 }
 
 const initialUser: sessionTypes.LoginUserDto = {
-    login: '',
+    uid: '',
     password: '',
 };
 

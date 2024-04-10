@@ -82,6 +82,7 @@ module.exports = {
             {devDependencies: ['./vite.config.ts']},
         ],
         'import/prefer-default-export': 'off',
+        'import/no-cycle': 'off',
     },
     overrides: [
         {

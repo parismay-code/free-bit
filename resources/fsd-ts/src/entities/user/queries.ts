@@ -3,6 +3,7 @@ import {
     useMutation,
 } from '@tanstack/react-query';
 import { queryClient } from '~shared/lib/react-query';
+import { Paginated } from '~shared/types';
 import {
     deleteUserMutation,
     getAllUsersQuery,
@@ -30,10 +31,12 @@ export const userService = {
             );
         }
 
-        return queryClient.getQueryData<Array<User>>(userService.allQueryKey());
+        return queryClient.getQueryData<Paginated<User>>(
+            userService.allQueryKey(),
+        );
     },
 
-    setCache: (data: Array<User> | User | null, userId?: number) => {
+    setCache: (data: Paginated<User> | User | null, userId?: number) => {
         const queryKey = userId
             ? userService.userQueryKey(userId)
             : userService.allQueryKey();

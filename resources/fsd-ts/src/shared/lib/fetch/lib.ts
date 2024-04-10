@@ -1,5 +1,9 @@
 import { FetchApiRecord } from './types';
 
+export function defaultMap<T>(data: T): T {
+    return data;
+}
+
 export function formatUrl(config: { href: string; query: FetchApiRecord }) {
     const { href, query } = config;
 

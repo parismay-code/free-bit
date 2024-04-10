@@ -1,15 +1,29 @@
 import { z } from 'zod';
+import { userContracts } from '~entities/user';
+
+const STATUSES = z.enum([
+    'created',
+    'accepted',
+    'declined',
+    'cooking',
+    'delivering',
+    'finished',
+    'cbc',
+    'cbo',
+    'cba',
+]);
 
 export const OrderSchema = z.object({
     id: z.number(),
-    name: z.string(),
-    uid: z.string(),
-    email: z.string(),
-    phone: z.string(),
-    avatar: z.string(),
+    status: STATUSES,
+    delivery: z.boolean(),
+    courier: userContracts.UserSchema,
+    employee: userContracts.UserSchema,
+    created_at: z.string().datetime(),
+    updated_at: z.string().datetime(),
 });
 
 export const OrderDtoSchema = z.object({
-    status: z.string(),
-    delivery: z.boolean(),
+    status: STATUSES,
+    delivery: z.optional(z.boolean()),
 });

@@ -1,6 +1,10 @@
-import { userLib, userContracts } from '~entities/user';
+import { userContracts, userTypes } from '~entities/user';
 import { baseUrl } from '~shared/api';
-import { createJsonMutation, createJsonQuery } from '~shared/lib/fetch';
+import {
+    createJsonMutation,
+    createJsonQuery,
+    defaultMap,
+} from '~shared/lib/fetch';
 import { zodContract } from '~shared/lib/zod';
 import { authorizationHeader } from './model';
 import { LoginUserDto, type RegisterUserDto } from './types';
@@ -14,7 +18,7 @@ export async function currentUserQuery(signal?: AbortSignal) {
         },
         response: {
             contract: zodContract(userContracts.UserSchema),
-            mapData: userLib.mapUser,
+            mapData: defaultMap<userTypes.User>,
         },
         abort: signal,
     });
@@ -29,7 +33,7 @@ export async function loginUserMutation(params: { user: LoginUserDto }) {
         },
         response: {
             contract: zodContract(userContracts.UserSchema),
-            mapData: userLib.mapUser,
+            mapData: defaultMap<userTypes.User>,
         },
     });
 }
@@ -43,7 +47,7 @@ export async function registerUserMutation(params: { user: RegisterUserDto }) {
         },
         response: {
             contract: zodContract(userContracts.UserSchema),
-            mapData: userLib.mapUser,
+            mapData: defaultMap<userTypes.User>,
         },
     });
 }

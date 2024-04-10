@@ -1,13 +1,5 @@
 import { Role } from './types';
 
-export function mapRole(role: Role): Role {
-    return role;
-}
-
-export function mapRoles(roles: Array<Role>): Array<Role> {
-    return roles;
-}
-
 export function hasRole(
     needle: string | Array<string>,
     roles: Array<Role>,

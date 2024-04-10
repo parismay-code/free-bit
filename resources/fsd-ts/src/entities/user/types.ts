@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { UpdateUserDtoSchema, UserSchema } from './contracts';
+import { UserDtoSchema, UserSchema } from './contracts';
 
 export type User = z.infer<typeof UserSchema>;
 
-export type UpdateUserDto = z.infer<typeof UpdateUserDtoSchema>;
+export type UserDto = z.infer<typeof UserDtoSchema>;

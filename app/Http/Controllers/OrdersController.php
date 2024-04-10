@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Enums\OrderStatuses;
 use App\Http\Filters\OrdersFilter;
 use App\Http\Requests\OrderRequest;
-use App\Http\Resources\FullOrderResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Ingredient;
 use App\Models\Order;
@@ -30,7 +29,7 @@ class OrdersController extends Controller
             return response('', Response::HTTP_FORBIDDEN);
         }
 
-        return response(['order' => new FullOrderResource($order)]);
+        return response(['order' => new OrderResource($order)]);
     }
 
     public function create(OrderRequest $request, Organization $organization): Response
@@ -46,7 +45,7 @@ class OrdersController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response(['order' => new FullOrderResource($order)]);
+        return response(['order' => new OrderResource($order)]);
     }
 
     public function update(OrderRequest $request, Organization $organization, Order $order): Response
@@ -92,7 +91,7 @@ class OrdersController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response(['order' => new FullOrderResource($order)]);
+        return response(['order' => new OrderResource($order)]);
     }
 
     public function delete(Request $request, Organization $organization, Order $order): Response

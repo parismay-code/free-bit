@@ -1,10 +1,14 @@
-import { z } from 'zod';
 import { baseUrl } from '~shared/api';
-import { createJsonMutation, createJsonQuery } from '~shared/lib/fetch';
+import { PaginatedSchema } from '~shared/contracts';
+import {
+    createJsonMutation,
+    createJsonQuery,
+    defaultMap,
+} from '~shared/lib/fetch';
 import { zodContract } from '~shared/lib/zod';
+import { Paginated } from '~shared/types';
 import { UserSchema } from './contracts';
-import { mapUser, mapUsers } from './lib';
-import type { UpdateUserDto } from './types';
+import { User, UserDto } from './types';
 
 export async function getAllUsersQuery(search: string, signal?: AbortSignal) {
     return createJsonQuery({
@@ -16,8 +20,8 @@ export async function getAllUsersQuery(search: string, signal?: AbortSignal) {
             },
         },
         response: {
-            contract: zodContract(z.array(UserSchema)),
-            mapData: mapUsers,
+            contract: zodContract(PaginatedSchema(UserSchema)),
+            mapData: defaultMap<Paginated<User>>,
         },
         abort: signal,
     });
@@ -31,7 +35,7 @@ export async function getUserQuery(userId: number, signal?: AbortSignal) {
         },
         response: {
             contract: zodContract(UserSchema),
-            mapData: mapUser,
+            mapData: defaultMap<User>,
         },
         abort: signal,
     });
@@ -39,7 +43,7 @@ export async function getUserQuery(userId: number, signal?: AbortSignal) {
 
 export async function updateUserMutation(params: {
     userId: number;
-    user: UpdateUserDto;
+    user: UserDto;
 }) {
     return createJsonMutation({
         request: {
@@ -49,7 +53,7 @@ export async function updateUserMutation(params: {
         },
         response: {
             contract: zodContract(UserSchema),
-            mapData: mapUser,
+            mapData: defaultMap<User>,
         },
     });
 }

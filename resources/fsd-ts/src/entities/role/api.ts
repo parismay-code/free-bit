@@ -1,10 +1,14 @@
-import { z } from 'zod';
 import { baseUrl } from '~shared/api';
-import { createJsonMutation, createJsonQuery } from '~shared/lib/fetch';
+import { CollectionSchema } from '~shared/contracts';
+import {
+    createJsonMutation,
+    createJsonQuery,
+    defaultMap,
+} from '~shared/lib/fetch';
 import { zodContract } from '~shared/lib/zod';
+import { Collection } from '~shared/types';
 import { RoleSchema } from './contracts';
-import { mapRole, mapRoles } from './lib';
-import type { RoleDto } from './types';
+import { Role, RoleDto } from './types';
 
 export async function getAllRolesQuery(signal?: AbortSignal) {
     return createJsonQuery({
@@ -13,8 +17,8 @@ export async function getAllRolesQuery(signal?: AbortSignal) {
             method: 'GET',
         },
         response: {
-            contract: zodContract(z.array(RoleSchema)),
-            mapData: mapRoles,
+            contract: zodContract(CollectionSchema(RoleSchema)),
+            mapData: defaultMap<Collection<Role>>,
         },
         abort: signal,
     });
@@ -28,7 +32,7 @@ export async function getRoleQuery(roleId: number, signal?: AbortSignal) {
         },
         response: {
             contract: zodContract(RoleSchema),
-            mapData: mapRole,
+            mapData: defaultMap<Role>,
         },
         abort: signal,
     });
@@ -43,7 +47,7 @@ export async function createRoleMutation(params: { role: RoleDto }) {
         },
         response: {
             contract: zodContract(RoleSchema),
-            mapData: mapRole,
+            mapData: defaultMap<Role>,
         },
     });
 }
@@ -60,7 +64,7 @@ export async function updateRoleMutation(params: {
         },
         response: {
             contract: zodContract(RoleSchema),
-            mapData: mapRole,
+            mapData: defaultMap<Role>,
         },
     });
 }

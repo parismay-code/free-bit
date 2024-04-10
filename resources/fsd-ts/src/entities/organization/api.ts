@@ -1,10 +1,14 @@
-import { z } from 'zod';
 import { baseUrl } from '~shared/api';
-import { createJsonMutation, createJsonQuery } from '~shared/lib/fetch';
+import { CollectionSchema } from '~shared/contracts';
+import {
+    createJsonMutation,
+    createJsonQuery,
+    defaultMap,
+} from '~shared/lib/fetch';
 import { zodContract } from '~shared/lib/zod';
+import { Collection } from '~shared/types';
 import { OrganizationSchema } from './contracts';
-import { mapOrganization, mapOrganizations } from './lib';
-import { OrganizationDto } from './types';
+import { Organization, OrganizationDto } from './types';
 
 export async function getAllOrganizationsQuery(signal?: AbortSignal) {
     return createJsonQuery({
@@ -13,8 +17,8 @@ export async function getAllOrganizationsQuery(signal?: AbortSignal) {
             method: 'GET',
         },
         response: {
-            contract: zodContract(z.array(OrganizationSchema)),
-            mapData: mapOrganizations,
+            contract: zodContract(CollectionSchema(OrganizationSchema)),
+            mapData: defaultMap<Collection<Organization>>,
         },
         abort: signal,
     });
@@ -31,7 +35,7 @@ export async function getOrganizationQuery(
         },
         response: {
             contract: zodContract(OrganizationSchema),
-            mapData: mapOrganization,
+            mapData: defaultMap<Organization>,
         },
         abort: signal,
     });
@@ -48,7 +52,7 @@ export async function createOrganizationMutation(params: {
         },
         response: {
             contract: zodContract(OrganizationSchema),
-            mapData: mapOrganization,
+            mapData: defaultMap<Organization>,
         },
     });
 }
@@ -65,7 +69,7 @@ export async function updateOrganizationMutation(params: {
         },
         response: {
             contract: zodContract(OrganizationSchema),
-            mapData: mapOrganization,
+            mapData: defaultMap<Organization>,
         },
     });
 }

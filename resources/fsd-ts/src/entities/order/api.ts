@@ -1,10 +1,14 @@
-import { z } from 'zod';
 import { baseUrl } from '~shared/api';
-import { createJsonMutation, createJsonQuery } from '~shared/lib/fetch';
+import { CollectionSchema } from '~shared/contracts';
+import {
+    createJsonMutation,
+    createJsonQuery,
+    defaultMap,
+} from '~shared/lib/fetch';
 import { zodContract } from '~shared/lib/zod';
+import { Collection } from '~shared/types';
 import { OrderSchema } from './contracts';
-import { mapOrder, mapOrders } from './lib';
-import type { OrderDto } from './types';
+import type { Order, OrderDto } from './types';
 
 export async function getAllOrdersQuery(
     organizationId: number,
@@ -16,8 +20,8 @@ export async function getAllOrdersQuery(
             method: 'GET',
         },
         response: {
-            contract: zodContract(z.array(OrderSchema)),
-            mapData: mapOrders,
+            contract: zodContract(CollectionSchema(OrderSchema)),
+            mapData: defaultMap<Collection<Order>>,
         },
         abort: signal,
     });
@@ -35,7 +39,7 @@ export async function getOrderQuery(
         },
         response: {
             contract: zodContract(OrderSchema),
-            mapData: mapOrder,
+            mapData: defaultMap<Order>,
         },
         abort: signal,
     });
@@ -53,7 +57,7 @@ export async function createOrderMutation(params: {
         },
         response: {
             contract: zodContract(OrderSchema),
-            mapData: mapOrder,
+            mapData: defaultMap<Order>,
         },
     });
 }
@@ -73,7 +77,7 @@ export async function updateOrderMutation(params: {
         },
         response: {
             contract: zodContract(OrderSchema),
-            mapData: mapOrder,
+            mapData: defaultMap<Order>,
         },
     });
 }

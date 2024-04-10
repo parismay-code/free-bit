@@ -3,6 +3,7 @@ import {
     useMutation,
 } from '@tanstack/react-query';
 import { queryClient } from '~shared/lib/react-query';
+import { Collection } from '~shared/types';
 import {
     attachRoleMutation,
     createRoleMutation,
@@ -38,10 +39,12 @@ export const roleService = {
             );
         }
 
-        return queryClient.getQueryData<Array<Role>>(roleService.allQueryKey());
+        return queryClient.getQueryData<Collection<Role>>(
+            roleService.allQueryKey(),
+        );
     },
 
-    setCache: (data: Array<Role> | Role | null, roleId: number = -1) => {
+    setCache: (data: Collection<Role> | Role | null, roleId: number = -1) => {
         const queryKey =
             roleId >= 0
                 ? roleService.roleQueryKey(roleId)
@@ -120,6 +123,9 @@ export function useAttachRoleMutation(userId: number, roleId: number) {
     return useMutation({
         mutationKey: keys.attach(userId, roleId),
         mutationFn: attachRoleMutation,
+        onSettled: async () => {
+            await queryClient.invalidateQueries();
+        },
     });
 }
 
@@ -127,5 +133,8 @@ export function useDetachRoleMutation(userId: number, roleId: number) {
     return useMutation({
         mutationKey: keys.detach(userId, roleId),
         mutationFn: detachRoleMutation,
+        onSettled: async () => {
+            await queryClient.invalidateQueries();
+        },
     });
 }

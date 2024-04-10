@@ -7,6 +7,6 @@ export const RoleSchema = z.object({
 });
 
 export const RoleDtoSchema = z.object({
-    name: z.string(),
-    description: z.string(),
+    name: z.string().max(28),
+    description: z.optional(z.string().max(120)),
 });

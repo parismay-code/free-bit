@@ -3,6 +3,7 @@ import {
     useMutation,
 } from '@tanstack/react-query';
 import { queryClient } from '~shared/lib/react-query';
+import { Collection } from '~shared/types';
 import {
     createOrganizationMutation,
     deleteOrganizationMutation,
@@ -35,13 +36,13 @@ export const organizationService = {
             );
         }
 
-        return queryClient.getQueryData<Array<Organization>>(
+        return queryClient.getQueryData<Collection<Organization>>(
             organizationService.allQueryKey(),
         );
     },
 
     setCache: (
-        data: Array<Organization> | Organization | null,
+        data: Collection<Organization> | Organization | null,
         organizationId: number = -1,
     ) => {
         const queryKey =

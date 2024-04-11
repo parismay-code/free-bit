@@ -18,6 +18,7 @@ export function formatUrl(config: { href: string; query: FetchApiRecord }) {
 export function formatHeaders(headersRecord: FetchApiRecord): Headers {
     const headers = new Headers();
     headers.append('content-type', 'application/json');
+    headers.append('x-requested-with', 'XMLHttpRequest');
     Object.entries(headersRecord).forEach(([key, value]) => {
         const cleanValue = clearValue(value);
 

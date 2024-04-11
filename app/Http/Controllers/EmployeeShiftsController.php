@@ -12,6 +12,24 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EmployeeShiftsController extends Controller
 {
+    public function getAll(Request $request, Organization $organization): Response
+    {
+        if ($request->user()->organization()->isNot($organization)) {
+            return response('', Response::HTTP_FORBIDDEN);
+        }
+
+        return response(['data' => OrganizationShiftResource::collection($organization->shifts)]);
+    }
+
+    public function get(Request $request, Organization $organization, User $user): Response
+    {
+        if ($request->user()->organization()->isNot($organization) || $user->organization()->isNot($organization)) {
+            return response('', Response::HTTP_FORBIDDEN);
+        }
+
+        return response(['data' => OrganizationShiftResource::collection($user->shifts)]);
+    }
+
     public function create(EmployeeShiftRequest $request, Organization $organization, User $user): Response
     {
         if ($user->organization()->isNot($organization)) {
@@ -28,7 +46,7 @@ class EmployeeShiftsController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response(['shift' => new OrganizationShiftResource($shift)]);
+        return response(new OrganizationShiftResource($shift));
     }
 
     public function update(EmployeeShiftRequest $request, Organization $organization, User $user, EmployeeShift $shift): Response
@@ -45,7 +63,7 @@ class EmployeeShiftsController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response(['shift' => new OrganizationShiftResource($shift)]);
+        return response(new OrganizationShiftResource($shift));
     }
 
     public function delete(Request $request, Organization $organization, User $user, EmployeeShift $shift): Response

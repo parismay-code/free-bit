@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Filters\UsersFilter;
 use App\Http\Requests\UserRequest;
-use App\Http\Resources\FullUserResource;
 use App\Http\Resources\UserCollection;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Carbon\Carbon;
 use Gate;
@@ -25,7 +25,7 @@ class UsersController extends Controller
 
     public function get(Request $request, User $user): Response
     {
-        return response(['user' => new FullUserResource($user)]);
+        return response(new UserResource($user));
     }
 
     public function update(UserRequest $request, User $user): Response
@@ -72,7 +72,7 @@ class UsersController extends Controller
 
         $user->save();
 
-        return response(['user' => new FullUserResource($user)]);
+        return response(new UserResource($user));
     }
 
     public function delete(Request $request, User $user): Response

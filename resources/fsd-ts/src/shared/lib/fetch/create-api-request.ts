@@ -23,6 +23,8 @@ export async function createApiRequest(config: ApiConfig) {
         }),
         {
             method: config.request.method,
+            mode: 'cors',
+            credentials: 'include',
             headers: formatHeaders(config.request.headers || {}),
             body: config.request.body,
             signal: config?.abort,
@@ -33,6 +35,10 @@ export async function createApiRequest(config: ApiConfig) {
             cause: error,
         });
     });
+
+    if (response.status === 401) {
+        return null;
+    }
 
     if (!response.ok) {
         throw httpError({

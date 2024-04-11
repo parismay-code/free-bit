@@ -9,9 +9,9 @@ import { pathKeys } from '~shared/lib/react-router';
 import {
     currentUserQuery,
     loginUserMutation,
+    logoutUserMutation,
     registerUserMutation,
 } from './api';
-import { hasToken } from './lib';
 
 const keys = {
     root: () => ['session'] as const,
@@ -37,8 +37,7 @@ export const sessionService = {
         const userKey = sessionService.queryKey();
         return tsqQueryOptions({
             queryKey: userKey,
-            queryFn: async ({ signal }) =>
-                hasToken() ? currentUserQuery(signal) : null,
+            queryFn: async ({ signal }) => currentUserQuery(signal),
             initialData: () => sessionService.getCache()!,
             initialDataUpdatedAt: () =>
                 queryClient.getQueryState(userKey)?.dataUpdatedAt,
@@ -84,7 +83,8 @@ export function useLogoutMutation() {
 
     return useMutation({
         mutationKey: keys.delete(),
-        onSettled: async () => {
+        mutationFn: logoutUserMutation,
+        onSuccess: async () => {
             sessionService.setCache(null);
             await queryClient.invalidateQueries();
             navigate(pathKeys.home());

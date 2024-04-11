@@ -1,0 +1,1 @@
+export { registrationPageRoute } from './route';

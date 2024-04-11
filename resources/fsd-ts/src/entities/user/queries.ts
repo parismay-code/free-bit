@@ -93,7 +93,7 @@ export function useDeleteUserMutation(userId: number) {
     return useMutation({
         mutationKey: keys.delete(userId),
         mutationFn: deleteUserMutation,
-        onSettled: async () => {
+        onSuccess: async () => {
             userService.setCache(null, userId);
             await queryClient.invalidateQueries();
         },

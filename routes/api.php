@@ -48,8 +48,6 @@ Route::middleware('auth:sanctum')->group(function () {
         ->can('isAdmin');
 
     Route::get('/organizations/{organization}/employees', [EmployeesController::class, 'getAll']);
-    Route::get('/organizations/{organization}/employees/{user}', [EmployeesController::class, 'get'])
-        ->can('isOrganizationManager');
     Route::post('/organizations/{organization}/employees/{user}/associate', [EmployeesController::class, 'associate'])
         ->can('isOrganizationAdmin');
     Route::post('/organizations/{organization}/employees/{user}/dissociate', [EmployeesController::class, 'dissociate'])
@@ -86,6 +84,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/organizations/{organization}/products/{product}/ingredients/{ingredient}/detach', [IngredientsController::class, 'detach'])
         ->can('isOrganizationManager');
 
+    Route::get('/organizations/{organization}/shifts', [EmployeeShiftsController::class, 'getAll'])
+        ->can('isOrganizationManager');
+    Route::get('/organization/{organization}/employee/{user}/shifts', [EmployeeShiftsController::class, 'get']);
     Route::post('/organizations/{organization}/employee/{user}/shifts', [EmployeeShiftsController::class, 'create']);
     Route::patch('/organizations/{organization}/employee/{user}/shifts/{employeeShift}', [EmployeeShiftsController::class, 'update']);
     Route::delete('/organizations/{organization}/employee/{user}/shifts/{employeeShift}', [EmployeeShiftsController::class, 'delete'])

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryResource;
-use App\Http\Resources\FullCategoryResource;
 use App\Models\Category;
 use App\Models\Organization;
 use Illuminate\Http\Request;
@@ -23,7 +22,7 @@ class CategoriesController extends Controller
             return response('', Response::HTTP_FORBIDDEN);
         }
 
-        return response(['category' => new FullCategoryResource($category)]);
+        return response(new CategoryResource($category));
     }
 
     public function create(CategoryRequest $request, Organization $organization): Response
@@ -32,7 +31,7 @@ class CategoriesController extends Controller
 
         $category = $organization->categories()->create($data);
 
-        return response(['category' => new FullCategoryResource($category)]);
+        return response(new CategoryResource($category));
     }
 
     public function update(CategoryRequest $request, Organization $organization, Category $category): Response
@@ -49,7 +48,7 @@ class CategoriesController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response(['category' => new FullCategoryResource($category)]);
+        return response(new CategoryResource($category));
     }
 
     public function delete(Request $request, Organization $organization, Category $category): Response

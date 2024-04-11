@@ -21,7 +21,7 @@ function Page() {
             <div className="container page">
                 <div className="row">
                     <div className="col-md-6 offset-md-3 col-xs-12">
-                        <h1 className="text-xs-center">Sign in</h1>
+                        <h1 className="text-xs-center">Вход</h1>
 
                         {isError && <ErrorHandler error={error} />}
 
@@ -39,7 +39,7 @@ function Page() {
                                             name="uid"
                                             className="form-control form-control-lg"
                                             type="text"
-                                            placeholder="Email"
+                                            placeholder="Рег. данные"
                                         />
                                         <ErrorMessage name="email" />
                                     </fieldset>
@@ -48,7 +48,7 @@ function Page() {
                                             name="password"
                                             className="form-control form-control-lg"
                                             type="password"
-                                            placeholder="Password"
+                                            placeholder="Пароль"
                                         />
                                         <ErrorMessage name="password" />
                                     </fieldset>
@@ -77,7 +77,7 @@ function SubmitButton() {
             type="submit"
             disabled={!isValid || isValidating}
         >
-            Sign in
+            Войти
         </button>
     );
 }

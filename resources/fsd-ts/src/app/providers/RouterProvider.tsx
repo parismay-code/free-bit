@@ -8,6 +8,7 @@ import { homePageRoute } from '~pages/home';
 import { GenericLayout, GuestLayout, NakedLayout } from '~pages/layouts';
 import { loginPageRoute } from '~pages/login';
 import { page404Route } from '~pages/page-404';
+import { registrationPageRoute } from '~pages/registration';
 import { pathKeys } from '~shared/lib/react-router';
 
 function BubbleError() {
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
                 children: [
                     // guest routes
                     loginPageRoute,
+                    registrationPageRoute,
                 ],
             },
             {

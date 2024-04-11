@@ -152,7 +152,7 @@ export function useDeleteOrderMutation(
     return useMutation({
         mutationKey: keys.delete(organizationId, orderId),
         mutationFn: deleteOrderMutation,
-        onSettled: async () => {
+        onSuccess: async () => {
             orderService.setCache(null, organizationId, orderId);
             await queryClient.invalidateQueries();
         },

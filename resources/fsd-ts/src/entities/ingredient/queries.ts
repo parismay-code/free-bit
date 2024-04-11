@@ -164,7 +164,7 @@ export function useDeleteIngredientMutation(
     return useMutation({
         mutationKey: keys.delete(organizationId, ingredientId),
         mutationFn: deleteIngredientMutation,
-        onSettled: async () => {
+        onSuccess: async () => {
             ingredientService.setCache(null, organizationId, ingredientId);
             await queryClient.invalidateQueries();
         },
@@ -179,7 +179,7 @@ export function useAttachProductIngredientMutation(
     return useMutation({
         mutationKey: keys.attach(organizationId, productId, ingredientId),
         mutationFn: attachProductIngredientMutation,
-        onSettled: async () => {
+        onSuccess: async () => {
             await queryClient.invalidateQueries();
         },
     });
@@ -193,7 +193,7 @@ export function useDetachProductIngredientMutation(
     return useMutation({
         mutationKey: keys.detach(organizationId, productId, ingredientId),
         mutationFn: detachProductIngredientMutation,
-        onSettled: async () => {
+        onSuccess: async () => {
             await queryClient.invalidateQueries();
         },
     });

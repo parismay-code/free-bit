@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Filters\OrganizationsFilter;
 use App\Http\Requests\OrganizationRequest;
-use App\Http\Resources\FullOrganizationResource;
 use App\Http\Resources\OrganizationCollection;
 use App\Http\Resources\OrganizationResource;
 use App\Models\Organization;
@@ -25,7 +24,7 @@ class OrganizationsController extends Controller
 
     public function get(Request $request, Organization $organization): Response
     {
-        return response(['organization' => new FullOrganizationResource($organization)]);
+        return response(new OrganizationResource($organization));
     }
 
     public function create(OrganizationRequest $request): Response
@@ -82,7 +81,7 @@ class OrganizationsController extends Controller
         $user->organizationRoles()->attach($staffRole->id);
         $user->organizationRoles()->attach($ownerRole->id);
 
-        return response(['organization' => new FullOrganizationResource($organization)]);
+        return response(new OrganizationResource($organization));
     }
 
     public function update(OrganizationRequest $request, Organization $organization): Response
@@ -143,7 +142,7 @@ class OrganizationsController extends Controller
             }
         }
 
-        return response(['organization' => new FullOrganizationResource($organization)]);
+        return response(new OrganizationResource($organization));
     }
 
     public function delete(Request $request, Organization $organization): Response

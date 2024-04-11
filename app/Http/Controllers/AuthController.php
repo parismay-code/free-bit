@@ -4,17 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
-use App\Http\Resources\FullUserResource;
+use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
     public function register(RegisterRequest $request): Response
     {
+        Log::info('reg');
+
         $data = $request->safe()->except(['password_confirmation']);
 
         $user = User::create($data);
@@ -27,7 +30,7 @@ class AuthController extends Controller
 
         $cookie = cookie('token', $token, 60 * 24);
 
-        return response(['user' => new FullUserResource($user)])
+        return response(new UserResource($user))
             ->withCookie($cookie);
     }
 
@@ -45,7 +48,7 @@ class AuthController extends Controller
 
         $cookie = cookie('token', $token, 60 * 24);
 
-        return response(['user' => new FullUserResource($user)])
+        return response(new UserResource($user))
             ->withCookie($cookie);
     }
 
@@ -60,6 +63,6 @@ class AuthController extends Controller
 
     public function user(Request $request): Response
     {
-        return response(['user' => new FullUserResource($request->user())]);
+        return response(new UserResource($request->user()));
     }
 }

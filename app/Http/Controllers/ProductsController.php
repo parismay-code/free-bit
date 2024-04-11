@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
-use App\Http\Resources\FullProductResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Organization;
@@ -24,7 +23,7 @@ class ProductsController extends Controller
             return response('', Response::HTTP_FORBIDDEN);
         }
 
-        return response(['product' => new FullProductResource($product)]);
+        return response(new ProductResource($product));
     }
 
     public function create(ProductRequest $request, Category $category, Organization $organization): Response
@@ -43,7 +42,7 @@ class ProductsController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response(['product' => new FullProductResource($product)]);
+        return response(new ProductResource($product));
     }
 
     public function update(ProductRequest $request, Organization $organization, Category $category, Product $product): Response
@@ -68,7 +67,7 @@ class ProductsController extends Controller
             }
         }
 
-        return response(['product' => new FullProductResource($product)]);
+        return response(new ProductResource($product));
     }
 
     public function delete(Request $request, Organization $organization, Product $product): Response

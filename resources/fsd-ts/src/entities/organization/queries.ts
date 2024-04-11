@@ -116,7 +116,7 @@ export function useDeleteOrganizationMutation(organizationId: number) {
     return useMutation({
         mutationKey: keys.delete(organizationId),
         mutationFn: deleteOrganizationMutation,
-        onSettled: async () => {
+        onSuccess: async () => {
             organizationService.setCache(null, organizationId);
             await queryClient.invalidateQueries();
         },

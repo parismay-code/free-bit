@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OrganizationRoleRequest;
-use App\Http\Resources\FullOrganizationRoleResource;
 use App\Http\Resources\OrganizationRoleResource;
 use App\Models\Organization;
 use App\Models\OrganizationRole;
@@ -25,7 +24,7 @@ class EmployeeRolesController extends Controller
             return response('', Response::HTTP_FORBIDDEN);
         }
 
-        return response(['role' => new FullOrganizationRoleResource($organizationRole)]);
+        return response(new OrganizationRoleResource($organizationRole));
     }
 
     public function create(OrganizationRoleRequest $request, Organization $organization): Response
@@ -34,7 +33,7 @@ class EmployeeRolesController extends Controller
 
         $organizationRole = $organization->roles()->create($data);
 
-        return response(['role' => new FullOrganizationRoleResource($organizationRole)]);
+        return response(new OrganizationRoleResource($organizationRole));
     }
 
     public function update(OrganizationRoleRequest $request, Organization $organization, OrganizationRole $organizationRole): Response
@@ -51,7 +50,7 @@ class EmployeeRolesController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response(['role' => new FullOrganizationRoleResource($organizationRole)]);
+        return response(new OrganizationRoleResource($organizationRole));
     }
 
     public function delete(Request $request, Organization $organization, OrganizationRole $organizationRole): Response

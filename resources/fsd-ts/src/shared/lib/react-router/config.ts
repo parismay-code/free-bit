@@ -3,6 +3,9 @@ export const pathKeys = {
     login() {
         return pathKeys.root;
     },
+    registration() {
+        return pathKeys.root.concat('registration/');
+    },
     home() {
         return pathKeys.root.concat('home/');
     },

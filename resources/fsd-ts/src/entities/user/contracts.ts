@@ -6,9 +6,9 @@ export const UserSchema = z.object({
     id: z.number(),
     name: z.string(),
     uid: z.string(),
-    email: z.string().email(),
+    email: z.string(),
     phone: z.string(),
-    avatar: z.string(),
+    avatar: z.string().nullable(),
     roles: CollectionSchema(roleContracts.RoleSchema),
 });
 

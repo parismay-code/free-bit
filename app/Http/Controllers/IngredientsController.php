@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AttachWithCountRequest;
 use App\Http\Requests\IngredientRequest;
-use App\Http\Resources\FullIngredientResource;
 use App\Http\Resources\IngredientResource;
 use App\Models\Ingredient;
 use App\Models\Organization;
@@ -25,7 +24,7 @@ class IngredientsController extends Controller
             return response('', Response::HTTP_FORBIDDEN);
         }
 
-        return response(['ingredient' => new FullIngredientResource($ingredient)]);
+        return response(new IngredientResource($ingredient));
     }
 
     public function create(IngredientRequest $request, Organization $organization): Response
@@ -34,7 +33,7 @@ class IngredientsController extends Controller
 
         $ingredient = $organization->ingredients()->create($data);
 
-        return response(['ingredient' => new FullIngredientResource($ingredient)]);
+        return response(new IngredientResource($ingredient));
     }
 
     public function update(IngredientRequest $request, Organization $organization, Ingredient $ingredient): Response
@@ -51,7 +50,7 @@ class IngredientsController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response(['ingredient' => new FullIngredientResource($ingredient)]);
+        return response(new IngredientResource($ingredient));
     }
 
     public function delete(Request $request, Organization $organization, Ingredient $ingredient): Response

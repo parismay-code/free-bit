@@ -194,7 +194,7 @@ export function useDeleteOrganizationRoleMutation(
     return useMutation({
         mutationKey: keys.delete(organizationId, organizationRoleId),
         mutationFn: deleteOrganizationRoleMutation,
-        onSettled: async () => {
+        onSuccess: async () => {
             organizationRoleService.setCache(
                 null,
                 organizationId,
@@ -213,7 +213,7 @@ export function useAttachOrganizationRoleMutation(
     return useMutation({
         mutationKey: keys.attach(organizationId, userId, organizationRoleId),
         mutationFn: attachOrganizationRoleMutation,
-        onSettled: async () => {
+        onSuccess: async () => {
             await queryClient.invalidateQueries();
         },
     });
@@ -227,7 +227,7 @@ export function useDetachOrganizationRoleMutation(
     return useMutation({
         mutationKey: keys.detach(organizationId, userId, organizationRoleId),
         mutationFn: detachOrganizationRoleMutation,
-        onSettled: async () => {
+        onSuccess: async () => {
             await queryClient.invalidateQueries();
         },
     });

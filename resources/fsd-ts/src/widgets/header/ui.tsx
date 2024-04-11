@@ -14,7 +14,12 @@ export function Header() {
     const navigate = useNavigate();
 
     const isRootPath = () => {
-        const rootPaths = [pathKeys.root, pathKeys.home()];
+        const rootPaths = [
+            pathKeys.root,
+            pathKeys.home(),
+            pathKeys.login(),
+            pathKeys.registration(),
+        ];
 
         return rootPaths.includes(location.pathname);
     };
@@ -29,7 +34,7 @@ export function Header() {
                         </button>
                     )}
 
-                    <Link to={pathKeys.home()}>Scoring Testing</Link>
+                    <Link to={pathKeys.home()}>BIT</Link>
                 </div>
 
                 {user && (
@@ -48,7 +53,10 @@ export function Header() {
 
                 {!user && (
                     <div>
-                        <NavLink to={pathKeys.root}>Вход</NavLink>
+                        <NavLink to={pathKeys.login()}>Вход</NavLink>
+                        <NavLink to={pathKeys.registration()}>
+                            Регистрация
+                        </NavLink>
                     </div>
                 )}
             </nav>

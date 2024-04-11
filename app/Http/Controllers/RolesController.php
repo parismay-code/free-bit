@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RoleRequest;
-use App\Http\Resources\FullRoleResource;
 use App\Http\Resources\RoleResource;
 use App\Models\Role;
 use App\Models\User;
@@ -19,7 +18,7 @@ class RolesController extends Controller
 
     public function get(Request $request, Role $role): Response
     {
-        return response(['role' => new FullRoleResource($role)]);
+        return response(new RoleResource($role));
     }
 
     public function create(RoleRequest $request): Response
@@ -28,7 +27,7 @@ class RolesController extends Controller
 
         $role = Role::create($data);
 
-        return response(['role' => new FullRoleResource($role)]);
+        return response(new RoleResource($role));
     }
 
     public function update(RoleRequest $request, Role $role): Response
@@ -41,7 +40,7 @@ class RolesController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response(['role' => new FullRoleResource($role)]);
+        return response(new RoleResource($role));
     }
 
     public function delete(Request $request, Role $role): Response

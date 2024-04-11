@@ -29,7 +29,7 @@ class OrdersController extends Controller
             return response('', Response::HTTP_FORBIDDEN);
         }
 
-        return response(['order' => new OrderResource($order)]);
+        return response(new OrderResource($order));
     }
 
     public function create(OrderRequest $request, Organization $organization): Response
@@ -45,7 +45,7 @@ class OrdersController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response(['order' => new OrderResource($order)]);
+        return response(new OrderResource($order));
     }
 
     public function update(OrderRequest $request, Organization $organization, Order $order): Response
@@ -91,7 +91,7 @@ class OrdersController extends Controller
             return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return response(['order' => new OrderResource($order)]);
+        return response(new OrderResource($order));
     }
 
     public function delete(Request $request, Organization $organization, Order $order): Response

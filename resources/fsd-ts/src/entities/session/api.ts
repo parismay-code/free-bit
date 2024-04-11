@@ -6,7 +6,6 @@ import {
     defaultMap,
 } from '~shared/lib/fetch';
 import { zodContract } from '~shared/lib/zod';
-import { authorizationHeader } from './model';
 import { LoginUserDto, type RegisterUserDto } from './types';
 
 export async function currentUserQuery(signal?: AbortSignal) {
@@ -14,11 +13,10 @@ export async function currentUserQuery(signal?: AbortSignal) {
         request: {
             url: baseUrl('/user'),
             method: 'GET',
-            headers: { ...authorizationHeader() },
         },
         response: {
-            contract: zodContract(userContracts.UserSchema),
-            mapData: defaultMap<userTypes.User>,
+            contract: zodContract(userContracts.UserSchema.nullable()),
+            mapData: defaultMap<userTypes.User | null>,
         },
         abort: signal,
     });
@@ -29,7 +27,7 @@ export async function loginUserMutation(params: { user: LoginUserDto }) {
         request: {
             url: baseUrl('/login'),
             method: 'POST',
-            body: JSON.stringify({ user: params.user }),
+            body: JSON.stringify(params.user),
         },
         response: {
             contract: zodContract(userContracts.UserSchema),
@@ -43,11 +41,20 @@ export async function registerUserMutation(params: { user: RegisterUserDto }) {
         request: {
             url: baseUrl('/register'),
             method: 'POST',
-            body: JSON.stringify({ user: params.user }),
+            body: JSON.stringify(params.user),
         },
         response: {
             contract: zodContract(userContracts.UserSchema),
             mapData: defaultMap<userTypes.User>,
+        },
+    });
+}
+
+export async function logoutUserMutation() {
+    return createJsonMutation({
+        request: {
+            url: baseUrl('/logout'),
+            method: 'POST',
         },
     });
 }

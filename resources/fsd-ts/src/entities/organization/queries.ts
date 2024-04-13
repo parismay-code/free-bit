@@ -3,7 +3,7 @@ import {
     useMutation,
 } from '@tanstack/react-query';
 import { queryClient } from '~shared/lib/react-query';
-import { Collection } from '~shared/types';
+import { Paginated } from '~shared/types';
 import {
     createOrganizationMutation,
     deleteOrganizationMutation,
@@ -15,7 +15,7 @@ import { Organization } from './types';
 
 const keys = {
     root: () => ['organization'] as const,
-    getAll: () => [...keys.root(), 'all'] as const,
+    getAll: (query: string) => [...keys.root(), 'all', query] as const,
     get: (organizationId: number) =>
         [...keys.root(), 'get', organizationId] as const,
     create: () => [...keys.root(), 'create'] as const,
@@ -25,71 +25,86 @@ const keys = {
         [...keys.root(), 'delete', organizationId] as const,
 };
 
-export const organizationService = {
-    allQueryKey: () => keys.getAll(),
-    organizationQueryKey: (organizationId: number) => keys.get(organizationId),
+export const organizationsService = {
+    queryKey(query: string) {
+        return keys.getAll(query);
+    },
 
-    getCache: (organizationId: number = -1) => {
-        if (organizationId >= 0) {
-            return queryClient.getQueryData<Organization>(
-                organizationService.organizationQueryKey(organizationId),
-            );
-        }
-
-        return queryClient.getQueryData<Collection<Organization>>(
-            organizationService.allQueryKey(),
+    getCache(query: string) {
+        return queryClient.getQueryData<Paginated<Organization>>(
+            this.queryKey(query),
         );
     },
 
-    setCache: (
-        data: Collection<Organization> | Organization | null,
-        organizationId: number = -1,
-    ) => {
-        const queryKey =
-            organizationId >= 0
-                ? organizationService.organizationQueryKey(organizationId)
-                : organizationService.allQueryKey();
-
-        return queryClient.setQueryData(queryKey, data);
+    setCache(data: Paginated<Organization> | null, query: string) {
+        return queryClient.setQueryData(this.queryKey(query), data);
     },
 
-    removeCache: (organizationId: number = -1) => {
-        const queryKey =
-            organizationId >= 0
-                ? organizationService.organizationQueryKey(organizationId)
-                : organizationService.allQueryKey();
-
-        queryClient.removeQueries({ queryKey });
+    removeCache(query: string) {
+        queryClient.removeQueries({ queryKey: this.queryKey(query) });
     },
 
-    queryOptions: (organizationId: number = -1) => {
-        const isAllQuery = organizationId < 0;
-
-        const queryKey = isAllQuery
-            ? organizationService.allQueryKey()
-            : organizationService.organizationQueryKey(organizationId);
+    queryOptions(query: string) {
+        const queryKey = this.queryKey(query);
 
         return tsqQueryOptions({
             queryKey,
             queryFn: async ({ signal }) =>
-                isAllQuery
-                    ? getAllOrganizationsQuery(signal)
-                    : getOrganizationQuery(organizationId, signal),
-            initialData: () => organizationService.getCache(organizationId)!,
+                getAllOrganizationsQuery(query, signal),
+            initialData: () => this.getCache(query)!,
             initialDataUpdatedAt: () =>
                 queryClient.getQueryState(queryKey)?.dataUpdatedAt,
         });
     },
 
-    prefetchQuery: async (organizationId: number = -1) =>
-        queryClient.prefetchQuery(
-            organizationService.queryOptions(organizationId),
-        ),
+    async prefetchQuery(query: string) {
+        return queryClient.prefetchQuery(this.queryOptions(query));
+    },
 
-    ensureQueryData: async (organizationId: number = -1) =>
-        queryClient.ensureQueryData(
-            organizationService.queryOptions(organizationId),
-        ),
+    async ensureQueryData(query: string) {
+        return queryClient.ensureQueryData(this.queryOptions(query));
+    },
+};
+
+export const organizationService = {
+    queryKey(organizationId: number) {
+        return keys.get(organizationId);
+    },
+
+    getCache(organizationId: number) {
+        return queryClient.getQueryData<Organization>(
+            this.queryKey(organizationId),
+        );
+    },
+
+    setCache(data: Organization | null, organizationId: number) {
+        return queryClient.setQueryData(this.queryKey(organizationId), data);
+    },
+
+    removeCache(organizationId: number) {
+        queryClient.removeQueries({ queryKey: this.queryKey(organizationId) });
+    },
+
+    queryOptions(organizationId: number) {
+        const queryKey = this.queryKey(organizationId);
+
+        return tsqQueryOptions({
+            queryKey,
+            queryFn: async ({ signal }) =>
+                getOrganizationQuery(organizationId, signal),
+            initialData: () => this.getCache(organizationId)!,
+            initialDataUpdatedAt: () =>
+                queryClient.getQueryState(queryKey)?.dataUpdatedAt,
+        });
+    },
+
+    async prefetchQuery(organizationId: number) {
+        return queryClient.prefetchQuery(this.queryOptions(organizationId));
+    },
+
+    async ensureQueryData(organizationId: number) {
+        return queryClient.ensureQueryData(this.queryOptions(organizationId));
+    },
 };
 
 export function useCreateOrganizationMutation() {

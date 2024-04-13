@@ -1,24 +1,30 @@
 import { baseUrl } from '~shared/api';
-import { CollectionSchema } from '~shared/contracts';
+import { PaginatedSchema } from '~shared/contracts';
 import {
     createJsonMutation,
     createJsonQuery,
     defaultMap,
 } from '~shared/lib/fetch';
 import { zodContract } from '~shared/lib/zod';
-import { Collection } from '~shared/types';
+import { Paginated } from '~shared/types';
 import { OrganizationSchema } from './contracts';
 import { Organization, OrganizationDto } from './types';
 
-export async function getAllOrganizationsQuery(signal?: AbortSignal) {
+export async function getAllOrganizationsQuery(
+    query: string,
+    signal?: AbortSignal,
+) {
     return createJsonQuery({
         request: {
             url: baseUrl('/organizations'),
             method: 'GET',
+            query: {
+                query,
+            },
         },
         response: {
-            contract: zodContract(CollectionSchema(OrganizationSchema)),
-            mapData: defaultMap<Collection<Organization>>,
+            contract: zodContract(PaginatedSchema(OrganizationSchema)),
+            mapData: defaultMap<Paginated<Organization>>,
         },
         abort: signal,
     });
@@ -64,7 +70,7 @@ export async function updateOrganizationMutation(params: {
     return createJsonMutation({
         request: {
             url: baseUrl(`/organizations/${params.organizationId}`),
-            method: 'PATCH',
+            method: 'POST',
             body: JSON.stringify(params.organization),
         },
         response: {

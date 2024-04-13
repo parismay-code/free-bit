@@ -1,5 +1,5 @@
 import { baseUrl } from '~shared/api';
-import { CollectionSchema } from '~shared/contracts';
+import { CollectionSchema, PaginatedSchema } from '~shared/contracts';
 import {
     createJsonMutation,
     createJsonQuery,
@@ -11,12 +11,57 @@ import { OrderSchema } from './contracts';
 import type { Order, OrderDto } from './types';
 
 export async function getAllOrdersQuery(
+    page: number,
+    status: string,
+    signal?: AbortSignal,
+) {
+    return createJsonQuery({
+        request: {
+            url: baseUrl('/orders'),
+            method: 'GET',
+            query: {
+                page,
+                status,
+            },
+        },
+        response: {
+            contract: zodContract(PaginatedSchema(OrderSchema)),
+            mapData: defaultMap<Collection<Order>>,
+        },
+        abort: signal,
+    });
+}
+
+export async function getOrdersByOrganizationQuery(
+    organizationId: number,
+    page: number,
+    status: string,
+    signal?: AbortSignal,
+) {
+    return createJsonQuery({
+        request: {
+            url: baseUrl(`/orders/organization/${organizationId}`),
+            method: 'GET',
+            query: {
+                page,
+                status,
+            },
+        },
+        response: {
+            contract: zodContract(PaginatedSchema(OrderSchema)),
+            mapData: defaultMap<Collection<Order>>,
+        },
+        abort: signal,
+    });
+}
+
+export async function getLatestOrdersByOrganizationQuery(
     organizationId: number,
     signal?: AbortSignal,
 ) {
     return createJsonQuery({
         request: {
-            url: baseUrl(`/organizations/${organizationId}/orders`),
+            url: baseUrl(`/orders/organization/${organizationId}/latest`),
             method: 'GET',
         },
         response: {
@@ -27,14 +72,67 @@ export async function getAllOrdersQuery(
     });
 }
 
-export async function getOrderQuery(
-    organizationId: number,
-    orderId: number,
+export async function getOrdersByUserQuery(
+    userId: number,
+    page: number,
+    status: string,
     signal?: AbortSignal,
 ) {
     return createJsonQuery({
         request: {
-            url: baseUrl(`/organizations/${organizationId}/orders/${orderId}`),
+            url: baseUrl(`/orders/user/${userId}`),
+            method: 'GET',
+            query: {
+                page,
+                status,
+            },
+        },
+        response: {
+            contract: zodContract(PaginatedSchema(OrderSchema)),
+            mapData: defaultMap<Collection<Order>>,
+        },
+        abort: signal,
+    });
+}
+
+export async function getLatestOrdersByUserQuery(
+    userId: number,
+    signal?: AbortSignal,
+) {
+    return createJsonQuery({
+        request: {
+            url: baseUrl(`/orders/user/${userId}/latest`),
+            method: 'GET',
+        },
+        response: {
+            contract: zodContract(CollectionSchema(OrderSchema)),
+            mapData: defaultMap<Collection<Order>>,
+        },
+        abort: signal,
+    });
+}
+
+export async function getCurrentOrderByUserQuery(
+    userId: number,
+    signal?: AbortSignal,
+) {
+    return createJsonQuery({
+        request: {
+            url: baseUrl(`/orders/user/${userId}/current`),
+            method: 'GET',
+        },
+        response: {
+            contract: zodContract(OrderSchema),
+            mapData: defaultMap<Order>,
+        },
+        abort: signal,
+    });
+}
+
+export async function getOrderQuery(orderId: number, signal?: AbortSignal) {
+    return createJsonQuery({
+        request: {
+            url: baseUrl(`/orders/${orderId}`),
             method: 'GET',
         },
         response: {
@@ -51,7 +149,7 @@ export async function createOrderMutation(params: {
 }) {
     return createJsonMutation({
         request: {
-            url: baseUrl(`/organizations/${params.organizationId}/orders`),
+            url: baseUrl(`/orders/organization/${params.organizationId}`),
             method: 'POST',
             body: JSON.stringify(params.order),
         },
@@ -70,9 +168,9 @@ export async function updateOrderMutation(params: {
     return createJsonMutation({
         request: {
             url: baseUrl(
-                `/organizations/${params.organizationId}/orders/${params.orderId}`,
+                `/orders/${params.orderId}/organization/${params.organizationId}`,
             ),
-            method: 'POST',
+            method: 'PATCH',
             body: JSON.stringify(params.order),
         },
         response: {
@@ -82,45 +180,34 @@ export async function updateOrderMutation(params: {
     });
 }
 
-export async function deleteOrderMutation(params: {
-    organizationId: number;
-    orderId: number;
-}) {
+export async function deleteOrderMutation(params: { orderId: number }) {
     return createJsonMutation({
         request: {
-            url: baseUrl(
-                `/organizations/${params.organizationId}/orders/${params.orderId}`,
-            ),
+            url: baseUrl(`/orders/${params.orderId}`),
             method: 'DELETE',
         },
     });
 }
 
 export async function associateOrderCourierMutation(params: {
-    organizationId: number;
     orderId: number;
     userId: number;
 }) {
     return createJsonMutation({
         request: {
-            url: baseUrl(
-                `organizations/${params.organizationId}/orders/${params.orderId}/courier/${params.userId}`,
-            ),
+            url: baseUrl(`/orders/${params.orderId}/courier/${params.userId}`),
             method: 'POST',
         },
     });
 }
 
 export async function associateOrderEmployeeMutation(params: {
-    organizationId: number;
     orderId: number;
     userId: number;
 }) {
     return createJsonMutation({
         request: {
-            url: baseUrl(
-                `organizations/${params.organizationId}/orders/${params.orderId}/employee/${params.userId}`,
-            ),
+            url: baseUrl(`/orders/${params.orderId}/employee/${params.userId}`),
             method: 'POST',
         },
     });

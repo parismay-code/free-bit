@@ -92,14 +92,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/organizations/{organization}/employee/{user}/shifts/{employeeShift}', [EmployeeShiftsController::class, 'delete'])
         ->can('isAdmin');
 
-    Route::get('/organizations/{organization}/orders', [OrdersController::class, 'getAll']);
-    Route::get('/organizations/{organization}/orders/{order}', [OrdersController::class, 'get']);
-    Route::post('/organizations/{organization}/orders', [OrdersController::class, 'create']);
-    Route::patch('/organizations/{organization}/orders/{order}', [OrdersController::class, 'update']);
-    Route::delete('/organizations/{organization}/orders/{order}', [OrdersController::class, 'delete'])
+    Route::get('/orders', [OrdersController::class, 'getAll']);
+    Route::get('/orders/{order}', [OrdersController::class, 'get']);
+    Route::get('/orders/organization/{organization}', [OrdersController::class, 'getByOrganization']);
+    Route::get('/orders/organization/{organization}/latest', [OrdersController::class, 'getLatestByOrganization']);
+    Route::get('/orders/user/{user}', [OrdersController::class, 'getByUser']);
+    Route::get('/orders/user/{user}/current', [OrdersController::class, 'getCurrentByUser']);
+    Route::get('/orders/user/{user}/latest', [OrdersController::class, 'getLatestByUser']);
+    Route::post('/orders/organization/{organization}', [OrdersController::class, 'create']);
+    Route::patch('/orders/{order}/organization/{organization}', [OrdersController::class, 'update']);
+    Route::delete('/orders/{order}', [OrdersController::class, 'delete'])
         ->can('isAdmin');
-    Route::post('/organizations/{organization}/orders/{order}/courier/{user}', [OrdersController::class, 'associateCourier']);
-    Route::post('/organizations/{organization}/orders/{order}/employee/{user}', [OrdersController::class, 'associateEmployee']);
+    Route::post('orders/{order}/courier/{user}', [OrdersController::class, 'associateCourier']);
+    Route::post('orders/{order}/employee/{user}', [OrdersController::class, 'associateEmployee']);
 
     Route::get('/roles', [RolesController::class, 'getAll'])
         ->can('isManager');

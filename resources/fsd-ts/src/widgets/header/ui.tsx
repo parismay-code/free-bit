@@ -1,12 +1,29 @@
+import { useState } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import cn from 'classnames';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { organizationQueries, organizationTypes } from '~entities/organization';
 import { sessionQueries } from '~entities/session';
 import { pathKeys } from '~shared/lib/react-router';
+import './styles.scss';
 
 export function Header() {
+    const [organization, setOrganization] =
+        useState<organizationTypes.Organization>();
+
     const { data: user } = useSuspenseQuery(
         sessionQueries.sessionService.queryOptions(),
     );
+
+    if (user?.organization_id) {
+        organizationQueries.organizationService
+            .ensureQueryData(user.organization_id)
+            .then((result) => {
+                setOrganization(
+                    result as organizationTypes.Organization | undefined,
+                );
+            });
+    }
 
     const { mutate: deleteUser } = sessionQueries.useLogoutMutation();
 
@@ -25,26 +42,29 @@ export function Header() {
     };
 
     return (
-        <header>
-            <nav>
-                <div>
+        <header className="header">
+            <nav className="header-nav">
+                <div className="header-nav__group">
                     {!isRootPath() && (
                         <button type="button" onClick={() => navigate(-1)}>
                             Назад
                         </button>
                     )}
 
-                    <Link to={pathKeys.home()}>BIT</Link>
+                    <Link to={pathKeys.home()} className="header__logo">
+                        BIT
+                    </Link>
                 </div>
 
                 {user && (
-                    <div>
+                    <div className="header-nav__group">
                         <span>{user.name}</span>
+                        <span>{organization?.name || 'Без организации'}</span>
                     </div>
                 )}
 
                 {user && (
-                    <div>
+                    <div className="header-nav__group">
                         <button type="button" onClick={() => deleteUser()}>
                             Выход
                         </button>
@@ -52,9 +72,28 @@ export function Header() {
                 )}
 
                 {!user && (
-                    <div>
-                        <NavLink to={pathKeys.login()}>Вход</NavLink>
-                        <NavLink to={pathKeys.registration()}>
+                    <div className="header-nav__group">
+                        <NavLink
+                            to={pathKeys.login()}
+                            className={({ isActive }) =>
+                                cn(
+                                    'header__link',
+                                    isActive && 'header__link_active',
+                                )
+                            }
+                        >
+                            Вход
+                        </NavLink>
+
+                        <NavLink
+                            to={pathKeys.registration()}
+                            className={({ isActive }) =>
+                                cn(
+                                    'header__link',
+                                    isActive && 'header__link_active',
+                                )
+                            }
+                        >
                             Регистрация
                         </NavLink>
                     </div>

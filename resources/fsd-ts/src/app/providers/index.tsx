@@ -1,4 +1,4 @@
-import '~shared/main.css';
+import '~shared/main.scss';
 import { withErrorBoundary } from 'react-error-boundary';
 import { withSuspense } from '~shared/lib/react';
 import { FullPageError } from '~shared/ui/full-page-error';

@@ -1,0 +1,38 @@
+@use '~shared/vars';
+
+.header {
+    padding: 1rem 3rem;
+
+    background-color: vars.$color-orange;
+
+    color: white;
+    font-weight: 500;
+
+    &__logo {
+        font-size: 1.5rem;
+        font-weight: 900;
+    }
+
+    &__link {
+        opacity: .7;
+
+        transition: .2s;
+
+        &:hover,
+        &_active {
+            opacity: 1;
+        }
+    }
+
+    &-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        &__group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+    }
+}

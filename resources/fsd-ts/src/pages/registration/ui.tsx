@@ -7,6 +7,7 @@ import {
 } from '~entities/session';
 import { formikContract } from '~shared/lib/zod';
 import { ErrorHandler } from '~shared/ui/error';
+import './styles.scss';
 
 function Page() {
     const {
@@ -17,7 +18,7 @@ function Page() {
     } = sessionQueries.useRegisterUserMutation();
 
     return (
-        <div className="auth-page">
+        <div className="auth">
             <div className="container page">
                 <div className="row">
                     <div className="col-md-6 offset-md-3 col-xs-12">

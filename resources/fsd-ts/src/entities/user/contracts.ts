@@ -10,6 +10,7 @@ export const UserSchema = z.object({
     phone: z.string(),
     avatar: z.string().nullable(),
     roles: CollectionSchema(roleContracts.RoleSchema),
+    organization_id: z.number().nullable(),
 });
 
 export const UserDtoSchema = z.object({

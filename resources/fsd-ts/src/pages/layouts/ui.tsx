@@ -3,6 +3,21 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { sessionQueries } from '~entities/session';
 import { pathKeys } from '~shared/lib/react-router';
 import { Header } from '~widgets/header';
+import { Notify } from '~widgets/notify';
+import { PopUp } from '~widgets/pop-up';
+
+function Layout() {
+    return (
+        <>
+            <Header />
+            <div className="container">
+                <Outlet />
+            </div>
+            <PopUp />
+            <Notify />
+        </>
+    );
+}
 
 export function GenericLayout() {
     const { data: user } = useSuspenseQuery(
@@ -13,12 +28,7 @@ export function GenericLayout() {
         return <Navigate to={pathKeys.login()} />;
     }
 
-    return (
-        <>
-            <Header />
-            <Outlet />
-        </>
-    );
+    return <Layout />;
 }
 
 export function GuestLayout() {
@@ -30,12 +40,7 @@ export function GuestLayout() {
         return <Navigate to={pathKeys.home()} />;
     }
 
-    return (
-        <>
-            <Header />
-            <Outlet />
-        </>
-    );
+    return <Layout />;
 }
 
 export function NakedLayout() {

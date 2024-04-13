@@ -47,6 +47,7 @@ module.exports = {
                 alphabetize: {order: 'asc', caseInsensitive: true},
             },
         ],
+        'no-param-reassign': 'off',
         'no-restricted-imports': [
             'error',
             {

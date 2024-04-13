@@ -27,6 +27,7 @@ class UserResource extends JsonResource
             'phone' => $this->phone,
             'avatar' => $this->avatar ? \Illuminate\Support\Facades\Storage::url($this->avatar) : null,
             'roles' => ['data' => RoleResource::collection($this->roles)],
+            'organization_id' => $this->organization_id,
         ];
     }
 }

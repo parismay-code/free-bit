@@ -12,7 +12,6 @@ export const registrationPageRoute: RouteObject = {
             return redirect(pathKeys.home());
         }
 
-        await sessionQueries.sessionService.prefetchQuery();
         return args;
     },
 };

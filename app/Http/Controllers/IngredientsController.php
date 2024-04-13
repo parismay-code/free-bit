@@ -13,9 +13,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 class IngredientsController extends Controller
 {
-    public function getAll(Request $request, Organization $organization): Response
+    public function getByOrganization(Request $request, Organization $organization): Response
     {
         return response(['data' => IngredientResource::collection($organization->ingredients)]);
+    }
+
+    public function getByProduct(Request $request, Product $product): Response
+    {
+        return response(['data' => IngredientResource::collection($product->ingredients)]);
     }
 
     public function get(Request $request, Organization $organization, Ingredient $ingredient): Response

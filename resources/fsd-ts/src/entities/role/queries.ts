@@ -22,70 +22,86 @@ const keys = {
     create: () => [...keys.root(), 'create'] as const,
     update: (roleId: number) => [...keys.root(), 'update', roleId] as const,
     delete: (roleId: number) => [...keys.root(), 'delete', roleId] as const,
-    attach: (userId: number, roleId: number) =>
-        [...keys.root(), 'attach', userId, roleId] as const,
-    detach: (userId: number, roleId: number) =>
-        [...keys.root(), 'detach', userId, roleId] as const,
+    attach: (roleId: number, userId: number) =>
+        [...keys.root(), 'attach', roleId, userId] as const,
+    detach: (roleId: number, userId: number) =>
+        [...keys.root(), 'detach', roleId, userId] as const,
 };
 
-export const roleService = {
-    allQueryKey: () => keys.getAll(),
-    roleQueryKey: (roleId: number) => keys.get(roleId),
-
-    getCache: (roleId: number = -1) => {
-        if (roleId >= 0) {
-            return queryClient.getQueryData<Role>(
-                roleService.roleQueryKey(roleId),
-            );
-        }
-
-        return queryClient.getQueryData<Collection<Role>>(
-            roleService.allQueryKey(),
-        );
+export const allRolesService = {
+    queryKey() {
+        return keys.getAll();
     },
 
-    setCache: (data: Collection<Role> | Role | null, roleId: number = -1) => {
-        const queryKey =
-            roleId >= 0
-                ? roleService.roleQueryKey(roleId)
-                : roleService.allQueryKey();
-
-        return queryClient.setQueryData(queryKey, data);
+    getCache() {
+        return queryClient.getQueryData<Collection<Role>>(this.queryKey());
     },
 
-    removeCache: (roleId: number = -1) => {
-        const queryKey =
-            roleId >= 0
-                ? roleService.roleQueryKey(roleId)
-                : roleService.allQueryKey();
-
-        queryClient.removeQueries({ queryKey });
+    setCache(data: Collection<Role> | null) {
+        return queryClient.setQueryData(this.queryKey(), data);
     },
 
-    queryOptions: (roleId: number = -1) => {
-        const isAllQuery = roleId < 0;
+    removeCache() {
+        return queryClient.removeQueries({ queryKey: this.queryKey() });
+    },
 
-        const queryKey = isAllQuery
-            ? roleService.allQueryKey()
-            : roleService.roleQueryKey(roleId);
+    queryOptions() {
+        const queryKey = this.queryKey();
 
         return tsqQueryOptions({
             queryKey,
-            queryFn: async ({ signal }) =>
-                isAllQuery
-                    ? getAllRolesQuery(signal)
-                    : getRoleQuery(roleId, signal),
-            initialData: () => roleService.getCache(roleId)!,
+            queryFn: async ({ signal }) => getAllRolesQuery(signal),
+            initialData: () => this.getCache()!,
             initialDataUpdatedAt: () =>
                 queryClient.getQueryState(queryKey)?.dataUpdatedAt,
         });
     },
 
-    prefetchQuery: async (roleId: number = -1) =>
-        queryClient.prefetchQuery(roleService.queryOptions(roleId)),
+    async prefetchQuery() {
+        return queryClient.prefetchQuery(this.queryOptions());
+    },
 
-    ensureQueryData: async (roleId: number = -1) =>
-        queryClient.ensureQueryData(roleService.queryOptions(roleId)),
+    async ensureQueryData() {
+        return queryClient.ensureQueryData(this.queryOptions());
+    },
+};
+
+export const roleService = {
+    queryKey(roleId: number) {
+        return keys.get(roleId);
+    },
+
+    getCache(roleId: number) {
+        return queryClient.getQueryData<Role>(this.queryKey(roleId));
+    },
+
+    setCache(data: Role | null, roleId: number) {
+        return queryClient.setQueryData(this.queryKey(roleId), data);
+    },
+
+    removeCache(roleId: number) {
+        return queryClient.removeQueries({ queryKey: this.queryKey(roleId) });
+    },
+
+    queryOptions(roleId: number) {
+        const queryKey = this.queryKey(roleId);
+
+        return tsqQueryOptions({
+            queryKey,
+            queryFn: async ({ signal }) => getRoleQuery(roleId, signal),
+            initialData: () => this.getCache(roleId)!,
+            initialDataUpdatedAt: () =>
+                queryClient.getQueryState(queryKey)?.dataUpdatedAt,
+        });
+    },
+
+    async prefetchQuery(roleId: number) {
+        return queryClient.prefetchQuery(this.queryOptions(roleId));
+    },
+
+    async ensureQueryData(roleId: number) {
+        return queryClient.ensureQueryData(this.queryOptions(roleId));
+    },
 };
 
 export function useCreateRoleMutation() {
@@ -119,9 +135,9 @@ export function useDeleteRoleMutation(roleId: number) {
     });
 }
 
-export function useAttachRoleMutation(userId: number, roleId: number) {
+export function useAttachRoleMutation(roleId: number, userId: number) {
     return useMutation({
-        mutationKey: keys.attach(userId, roleId),
+        mutationKey: keys.attach(roleId, userId),
         mutationFn: attachRoleMutation,
         onSuccess: async () => {
             await queryClient.invalidateQueries();
@@ -129,9 +145,9 @@ export function useAttachRoleMutation(userId: number, roleId: number) {
     });
 }
 
-export function useDetachRoleMutation(userId: number, roleId: number) {
+export function useDetachRoleMutation(roleId: number, userId: number) {
     return useMutation({
-        mutationKey: keys.detach(userId, roleId),
+        mutationKey: keys.detach(roleId, userId),
         mutationFn: detachRoleMutation,
         onSuccess: async () => {
             await queryClient.invalidateQueries();

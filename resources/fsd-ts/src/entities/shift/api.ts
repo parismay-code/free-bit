@@ -10,7 +10,7 @@ import { Collection } from '~shared/types';
 import { ShiftSchema } from './contracts';
 import { Shift, ShiftDto } from './types';
 
-export async function getAllShiftsQuery(
+export async function getShiftsByOrganizationQuery(
     organizationId: number,
     signal?: AbortSignal,
 ) {

@@ -9,125 +9,160 @@ import {
     createIngredientMutation,
     deleteIngredientMutation,
     detachProductIngredientMutation,
-    getAllIngredientsQuery,
     getIngredientQuery,
+    getIngredientsByOrganizationQuery,
+    getIngredientsByProductQuery,
     updateIngredientMutation,
 } from './api';
 import { Ingredient } from './types';
 
 const keys = {
     root: () => ['ingredient'] as const,
-    getAll: (organizationId: number) =>
-        [...keys.root(), 'all', organizationId] as const,
-    get: (organizationId: number, ingredientId: number) =>
-        [...keys.root(), 'get', organizationId, ingredientId] as const,
+    getByOrganization: (organizationId: number) =>
+        [...keys.root(), 'organization', organizationId] as const,
+    getByProduct: (productId: number) =>
+        [...keys.root(), 'product', productId] as const,
+    get: (ingredientId: number) =>
+        [...keys.root(), 'get', ingredientId] as const,
     create: (organizationId: number) =>
         [...keys.root(), 'create', organizationId] as const,
-    update: (organizationId: number, ingredientId: number) =>
-        [...keys.root(), 'update', organizationId, ingredientId] as const,
-    delete: (organizationId: number, ingredientId: number) =>
-        [...keys.root(), 'delete', organizationId, ingredientId] as const,
-    attach: (organizationId: number, productId: number, ingredientId: number) =>
-        [
-            ...keys.root(),
-            'attach',
-            organizationId,
-            productId,
-            ingredientId,
-        ] as const,
-    detach: (organizationId: number, productId: number, ingredientId: number) =>
-        [
-            ...keys.root(),
-            'detach',
-            organizationId,
-            productId,
-            ingredientId,
-        ] as const,
+    update: (ingredientId: number) =>
+        [...keys.root(), 'update', ingredientId] as const,
+    delete: (ingredientId: number) =>
+        [...keys.root(), 'delete', ingredientId] as const,
+    attach: (ingredientId: number, productId: number) =>
+        [...keys.root(), 'attach', ingredientId, productId] as const,
+    detach: (ingredientId: number, productId: number) =>
+        [...keys.root(), 'detach', ingredientId, productId] as const,
 };
 
-export const ingredientService = {
-    allQueryKey: (organizationId: number) => keys.getAll(organizationId),
-    ingredientQueryKey: (organizationId: number, ingredientId: number) =>
-        keys.get(organizationId, ingredientId),
+export const ingredientsByProductService = {
+    queryKey(productId: number) {
+        return keys.getByOrganization(productId);
+    },
 
-    getCache: (organizationId: number, ingredientId: number = -1) => {
-        if (ingredientId >= 0) {
-            return queryClient.getQueryData<Ingredient>(
-                ingredientService.ingredientQueryKey(
-                    organizationId,
-                    ingredientId,
-                ),
-            );
-        }
-
+    getCache(productId: number) {
         return queryClient.getQueryData<Collection<Ingredient>>(
-            ingredientService.allQueryKey(organizationId),
+            this.queryKey(productId),
         );
     },
 
-    setCache: (
-        data: Collection<Ingredient> | Ingredient | null,
-        organizationId: number,
-        ingredientId: number = -1,
-    ) => {
-        const queryKey =
-            ingredientId >= 0
-                ? ingredientService.ingredientQueryKey(
-                      organizationId,
-                      ingredientId,
-                  )
-                : ingredientService.allQueryKey(organizationId);
-
-        return queryClient.setQueryData(queryKey, data);
+    setCache(data: Collection<Ingredient> | null, productId: number) {
+        return queryClient.setQueryData(this.queryKey(productId), data);
     },
 
-    removeCache: (organizationId: number, ingredientId: number = -1) => {
-        const queryKey =
-            ingredientId >= 0
-                ? ingredientService.ingredientQueryKey(
-                      organizationId,
-                      ingredientId,
-                  )
-                : ingredientService.allQueryKey(organizationId);
-
-        queryClient.removeQueries({ queryKey });
+    removeCache(productId: number) {
+        return queryClient.removeQueries({
+            queryKey: this.queryKey(productId),
+        });
     },
 
-    queryOptions: (organizationId: number, ingredientId: number = -1) => {
-        const isAllQuery = ingredientId < 0;
-
-        const queryKey = isAllQuery
-            ? ingredientService.allQueryKey(organizationId)
-            : ingredientService.ingredientQueryKey(
-                  organizationId,
-                  ingredientId,
-              );
+    queryOptions(productId: number) {
+        const queryKey = this.queryKey(productId);
 
         return tsqQueryOptions({
             queryKey,
             queryFn: async ({ signal }) =>
-                isAllQuery
-                    ? getAllIngredientsQuery(organizationId, signal)
-                    : getIngredientQuery(organizationId, ingredientId, signal),
-            initialData: () =>
-                ingredientService.getCache(organizationId, ingredientId)!,
+                getIngredientsByProductQuery(productId, signal),
+            initialData: () => this.getCache(productId)!,
             initialDataUpdatedAt: () =>
                 queryClient.getQueryState(queryKey)?.dataUpdatedAt,
         });
     },
 
-    prefetchQuery: async (organizationId: number, ingredientId: number = -1) =>
-        queryClient.prefetchQuery(
-            ingredientService.queryOptions(organizationId, ingredientId),
-        ),
+    async prefetchQuery(productId: number) {
+        return queryClient.prefetchQuery(this.queryOptions(productId));
+    },
 
-    ensureQueryData: async (
-        organizationId: number,
-        ingredientId: number = -1,
-    ) =>
-        queryClient.ensureQueryData(
-            ingredientService.queryOptions(organizationId, ingredientId),
-        ),
+    async ensureQueryData(productId: number) {
+        return queryClient.ensureQueryData(this.queryOptions(productId));
+    },
+};
+
+export const ingredientsByOrganizationService = {
+    queryKey(organizationId: number) {
+        return keys.getByOrganization(organizationId);
+    },
+
+    getCache(organizationId: number) {
+        return queryClient.getQueryData<Collection<Ingredient>>(
+            this.queryKey(organizationId),
+        );
+    },
+
+    setCache(data: Collection<Ingredient> | null, organizationId: number) {
+        return queryClient.setQueryData(this.queryKey(organizationId), data);
+    },
+
+    removeCache(organizationId: number) {
+        return queryClient.removeQueries({
+            queryKey: this.queryKey(organizationId),
+        });
+    },
+
+    queryOptions(organizationId: number) {
+        const queryKey = this.queryKey(organizationId);
+
+        return tsqQueryOptions({
+            queryKey,
+            queryFn: async ({ signal }) =>
+                getIngredientsByOrganizationQuery(organizationId, signal),
+            initialData: () => this.getCache(organizationId)!,
+            initialDataUpdatedAt: () =>
+                queryClient.getQueryState(queryKey)?.dataUpdatedAt,
+        });
+    },
+
+    async prefetchQuery(organizationId: number) {
+        return queryClient.prefetchQuery(this.queryOptions(organizationId));
+    },
+
+    async ensureQueryData(organizationId: number) {
+        return queryClient.ensureQueryData(this.queryOptions(organizationId));
+    },
+};
+
+export const ingredientService = {
+    queryKey(ingredientId: number) {
+        return keys.get(ingredientId);
+    },
+
+    getCache(ingredientId: number) {
+        return queryClient.getQueryData<Ingredient>(
+            this.queryKey(ingredientId),
+        );
+    },
+
+    setCache(data: Ingredient | null, ingredientId: number) {
+        return queryClient.setQueryData(this.queryKey(ingredientId), data);
+    },
+
+    removeCache(ingredientId: number) {
+        return queryClient.removeQueries({
+            queryKey: this.queryKey(ingredientId),
+        });
+    },
+
+    queryOptions(ingredientId: number) {
+        const queryKey = this.queryKey(ingredientId);
+
+        return tsqQueryOptions({
+            queryKey,
+            queryFn: async ({ signal }) =>
+                getIngredientQuery(ingredientId, signal),
+            initialData: () => this.getCache(ingredientId)!,
+            initialDataUpdatedAt: () =>
+                queryClient.getQueryState(queryKey)?.dataUpdatedAt,
+        });
+    },
+
+    async prefetchQuery(ingredientId: number) {
+        return queryClient.prefetchQuery(this.queryOptions(ingredientId));
+    },
+
+    async ensureQueryData(ingredientId: number) {
+        return queryClient.ensureQueryData(this.queryOptions(ingredientId));
+    },
 };
 
 export function useCreateIngredientMutation(organizationId: number) {
@@ -140,44 +175,33 @@ export function useCreateIngredientMutation(organizationId: number) {
     });
 }
 
-export function useUpdateIngredientMutation(
-    organizationId: number,
-    ingredientId: number,
-) {
+export function useUpdateIngredientMutation(ingredientId: number) {
     return useMutation({
-        mutationKey: keys.update(organizationId, ingredientId),
+        mutationKey: keys.update(ingredientId),
         mutationFn: updateIngredientMutation,
         onSuccess: async (ingredient) => {
-            ingredientService.setCache(
-                ingredient,
-                organizationId,
-                ingredientId,
-            );
+            ingredientService.setCache(ingredient, ingredientId);
         },
     });
 }
 
-export function useDeleteIngredientMutation(
-    organizationId: number,
-    ingredientId: number,
-) {
+export function useDeleteIngredientMutation(ingredientId: number) {
     return useMutation({
-        mutationKey: keys.delete(organizationId, ingredientId),
+        mutationKey: keys.delete(ingredientId),
         mutationFn: deleteIngredientMutation,
         onSuccess: async () => {
-            ingredientService.setCache(null, organizationId, ingredientId);
+            ingredientService.setCache(null, ingredientId);
             await queryClient.invalidateQueries();
         },
     });
 }
 
 export function useAttachProductIngredientMutation(
-    organizationId: number,
-    productId: number,
     ingredientId: number,
+    productId: number,
 ) {
     return useMutation({
-        mutationKey: keys.attach(organizationId, productId, ingredientId),
+        mutationKey: keys.attach(ingredientId, productId),
         mutationFn: attachProductIngredientMutation,
         onSuccess: async () => {
             await queryClient.invalidateQueries();
@@ -186,12 +210,11 @@ export function useAttachProductIngredientMutation(
 }
 
 export function useDetachProductIngredientMutation(
-    organizationId: number,
     productId: number,
     ingredientId: number,
 ) {
     return useMutation({
-        mutationKey: keys.detach(organizationId, productId, ingredientId),
+        mutationKey: keys.detach(ingredientId, productId),
         mutationFn: detachProductIngredientMutation,
         onSuccess: async () => {
             await queryClient.invalidateQueries();

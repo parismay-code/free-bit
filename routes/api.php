@@ -47,49 +47,53 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/organizations/{organization}', [OrganizationsController::class, 'delete'])
         ->can('isAdmin');
 
-    Route::get('/organizations/{organization}/employees', [EmployeesController::class, 'getAll']);
-    Route::post('/organizations/{organization}/employees/{user}/associate', [EmployeesController::class, 'associate'])
+    Route::get('/organizations/{organization}/users', [EmployeesController::class, 'getAll']);
+    Route::post('/organizations/{organization}/user/{user}/associate', [EmployeesController::class, 'associate'])
         ->can('isOrganizationAdmin');
-    Route::post('/organizations/{organization}/employees/{user}/dissociate', [EmployeesController::class, 'dissociate'])
+    Route::post('/organizations/{organization}/user/{user}/dissociate', [EmployeesController::class, 'dissociate'])
         ->can('isOrganizationAdmin');
 
-    Route::get('/organizations/{organization}/categories', [CategoriesController::class, 'getAll']);
-    Route::get('/organizations/{organization}/categories/{category}', [CategoriesController::class, 'get']);
-    Route::post('/organizations/{organization}/categories', [CategoriesController::class, 'create'])
+    Route::get('/categories/organization/{organization}', [CategoriesController::class, 'getAll']);
+    Route::get('/categories/{category}', [CategoriesController::class, 'get']);
+    Route::post('/categories/organization/{organization}', [CategoriesController::class, 'create'])
         ->can('isOrganizationManager');
-    Route::patch('/organizations/{organization}/categories/{category}', [CategoriesController::class, 'update'])
+    Route::patch('/categories/{category}', [CategoriesController::class, 'update'])
         ->can('isOrganizationManager');
-    Route::delete('/organizations/{organization}/categories/{category}', [CategoriesController::class, 'delete'])
-        ->can('isOrganizationManager');
-
-    Route::get('/organizations/{organization}/products', [ProductsController::class, 'getAll']);
-    Route::get('/organizations/{organization}/products/{product}', [ProductsController::class, 'get']);
-    Route::post('/organizations/{organization}/categories/{category}/products', [ProductsController::class, 'create'])
-        ->can('isOrganizationManager');
-    Route::patch('/organizations/{organization}/categories/{category}/products/{product}', [ProductsController::class, 'update'])
-        ->can('isOrganizationManager');
-    Route::delete('/organizations/{organization}/products/{product}', [ProductsController::class, 'delete'])
+    Route::delete('/categories/{category}', [CategoriesController::class, 'delete'])
         ->can('isOrganizationManager');
 
-    Route::get('/organizations/{organization}/ingredients', [IngredientsController::class, 'getAll']);
-    Route::get('/organizations/{organization/ingredients/{ingredient}', [IngredientsController::class, 'get']);
-    Route::post('/organizations/{organization}/ingredients', [IngredientsController::class, 'create'])
+    Route::get('/products/organization/{organization}', [ProductsController::class, 'getByOrganization']);
+    Route::get('/products/category/{category}', [ProductsController::class, 'getByCategory']);
+    Route::get('/products/{product}', [ProductsController::class, 'get']);
+    Route::post('/products/organization/{organization}/category/{category}', [ProductsController::class, 'create'])
         ->can('isOrganizationManager');
-    Route::patch('/organizations/{organization}/ingredients/{ingredient}', [IngredientsController::class, 'update'])
+    Route::patch('/products/{product}', [ProductsController::class, 'update'])
         ->can('isOrganizationManager');
-    Route::delete('/organizations/{organization}/ingredients/{ingredient}', [IngredientsController::class, 'delete'])
-        ->can('isOrganizationManager');
-    Route::post('/organizations/{organization}/products/{product}/ingredients/{ingredient}/attach', [IngredientsController::class, 'attach'])
-        ->can('isOrganizationManager');
-    Route::post('/organizations/{organization}/products/{product}/ingredients/{ingredient}/detach', [IngredientsController::class, 'detach'])
+    Route::delete('/products/{product}', [ProductsController::class, 'delete'])
         ->can('isOrganizationManager');
 
-    Route::get('/organizations/{organization}/shifts', [EmployeeShiftsController::class, 'getAll'])
+    Route::get('/ingredients/organization/{organization}', [IngredientsController::class, 'getByOrganization']);
+    Route::get('/ingredients/product/{organization}', [IngredientsController::class, 'getByProduct']);
+    Route::get('/ingredients/{ingredient}', [IngredientsController::class, 'get']);
+    Route::post('/ingredients/organization/{organization}', [IngredientsController::class, 'create'])
         ->can('isOrganizationManager');
-    Route::get('/organization/{organization}/employee/{user}/shifts', [EmployeeShiftsController::class, 'get']);
-    Route::post('/organizations/{organization}/employee/{user}/shifts', [EmployeeShiftsController::class, 'create']);
-    Route::patch('/organizations/{organization}/employee/{user}/shifts/{employeeShift}', [EmployeeShiftsController::class, 'update']);
-    Route::delete('/organizations/{organization}/employee/{user}/shifts/{employeeShift}', [EmployeeShiftsController::class, 'delete'])
+    Route::patch('/ingredients/{ingredient}', [IngredientsController::class, 'update'])
+        ->can('isOrganizationManager');
+    Route::delete('/ingredients/{ingredient}', [IngredientsController::class, 'delete'])
+        ->can('isOrganizationManager');
+    Route::post('/ingredients/{ingredient}/product/{product}/attach', [IngredientsController::class, 'attach'])
+        ->can('isOrganizationManager');
+    Route::post('/ingredients/{ingredient}/product/{product}/detach', [IngredientsController::class, 'detach'])
+        ->can('isOrganizationManager');
+
+    Route::get('/shifts/organization/{organization}', [EmployeeShiftsController::class, 'getByOrganization'])
+        ->can('isOrganizationManager');
+    Route::get('/shifts/user/{user}', [EmployeeShiftsController::class, 'getByUser'])
+        ->can('isOrganizationManager');
+    Route::get('/shifts/{employeeShift}', [EmployeeShiftsController::class, 'get']);
+    Route::post('/shifts/user/{user}', [EmployeeShiftsController::class, 'create']);
+    Route::patch('/shifts/{employeeShift}', [EmployeeShiftsController::class, 'update']);
+    Route::delete('/shifts/{employeeShift}', [EmployeeShiftsController::class, 'delete'])
         ->can('isAdmin');
 
     Route::get('/orders', [OrdersController::class, 'getAll']);
@@ -116,9 +120,9 @@ Route::middleware('auth:sanctum')->group(function () {
         ->can('isAdmin');
     Route::delete('/roles/{role}', [RolesController::class, 'delete'])
         ->can('isAdmin');
-    Route::post('/users/{user}/roles/{role}/attach', [RolesController::class, 'attach'])
+    Route::post('/roles/{role}/user/{user}/attach', [RolesController::class, 'attach'])
         ->can('isAdmin');
-    Route::post('/users/{user}/roles/{role}/detach', [RolesController::class, 'detach'])
+    Route::post('/roles/{role}/user/{user}/detach', [RolesController::class, 'detach'])
         ->can('isAdmin');
 
     Route::get('/organizations/{organization}/roles', [EmployeeRolesController::class, 'getAll']);

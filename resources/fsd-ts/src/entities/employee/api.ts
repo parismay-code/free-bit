@@ -1,13 +1,13 @@
 import { userContracts, userTypes } from '~entities/user';
 import { baseUrl } from '~shared/api';
-import { CollectionSchema } from '~shared/contracts';
+import { PaginatedSchema } from '~shared/contracts';
 import {
     createJsonMutation,
     createJsonQuery,
     defaultMap,
 } from '~shared/lib/fetch';
 import { zodContract } from '~shared/lib/zod';
-import { Collection } from '~shared/types';
+import { Paginated } from '~shared/types';
 
 export async function getAllEmployeesQuery(
     organizationId: number,
@@ -15,12 +15,12 @@ export async function getAllEmployeesQuery(
 ) {
     return createJsonQuery({
         request: {
-            url: baseUrl(`/organizations/${organizationId}/employees`),
+            url: baseUrl(`/organizations/${organizationId}/users`),
             method: 'GET',
         },
         response: {
-            contract: zodContract(CollectionSchema(userContracts.UserSchema)),
-            mapData: defaultMap<Collection<userTypes.User>>,
+            contract: zodContract(PaginatedSchema(userContracts.UserSchema)),
+            mapData: defaultMap<Paginated<userTypes.User>>,
         },
         abort: signal,
     });
@@ -33,7 +33,7 @@ export async function associateEmployeeMutation(params: {
     return createJsonMutation({
         request: {
             url: baseUrl(
-                `/organizations/${params.organizationId}/employees/${params.userId}/associate`,
+                `/organizations/${params.organizationId}/user/${params.userId}/associate`,
             ),
             method: 'POST',
         },
@@ -47,7 +47,7 @@ export async function dissociateEmployeeMutation(params: {
     return createJsonMutation({
         request: {
             url: baseUrl(
-                `/organizations/${params.organizationId}/employees/${params.userId}/dissociate`,
+                `/organizations/${params.organizationId}/user/${params.userId}/dissociate`,
             ),
             method: 'POST',
         },

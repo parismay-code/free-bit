@@ -25,7 +25,7 @@ const keys = {
         [...keys.root(), 'delete', organizationId] as const,
 };
 
-export const organizationsService = {
+export const allOrganizationsService = {
     queryKey(query: string) {
         return keys.getAll(query);
     },
@@ -41,7 +41,7 @@ export const organizationsService = {
     },
 
     removeCache(query: string) {
-        queryClient.removeQueries({ queryKey: this.queryKey(query) });
+        return queryClient.removeQueries({ queryKey: this.queryKey(query) });
     },
 
     queryOptions(query: string) {
@@ -82,7 +82,9 @@ export const organizationService = {
     },
 
     removeCache(organizationId: number) {
-        queryClient.removeQueries({ queryKey: this.queryKey(organizationId) });
+        return queryClient.removeQueries({
+            queryKey: this.queryKey(organizationId),
+        });
     },
 
     queryOptions(organizationId: number) {

@@ -12,13 +12,18 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EmployeeShiftsController extends Controller
 {
-    public function getAll(Request $request, Organization $organization): Response
+    public function getByOrganization(Request $request, Organization $organization): Response
     {
         if ($request->user()->organization()->isNot($organization)) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
         return response(['data' => OrganizationShiftResource::collection($organization->shifts)]);
+    }
+
+    public function getByUser(Request $request, User $user): Response
+    {
+        return response(['data' => OrganizationShiftResource::collection($user->shifts)]);
     }
 
     public function get(Request $request, Organization $organization, User $user): Response

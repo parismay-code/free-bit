@@ -4,7 +4,7 @@ import {
 } from '@tanstack/react-query';
 import { userTypes } from '~entities/user';
 import { queryClient } from '~shared/lib/react-query';
-import { Collection } from '~shared/types';
+import { Paginated } from '~shared/types';
 import {
     associateEmployeeMutation,
     dissociateEmployeeMutation,
@@ -22,47 +22,50 @@ const keys = {
 };
 
 export const employeeService = {
-    queryKey: (organizationId: number) => keys.getAll(organizationId),
+    queryKey(organizationId: number) {
+        return keys.getAll(organizationId);
+    },
 
-    getCache: (organizationId: number) =>
-        queryClient.getQueryData<Collection<userTypes.User>>(
-            employeeService.queryKey(organizationId),
-        ),
+    getCache(organizationId: number) {
+        return queryClient.getQueryData<Paginated<userTypes.User>>(
+            this.queryKey(organizationId),
+        );
+    },
 
-    setCache: (
-        data: Collection<userTypes.User> | null,
-        organizationId: number,
-    ) =>
-        queryClient.setQueryData(
-            employeeService.queryKey(organizationId),
-            data,
-        ),
+    setCache(data: Paginated<userTypes.User> | null, organizationId: number) {
+        return queryClient.setQueryData(this.queryKey(organizationId), data);
+    },
 
-    removeCache: (organizationId: number) =>
-        queryClient.removeQueries({
-            queryKey: employeeService.queryKey(organizationId),
-        }),
+    removeCache(organizationId: number) {
+        return queryClient.removeQueries({
+            queryKey: this.queryKey(organizationId),
+        });
+    },
 
-    queryOptions: (organizationId: number) => {
-        const queryKey = employeeService.queryKey(organizationId);
+    queryOptions(organizationId: number) {
+        const queryKey = this.queryKey(organizationId);
 
         return tsqQueryOptions({
             queryKey,
             queryFn: async ({ signal }) =>
                 getAllEmployeesQuery(organizationId, signal),
-            initialData: () => employeeService.getCache(organizationId)!,
+            initialData: () => this.getCache(organizationId)!,
             initialDataUpdatedAt: () =>
                 queryClient.getQueryState(queryKey)?.dataUpdatedAt,
         });
     },
 
-    prefetchQuery: async (organizationId: number) =>
-        queryClient.prefetchQuery(employeeService.queryOptions(organizationId)),
-
-    ensureQueryData: async (organizationId: number) =>
-        queryClient.ensureQueryData(
+    async prefetchQuery(organizationId: number) {
+        return queryClient.prefetchQuery(
             employeeService.queryOptions(organizationId),
-        ),
+        );
+    },
+
+    async ensureQueryData(organizationId: number) {
+        return queryClient.ensureQueryData(
+            employeeService.queryOptions(organizationId),
+        );
+    },
 };
 
 export function useAssociateEmployeeMutation(

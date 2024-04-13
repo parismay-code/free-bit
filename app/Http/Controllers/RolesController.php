@@ -54,7 +54,7 @@ class RolesController extends Controller
         return response('');
     }
 
-    public function attach(Request $request, User $user, Role $role): Response
+    public function attach(Request $request, Role $role, User $user): Response
     {
         if ($user->roles()->find($role->id)) {
             return response('');
@@ -65,7 +65,7 @@ class RolesController extends Controller
         return response('');
     }
 
-    public function detach(Request $request, User $user, Role $role): Response
+    public function detach(Request $request, Role $role, User $user): Response
     {
         if (!$user->roles()->find($role->id)) {
             return response('');

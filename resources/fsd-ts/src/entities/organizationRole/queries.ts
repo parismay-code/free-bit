@@ -100,7 +100,7 @@ export const organizationRoleService = {
                   )
                 : organizationRoleService.allQueryKey(organizationId);
 
-        queryClient.removeQueries({ queryKey });
+        return queryClient.removeQueries({ queryKey });
     },
 
     queryOptions: (organizationId: number, organizationRoleId: number = -1) => {

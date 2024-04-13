@@ -3,104 +3,156 @@ import {
     useMutation,
 } from '@tanstack/react-query';
 import { queryClient } from '~shared/lib/react-query';
-import { Collection } from '~shared/types';
+import { Paginated } from '~shared/types';
 import {
     createProductMutation,
     deleteProductMutation,
-    getAllProductsQuery,
     getProductQuery,
+    getProductsByCategoryQuery,
+    getProductsByOrganizationQuery,
     updateProductMutation,
 } from './api';
 import { Product } from './types';
 
 const keys = {
-    root: () => ['Product'] as const,
-    getAll: (organizationId: number) =>
-        [...keys.root(), 'all', organizationId] as const,
-    get: (organizationId: number, productId: number) =>
-        [...keys.root(), 'get', organizationId, productId] as const,
+    root: () => ['product'] as const,
+    getByOrganization: (organizationId: number) =>
+        [...keys.root(), 'organization', organizationId] as const,
+    getByCategory: (categoryId: number) =>
+        [...keys.root(), 'category', categoryId] as const,
+    get: (productId: number) => [...keys.root(), 'get', productId] as const,
     create: (organizationId: number, categoryId: number) =>
         [...keys.root(), 'create', organizationId, categoryId] as const,
-    update: (organizationId: number, categoryId: number, productId: number) =>
-        [
-            ...keys.root(),
-            'update',
-            organizationId,
-            categoryId,
-            productId,
-        ] as const,
-    delete: (organizationId: number, productId: number) =>
-        [...keys.root(), 'delete', organizationId, productId] as const,
+    update: (productId: number) =>
+        [...keys.root(), 'update', productId] as const,
+    delete: (productId: number) =>
+        [...keys.root(), 'delete', productId] as const,
 };
 
-export const productService = {
-    allQueryKey: (organizationId: number) => keys.getAll(organizationId),
-    productQueryKey: (organizationId: number, productId: number) =>
-        keys.get(organizationId, productId),
+export const organizationProductsService = {
+    queryKey(organizationId: number) {
+        return keys.getByOrganization(organizationId);
+    },
 
-    getCache: (organizationId: number, productId: number = -1) => {
-        if (productId >= 0) {
-            return queryClient.getQueryData<Product>(
-                productService.productQueryKey(organizationId, productId),
-            );
-        }
-
-        return queryClient.getQueryData<Collection<Product>>(
-            productService.allQueryKey(organizationId),
+    getCache(organizationId: number) {
+        return queryClient.getQueryData<Paginated<Product>>(
+            this.queryKey(organizationId),
         );
     },
 
-    setCache: (
-        data: Collection<Product> | Product | null,
-        organizationId: number,
-        productId: number = -1,
-    ) => {
-        const queryKey =
-            productId >= 0
-                ? productService.productQueryKey(organizationId, productId)
-                : productService.allQueryKey(organizationId);
-
-        return queryClient.setQueryData(queryKey, data);
+    setCache(data: Paginated<Product> | null, organizationId: number) {
+        return queryClient.setQueryData(this.queryKey(organizationId), data);
     },
 
-    removeCache: (organizationId: number, productId: number = -1) => {
-        const queryKey =
-            productId >= 0
-                ? productService.productQueryKey(organizationId, productId)
-                : productService.allQueryKey(organizationId);
-
-        queryClient.removeQueries({ queryKey });
+    removeCache(organizationId: number) {
+        return queryClient.removeQueries({
+            queryKey: this.queryKey(organizationId),
+        });
     },
 
-    queryOptions: (organizationId: number, productId: number = -1) => {
-        const isAllQuery = productId < 0;
-
-        const queryKey = isAllQuery
-            ? productService.allQueryKey(organizationId)
-            : productService.productQueryKey(organizationId, productId);
+    queryOptions(organizationId: number) {
+        const queryKey = this.queryKey(organizationId);
 
         return tsqQueryOptions({
             queryKey,
             queryFn: async ({ signal }) =>
-                isAllQuery
-                    ? getAllProductsQuery(organizationId, signal)
-                    : getProductQuery(organizationId, productId, signal),
-            initialData: () =>
-                productService.getCache(organizationId, productId)!,
+                getProductsByOrganizationQuery(organizationId, signal),
+            initialData: () => this.getCache(organizationId)!,
             initialDataUpdatedAt: () =>
                 queryClient.getQueryState(queryKey)?.dataUpdatedAt,
         });
     },
 
-    prefetchQuery: async (organizationId: number, productId: number = -1) =>
-        queryClient.prefetchQuery(
-            productService.queryOptions(organizationId, productId),
-        ),
+    async prefetchQuery(organizationId: number) {
+        return queryClient.prefetchQuery(this.queryOptions(organizationId));
+    },
 
-    ensureQueryData: async (organizationId: number, productId: number = -1) =>
-        queryClient.ensureQueryData(
-            productService.queryOptions(organizationId, productId),
-        ),
+    async ensureQueryData(organizationId: number) {
+        return queryClient.ensureQueryData(this.queryOptions(organizationId));
+    },
+};
+
+export const categoryProductsService = {
+    queryKey(categoryId: number) {
+        return keys.getByCategory(categoryId);
+    },
+
+    getCache(categoryId: number) {
+        return queryClient.getQueryData<Paginated<Product>>(
+            this.queryKey(categoryId),
+        );
+    },
+
+    setCache(data: Paginated<Product> | null, categoryId: number) {
+        return queryClient.setQueryData(this.queryKey(categoryId), data);
+    },
+
+    removeCache(categoryId: number) {
+        return queryClient.removeQueries({
+            queryKey: this.queryKey(categoryId),
+        });
+    },
+
+    queryOptions(categoryId: number) {
+        const queryKey = this.queryKey(categoryId);
+
+        return tsqQueryOptions({
+            queryKey,
+            queryFn: async ({ signal }) =>
+                getProductsByCategoryQuery(categoryId, signal),
+            initialData: () => this.getCache(categoryId)!,
+            initialDataUpdatedAt: () =>
+                queryClient.getQueryState(queryKey)?.dataUpdatedAt,
+        });
+    },
+
+    async prefetchQuery(categoryId: number) {
+        return queryClient.prefetchQuery(this.queryOptions(categoryId));
+    },
+
+    async ensureQueryData(categoryId: number) {
+        return queryClient.ensureQueryData(this.queryOptions(categoryId));
+    },
+};
+
+export const productService = {
+    queryKey(productId: number) {
+        return keys.get(productId);
+    },
+
+    getCache(productId: number) {
+        return queryClient.getQueryData<Product>(this.queryKey(productId));
+    },
+
+    setCache(data: Product | null, productId: number) {
+        return queryClient.setQueryData(this.queryKey(productId), data);
+    },
+
+    removeCache(productId: number) {
+        return queryClient.removeQueries({
+            queryKey: this.queryKey(productId),
+        });
+    },
+
+    queryOptions(productId: number) {
+        const queryKey = this.queryKey(productId);
+
+        return tsqQueryOptions({
+            queryKey,
+            queryFn: async ({ signal }) => getProductQuery(productId, signal),
+            initialData: () => this.getCache(productId)!,
+            initialDataUpdatedAt: () =>
+                queryClient.getQueryState(queryKey)?.dataUpdatedAt,
+        });
+    },
+
+    async prefetchQuery(productId: number) {
+        return queryClient.prefetchQuery(this.queryOptions(productId));
+    },
+
+    async ensureQueryData(productId: number) {
+        return queryClient.ensureQueryData(this.queryOptions(productId));
+    },
 };
 
 export function useCreateProductMutation(
@@ -111,34 +163,27 @@ export function useCreateProductMutation(
         mutationKey: keys.create(organizationId, categoryId),
         mutationFn: createProductMutation,
         onSuccess: async (product) => {
-            productService.setCache(product, organizationId, product.id);
+            productService.setCache(product, product.id);
         },
     });
 }
 
-export function useUpdateProductMutation(
-    organizationId: number,
-    categoryId: number,
-    productId: number,
-) {
+export function useUpdateProductMutation(productId: number) {
     return useMutation({
-        mutationKey: keys.update(organizationId, categoryId, productId),
+        mutationKey: keys.update(productId),
         mutationFn: updateProductMutation,
         onSuccess: async (product) => {
-            productService.setCache(product, organizationId, productId);
+            productService.setCache(product, productId);
         },
     });
 }
 
-export function useDeleteProductMutation(
-    organizationId: number,
-    productId: number,
-) {
+export function useDeleteProductMutation(productId: number) {
     return useMutation({
-        mutationKey: keys.delete(organizationId, productId),
+        mutationKey: keys.delete(productId),
         mutationFn: deleteProductMutation,
         onSuccess: async () => {
-            productService.setCache(null, organizationId, productId);
+            productService.setCache(null, productId);
             await queryClient.invalidateQueries();
         },
     });

@@ -12,9 +12,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ProductsController extends Controller
 {
-    public function getAll(Request $request, Organization $organization): Response
+    public function getByOrganization(Request $request, Organization $organization): Response
     {
         return response(['data' => ProductResource::collection($organization->products)]);
+    }
+
+    public function getByCategory(Request $request, Category $category): Response
+    {
+        return response(['data' => ProductResource::collection($category->products)]);
     }
 
     public function get(Request $request, Organization $organization, Product $product): Response

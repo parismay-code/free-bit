@@ -79,13 +79,13 @@ export async function deleteRoleMutation(params: { roleId: number }) {
 }
 
 export async function attachRoleMutation(params: {
-    userId: number;
     roleId: number;
+    userId: number;
 }) {
     return createJsonMutation({
         request: {
             url: baseUrl(
-                `/users/${params.userId}/roles/${params.roleId}/attach`,
+                `/roles/${params.roleId}/user/${params.userId}/attach`,
             ),
             method: 'POST',
         },
@@ -93,13 +93,13 @@ export async function attachRoleMutation(params: {
 }
 
 export async function detachRoleMutation(params: {
-    userId: number;
     roleId: number;
+    userId: number;
 }) {
     return createJsonMutation({
         request: {
             url: baseUrl(
-                `/users/${params.userId}/roles/${params.roleId}/detach`,
+                `/roles/${params.roleId}/user/${params.userId}/detach`,
             ),
             method: 'POST',
         },

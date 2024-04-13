@@ -16,7 +16,7 @@ export async function getAllCategoriesQuery(
 ) {
     return createJsonQuery({
         request: {
-            url: baseUrl(`/organizations/${organizationId}/categories`),
+            url: baseUrl(`/categories/organization/${organizationId}`),
             method: 'GET',
         },
         response: {
@@ -28,15 +28,12 @@ export async function getAllCategoriesQuery(
 }
 
 export async function getCategoryQuery(
-    organizationId: number,
     categoryId: number,
     signal?: AbortSignal,
 ) {
     return createJsonQuery({
         request: {
-            url: baseUrl(
-                `/organizations/${organizationId}/categories/${categoryId}`,
-            ),
+            url: baseUrl(`/categories/${categoryId}`),
             method: 'GET',
         },
         response: {
@@ -53,7 +50,7 @@ export async function createCategoryMutation(params: {
 }) {
     return createJsonMutation({
         request: {
-            url: baseUrl(`/organizations/${params.organizationId}/categories`),
+            url: baseUrl(`/categories/organization/${params.organizationId}`),
             method: 'POST',
             body: JSON.stringify(params.category),
         },
@@ -65,15 +62,12 @@ export async function createCategoryMutation(params: {
 }
 
 export async function updateCategoryMutation(params: {
-    organizationId: number;
     categoryId: number;
     category: CategoryDto;
 }) {
     return createJsonMutation({
         request: {
-            url: baseUrl(
-                `/organizations/${params.organizationId}/categories/${params.categoryId}`,
-            ),
+            url: baseUrl(`/categories/${params.categoryId}`),
             method: 'PATCH',
             body: JSON.stringify(params.category),
         },
@@ -84,15 +78,10 @@ export async function updateCategoryMutation(params: {
     });
 }
 
-export async function deleteCategoryMutation(params: {
-    organizationId: number;
-    categoryId: number;
-}) {
+export async function deleteCategoryMutation(params: { categoryId: number }) {
     return createJsonMutation({
         request: {
-            url: baseUrl(
-                `/organizations/${params.organizationId}/categories/${params.categoryId}`,
-            ),
+            url: baseUrl(`/categories/${params.categoryId}`),
             method: 'DELETE',
         },
     });

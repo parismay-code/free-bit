@@ -56,11 +56,13 @@ export const allOrdersService = {
     },
 
     setCache(data: Paginated<Order> | null, page: number, status: string) {
-        queryClient.setQueryData(this.queryKey(page, status), data);
+        return queryClient.setQueryData(this.queryKey(page, status), data);
     },
 
     removeCache(page: number, status: string) {
-        queryClient.removeQueries({ queryKey: this.queryKey(page, status) });
+        return queryClient.removeQueries({
+            queryKey: this.queryKey(page, status),
+        });
     },
 
     queryOptions(page: number, status: string) {
@@ -95,11 +97,11 @@ export const orderService = {
     },
 
     setCache(data: Order | null, orderId: number) {
-        queryClient.setQueryData(this.queryKey(orderId), data);
+        return queryClient.setQueryData(this.queryKey(orderId), data);
     },
 
     removeCache(orderId: number) {
-        queryClient.removeQueries({ queryKey: this.queryKey(orderId) });
+        return queryClient.removeQueries({ queryKey: this.queryKey(orderId) });
     },
 
     queryOptions(orderId: number) {
@@ -140,11 +142,14 @@ export const userOrdersService = {
         page: number,
         status: string,
     ) {
-        queryClient.setQueryData(this.queryKey(userId, page, status), data);
+        return queryClient.setQueryData(
+            this.queryKey(userId, page, status),
+            data,
+        );
     },
 
     removeCache(userId: number, page: number, status: string) {
-        queryClient.removeQueries({
+        return queryClient.removeQueries({
             queryKey: this.queryKey(userId, page, status),
         });
     },
@@ -187,11 +192,11 @@ export const userLatestOrdersService = {
     },
 
     setCache(data: Collection<Order> | null, userId: number) {
-        queryClient.setQueryData(this.queryKey(userId), data);
+        return queryClient.setQueryData(this.queryKey(userId), data);
     },
 
     removeCache(userId: number) {
-        queryClient.removeQueries({
+        return queryClient.removeQueries({
             queryKey: this.queryKey(userId),
         });
     },
@@ -228,11 +233,11 @@ export const userCurrentOrderService = {
     },
 
     setCache(data: Order | null, userId: number) {
-        queryClient.setQueryData(this.queryKey(userId), data);
+        return queryClient.setQueryData(this.queryKey(userId), data);
     },
 
     removeCache(userId: number) {
-        queryClient.removeQueries({
+        return queryClient.removeQueries({
             queryKey: this.queryKey(userId),
         });
     },
@@ -276,14 +281,14 @@ export const organizationOrdersService = {
         page: number,
         status: string,
     ) {
-        queryClient.setQueryData(
+        return queryClient.setQueryData(
             this.queryKey(organizationId, page, status),
             data,
         );
     },
 
     removeCache(organizationId: number, page: number, status: string) {
-        queryClient.removeQueries({
+        return queryClient.removeQueries({
             queryKey: this.queryKey(organizationId, page, status),
         });
     },
@@ -335,11 +340,11 @@ export const organizationLatestOrdersService = {
     },
 
     setCache(data: Collection<Order> | null, organizationId: number) {
-        queryClient.setQueryData(this.queryKey(organizationId), data);
+        return queryClient.setQueryData(this.queryKey(organizationId), data);
     },
 
     removeCache(organizationId: number) {
-        queryClient.removeQueries({
+        return queryClient.removeQueries({
             queryKey: this.queryKey(organizationId),
         });
     },

@@ -22,34 +22,42 @@ const keys = {
 };
 
 export const sessionService = {
-    queryKey: () => keys.current(),
+    queryKey() {
+        return keys.current();
+    },
 
-    getCache: () =>
-        queryClient.getQueryData<userTypes.User>(sessionService.queryKey()),
+    getCache() {
+        return queryClient.getQueryData<userTypes.User>(this.queryKey());
+    },
 
-    setCache: (user: userTypes.User | null) =>
-        queryClient.setQueryData(sessionService.queryKey(), user),
+    setCache(user: userTypes.User | null) {
+        return queryClient.setQueryData(this.queryKey(), user);
+    },
 
-    removeCache: () =>
-        queryClient.removeQueries({ queryKey: sessionService.queryKey() }),
-
-    queryOptions: () => {
-        const userKey = sessionService.queryKey();
-        return tsqQueryOptions({
-            queryKey: userKey,
-            queryFn: async ({ signal }) => currentUserQuery(signal),
-            initialData: () => sessionService.getCache()!,
-            initialDataUpdatedAt: () =>
-                queryClient.getQueryState(userKey)?.dataUpdatedAt,
+    removeCache() {
+        return queryClient.removeQueries({
+            queryKey: this.queryKey(),
         });
     },
 
-    prefetchQuery: async () => {
-        await queryClient.prefetchQuery(sessionService.queryOptions());
+    queryOptions() {
+        const queryKey = this.queryKey();
+        return tsqQueryOptions({
+            queryKey,
+            queryFn: async ({ signal }) => currentUserQuery(signal),
+            initialData: () => this.getCache()!,
+            initialDataUpdatedAt: () =>
+                queryClient.getQueryState(queryKey)?.dataUpdatedAt,
+        });
     },
 
-    ensureQueryData: async () =>
-        queryClient.ensureQueryData(sessionService.queryOptions()),
+    async prefetchQuery() {
+        return queryClient.prefetchQuery(sessionService.queryOptions());
+    },
+
+    async ensureQueryData() {
+        return queryClient.ensureQueryData(sessionService.queryOptions());
+    },
 };
 
 export function useLoginUserMutation() {

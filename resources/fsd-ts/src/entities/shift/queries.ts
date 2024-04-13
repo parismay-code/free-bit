@@ -72,7 +72,7 @@ export const shiftService = {
                 ? shiftService.shiftQueryKey(organizationId, userId, shiftId)
                 : shiftService.allQueryKey(organizationId);
 
-        queryClient.removeQueries({ queryKey });
+        return queryClient.removeQueries({ queryKey });
     },
 
     queryOptions: (

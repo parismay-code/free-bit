@@ -14,69 +14,86 @@ import { User } from './types';
 
 const keys = {
     root: () => ['user'] as const,
-    getAll: () => [...keys.root(), 'all'] as const,
+    getAll: (query: string) => [...keys.root(), 'all', query] as const,
     get: (userId: number) => [...keys.root(), 'get', userId] as const,
     update: (userId: number) => [...keys.root(), 'update', userId] as const,
     delete: (userId: number) => [...keys.root(), 'delete', userId] as const,
 };
 
-export const userService = {
-    allQueryKey: () => keys.getAll(),
-    userQueryKey: (userId: number) => keys.get(userId),
-
-    getCache: (userId: number = -1) => {
-        if (userId >= 0) {
-            return queryClient.getQueryData<User>(
-                userService.userQueryKey(userId),
-            );
-        }
-
-        return queryClient.getQueryData<Paginated<User>>(
-            userService.allQueryKey(),
-        );
+export const allUsersService = {
+    queryKey(query: string) {
+        return keys.getAll(query);
     },
 
-    setCache: (data: Paginated<User> | User | null, userId?: number) => {
-        const queryKey = userId
-            ? userService.userQueryKey(userId)
-            : userService.allQueryKey();
-
-        return queryClient.setQueryData(queryKey, data);
+    getCache(query: string) {
+        return queryClient.getQueryData<Paginated<User>>(this.queryKey(query));
     },
 
-    removeCache: (userId: number = -1) => {
-        const queryKey =
-            userId >= 0
-                ? userService.userQueryKey(userId)
-                : userService.allQueryKey();
-
-        queryClient.removeQueries({ queryKey });
+    setCache(data: Paginated<User> | null, query: string) {
+        return queryClient.setQueryData(this.queryKey(query), data);
     },
 
-    queryOptions: (arg: string | number) => {
-        const isAllQuery = typeof arg === 'string';
+    removeCache(query: string) {
+        return queryClient.removeQueries({ queryKey: this.queryKey(query) });
+    },
 
-        const queryKey = isAllQuery
-            ? userService.allQueryKey()
-            : userService.userQueryKey(arg);
+    queryOptions(query: string) {
+        const queryKey = this.queryKey(query);
 
         return tsqQueryOptions({
             queryKey,
-            queryFn: async ({ signal }) =>
-                isAllQuery
-                    ? getAllUsersQuery(arg, signal)
-                    : getUserQuery(arg, signal),
-            initialData: () => userService.getCache(isAllQuery ? -1 : arg)!,
+            queryFn: async ({ signal }) => getAllUsersQuery(query, signal),
+            initialData: () => this.getCache(query)!,
             initialDataUpdatedAt: () =>
                 queryClient.getQueryState(queryKey)?.dataUpdatedAt,
         });
     },
 
-    prefetchQuery: async (arg: string | number) =>
-        queryClient.prefetchQuery(userService.queryOptions(arg)),
+    async prefetchQuery(query: string) {
+        return queryClient.prefetchQuery(this.queryOptions(query));
+    },
 
-    ensureQueryData: async (arg: string | number) =>
-        queryClient.ensureQueryData(userService.queryOptions(arg)),
+    async ensureQueryData(query: string) {
+        return queryClient.ensureQueryData(this.queryOptions(query));
+    },
+};
+
+export const userService = {
+    queryKey(userId: number) {
+        return keys.get(userId);
+    },
+
+    getCache(userId: number) {
+        return queryClient.getQueryData<User>(this.queryKey(userId));
+    },
+
+    setCache(data: User | null, userId: number) {
+        return queryClient.setQueryData(this.queryKey(userId), data);
+    },
+
+    removeCache(userId: number) {
+        return queryClient.removeQueries({ queryKey: this.queryKey(userId) });
+    },
+
+    queryOptions(userId: number) {
+        const queryKey = this.queryKey(userId);
+
+        return tsqQueryOptions({
+            queryKey,
+            queryFn: async ({ signal }) => getUserQuery(userId, signal),
+            initialData: () => this.getCache(userId)!,
+            initialDataUpdatedAt: () =>
+                queryClient.getQueryState(queryKey)?.dataUpdatedAt,
+        });
+    },
+
+    async prefetchQuery(userId: number) {
+        return queryClient.prefetchQuery(this.queryOptions(userId));
+    },
+
+    async ensureQueryData(userId: number) {
+        return queryClient.ensureQueryData(this.queryOptions(userId));
+    },
 };
 
 export function useUpdateUserMutation(userId: number) {

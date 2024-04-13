@@ -10,13 +10,30 @@ import { Collection } from '~shared/types';
 import { IngredientSchema } from './contracts';
 import { Ingredient, IngredientDto } from './types';
 
-export async function getAllIngredientsQuery(
+export async function getIngredientsByOrganizationQuery(
     organizationId: number,
     signal?: AbortSignal,
 ) {
     return createJsonQuery({
         request: {
-            url: baseUrl(`/organizations/${organizationId}/ingredients`),
+            url: baseUrl(`/ingredients/organization/${organizationId}`),
+            method: 'GET',
+        },
+        response: {
+            contract: zodContract(CollectionSchema(IngredientSchema)),
+            mapData: defaultMap<Collection<Ingredient>>,
+        },
+        abort: signal,
+    });
+}
+
+export async function getIngredientsByProductQuery(
+    productId: number,
+    signal?: AbortSignal,
+) {
+    return createJsonQuery({
+        request: {
+            url: baseUrl(`/ingredients/product/${productId}`),
             method: 'GET',
         },
         response: {
@@ -28,15 +45,12 @@ export async function getAllIngredientsQuery(
 }
 
 export async function getIngredientQuery(
-    organizationId: number,
     ingredientId: number,
     signal?: AbortSignal,
 ) {
     return createJsonQuery({
         request: {
-            url: baseUrl(
-                `/organizations/${organizationId}/ingredients/${ingredientId}`,
-            ),
+            url: baseUrl(`/ingredients/${ingredientId}`),
             method: 'GET',
         },
         response: {
@@ -53,7 +67,7 @@ export async function createIngredientMutation(params: {
 }) {
     return createJsonMutation({
         request: {
-            url: baseUrl(`/organizations/${params.organizationId}/ingredients`),
+            url: baseUrl(`/ingredients/organization/${params.organizationId}`),
             method: 'POST',
             body: JSON.stringify(params.ingredient),
         },
@@ -65,15 +79,12 @@ export async function createIngredientMutation(params: {
 }
 
 export async function updateIngredientMutation(params: {
-    organizationId: number;
     ingredientId: number;
     ingredient: IngredientDto;
 }) {
     return createJsonMutation({
         request: {
-            url: baseUrl(
-                `/organizations/${params.organizationId}/ingredients/${params.ingredientId}`,
-            ),
+            url: baseUrl(`/ingredients/${params.ingredientId}`),
             method: 'PATCH',
             body: JSON.stringify(params.ingredient),
         },
@@ -85,28 +96,24 @@ export async function updateIngredientMutation(params: {
 }
 
 export async function deleteIngredientMutation(params: {
-    organizationId: number;
     ingredientId: number;
 }) {
     return createJsonMutation({
         request: {
-            url: baseUrl(
-                `/organizations/${params.organizationId}/ingredients/${params.ingredientId}`,
-            ),
+            url: baseUrl(`/ingredients/${params.ingredientId}`),
             method: 'DELETE',
         },
     });
 }
 
 export async function attachProductIngredientMutation(params: {
-    organizationId: number;
-    productId: number;
     ingredientId: number;
+    productId: number;
 }) {
     return createJsonMutation({
         request: {
             url: baseUrl(
-                `/organizations/${params.organizationId}/products/${params.productId}/ingredients/${params.ingredientId}/attach`,
+                `/ingredients/${params.ingredientId}/product/${params.productId}/attach`,
             ),
             method: 'POST',
         },
@@ -114,14 +121,13 @@ export async function attachProductIngredientMutation(params: {
 }
 
 export async function detachProductIngredientMutation(params: {
-    organizationId: number;
-    productId: number;
     ingredientId: number;
+    productId: number;
 }) {
     return createJsonMutation({
         request: {
             url: baseUrl(
-                `/organizations/${params.organizationId}/products/${params.productId}/ingredients/${params.ingredientId}/detach`,
+                `/ingredients/${params.ingredientId}/product/${params.productId}/detach`,
             ),
             method: 'POST',
         },

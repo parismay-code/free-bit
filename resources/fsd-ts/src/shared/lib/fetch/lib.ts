@@ -15,7 +15,10 @@ export function formatUrl(config: { href: string; query: FetchApiRecord }) {
     return url;
 }
 
-export function formatHeaders(headersRecord: FetchApiRecord): Headers {
+export function formatHeaders(
+    headersRecord: FetchApiRecord,
+    formData: boolean = false,
+): Headers {
     const headers = new Headers();
     headers.append('content-type', 'application/json');
     headers.append('x-requested-with', 'XMLHttpRequest');
@@ -28,6 +31,10 @@ export function formatHeaders(headersRecord: FetchApiRecord): Headers {
             headers.append(key, cleanValue);
         }
     });
+
+    if (formData) {
+        headers.delete('content-type');
+    }
 
     return headers;
 }

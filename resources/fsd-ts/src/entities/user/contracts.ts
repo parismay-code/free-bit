@@ -18,7 +18,7 @@ export const UserDtoSchema = z.object({
     uid: z.optional(z.string().max(6)),
     email: z.optional(z.string()),
     phone: z.optional(z.string()),
-    avatar: z.optional(z.string()),
+    avatar: z.optional(z.instanceof(File)),
     password: z.string(),
     new_password: z.optional(z.string().min(8)),
     new_password_confirmation: z.optional(z.string().min(8)),

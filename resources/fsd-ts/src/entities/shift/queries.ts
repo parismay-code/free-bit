@@ -7,7 +7,6 @@ import { Collection } from '~shared/types';
 import {
     createShiftMutation,
     deleteShiftMutation,
-    getAllShiftsQuery,
     getUserShiftsQuery,
     updateShiftMutation,
 } from './api';
@@ -89,9 +88,7 @@ export const shiftService = {
         return tsqQueryOptions({
             queryKey,
             queryFn: async ({ signal }) =>
-                isAllQuery
-                    ? getAllShiftsQuery(organizationId, signal)
-                    : getUserShiftsQuery(organizationId, userId, signal),
+                getUserShiftsQuery(organizationId, userId, signal),
             initialData: () =>
                 shiftService.getCache(organizationId, userId, shiftId)!,
             initialDataUpdatedAt: () =>

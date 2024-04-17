@@ -16,6 +16,8 @@ interface ApiConfig {
 }
 
 export async function createApiRequest(config: ApiConfig) {
+    const formData = config.request.body instanceof FormData;
+
     const response = await fetch(
         formatUrl({
             href: config.request.url,
@@ -25,7 +27,7 @@ export async function createApiRequest(config: ApiConfig) {
             method: config.request.method,
             mode: 'cors',
             credentials: 'include',
-            headers: formatHeaders(config.request.headers || {}),
+            headers: formatHeaders(config.request.headers || {}, formData),
             body: config.request.body,
             signal: config?.abort,
         },

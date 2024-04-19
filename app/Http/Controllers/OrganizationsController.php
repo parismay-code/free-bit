@@ -12,11 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class OrganizationsController extends Controller
 {
-    private OrganizationRepositoryContract $organizationRepository;
-
-    public function __construct(OrganizationRepositoryContract $organizationRepository)
+    public function __construct(private readonly OrganizationRepositoryContract $organizationRepository)
     {
-        $this->organizationRepository = $organizationRepository;
     }
 
     public function getAll(Request $request): Response

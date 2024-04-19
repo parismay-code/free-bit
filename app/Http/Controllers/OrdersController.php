@@ -14,11 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class OrdersController extends Controller
 {
-    private OrderRepositoryContract $orderRepository;
-
-    public function __construct(OrderRepositoryContract $orderRepository)
+    public function __construct(private readonly OrderRepositoryContract $orderRepository)
     {
-        $this->orderRepository = $orderRepository;
     }
 
     public function getAll(Request $request): Response

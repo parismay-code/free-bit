@@ -4,6 +4,7 @@ import {
     createJsonMutation,
     createJsonQuery,
     defaultMap,
+    prepareFormData,
 } from '~shared/lib/fetch';
 import { zodContract } from '~shared/lib/zod';
 import { Paginated } from '~shared/types';
@@ -54,7 +55,7 @@ export async function createOrganizationMutation(params: {
         request: {
             url: baseUrl('/organizations'),
             method: 'POST',
-            body: JSON.stringify(params.organization),
+            body: prepareFormData(params.organization),
         },
         response: {
             contract: zodContract(OrganizationSchema),
@@ -70,8 +71,8 @@ export async function updateOrganizationMutation(params: {
     return createJsonMutation({
         request: {
             url: baseUrl(`/organizations/${params.organizationId}`),
-            method: 'POST',
-            body: JSON.stringify(params.organization),
+            method: 'PATCH',
+            body: prepareFormData(params.organization),
         },
         response: {
             contract: zodContract(OrganizationSchema),

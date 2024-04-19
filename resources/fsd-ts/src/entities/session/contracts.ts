@@ -6,10 +6,12 @@ export const LoginUserDtoSchema = z.object({
 });
 
 export const RegisterUserDtoSchema = z.object({
-    name: z.string().max(28),
-    uid: z.string().max(6),
+    name: z.string().max(28, 'Максимальная длина имени - 28 символов'),
+    uid: z.string().max(6, 'Максимальная длина рег. данных - 6 символов'),
     email: z.string(),
     phone: z.string(),
-    password: z.string().min(8),
-    password_confirmation: z.string().min(8),
+    password: z.string().min(8, 'Минимальная длина пароля - 8 символов'),
+    password_confirmation: z
+        .string()
+        .min(8, 'Минимальная длина пароля - 8 символов'),
 });

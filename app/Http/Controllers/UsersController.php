@@ -2,23 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Filters\UsersFilter;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use Carbon\Carbon;
+use App\Repositories\Contracts\UserRepositoryContract;
 use Gate;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
 class UsersController extends Controller
 {
+    public function __construct(private readonly UserRepositoryContract $userRepository)
+    {
+    }
+
     public function getAll(Request $request): Response
     {
-        $users = User::filter(new UsersFilter($request))->paginate(10);
+        $users = $this->userRepository->all($request);
 
         return response(new UserCollection($users));
     }
@@ -30,47 +31,21 @@ class UsersController extends Controller
 
     public function update(UserRequest $request, User $user): Response
     {
-        $path = 'public/images/avatars/users/';
+        $sameUser = $request->user()->is($user);
 
-        if ($request->user()->isNot($user) && !Gate::allows('isAdmin')) {
+        if (!$sameUser && !Gate::allows('isAdmin')) {
             return response('', Response::HTTP_FORBIDDEN);
         }
 
         $data = $request->validated();
 
-        if (!Gate::allows('isAdmin')) {
-            if (!empty($data['password']) && !Hash::check($data['password'], $user->password)) {
-                return response('', Response::HTTP_UNAUTHORIZED);
-            }
+        $avatar = $request->file('avatar');
+
+        [$user, $success] = $this->userRepository->update($user, $data, $avatar, $sameUser);
+
+        if (!$success) {
+            return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-        if (!empty($request->file('avatar')) && $request->file('avatar')->isValid()) {
-            if ($user->avatar) {
-                Storage::delete($path . $user->avatar);
-            }
-
-            $file = $request->file('avatar');
-            $fileName = (new Carbon())->format('Ymd_his') . '_' . $user->uid . '.' . $file->getClientOriginalExtension();
-
-            $file->storeAs($path, $fileName);
-
-            $user->avatar = $path . $fileName;
-        }
-
-        $user->name = !empty($data['name']) ? $data['name'] : $user->name;
-        $user->uid = !empty($data['uid']) ? $data['uid'] : $user->uid;
-        $user->email = !empty($data['email']) ? $data['email'] : $user->email;
-        $user->phone = !empty($data['phone']) ? $data['phone'] : $user->phone;
-
-        if (!empty($data['new_password'])) {
-            $user->password = $data['new_password'];
-        }
-
-        if ($user->isDirty('password') && $request->user()->isNot($user)) {
-            $user->tokens()->delete();
-        }
-
-        $user->save();
 
         return response(new UserResource($user));
     }

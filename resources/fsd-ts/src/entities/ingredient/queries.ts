@@ -38,7 +38,7 @@ const keys = {
 
 export const ingredientsByProductService = {
     queryKey(productId: number) {
-        return keys.getByOrganization(productId);
+        return keys.getByProduct(productId);
     },
 
     getCache(productId: number) {

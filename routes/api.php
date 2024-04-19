@@ -35,14 +35,14 @@ Route::middleware('auth:sanctum')->group(function () {
         ->can('isManager');
     Route::get('/users/{user}', [UsersController::class, 'get'])
         ->can('isManager');
-    Route::post('/users/{user}', [UsersController::class, 'update']);
+    Route::patch('/users/{user}', [UsersController::class, 'update']);
     Route::delete('/users/{user}', [UsersController::class, 'delete']);
 
     Route::get('/organizations', [OrganizationsController::class, 'getAll']);
     Route::get('/organizations/{organization}', [OrganizationsController::class, 'get']);
     Route::post('/organizations', [OrganizationsController::class, 'create'])
         ->can('isAdmin');
-    Route::post('/organizations/{organization}', [OrganizationsController::class, 'update'])
+    Route::patch('/organizations/{organization}', [OrganizationsController::class, 'update'])
         ->can('isAdmin');
     Route::delete('/organizations/{organization}', [OrganizationsController::class, 'delete'])
         ->can('isAdmin');
@@ -134,8 +134,8 @@ Route::middleware('auth:sanctum')->group(function () {
         ->can('isOrganizationAdmin');
     Route::delete('/organizations/{organization}/roles/{organizationRole}', [EmployeeRolesController::class, 'delete'])
         ->can('isOrganizationAdmin');
-    Route::post('/organizations/{organization}/employees/{user}/roles/{organizationRole}/attach', [EmployeeRolesController::class, 'attach'])
+    Route::post('/organizations/{organization}/roles/{organizationRole}/user/{user}attach', [EmployeeRolesController::class, 'attach'])
         ->can('isOrganizationManager');
-    Route::post('/organizations/{organization}/employees/{user}/roles/{organizationRole}/detach', [EmployeeRolesController::class, 'detach'])
+    Route::post('/organizations/{organization}/roles/{organizationRole}/user/{user}/detach', [EmployeeRolesController::class, 'detach'])
         ->can('isOrganizationManager');
 });

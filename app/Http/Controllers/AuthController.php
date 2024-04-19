@@ -7,6 +7,8 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\User;
+use App\Repositories\Contracts\RoleRepositoryContract;
+use App\Repositories\Contracts\UserRepositoryContract;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Log;
@@ -14,17 +16,30 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
+    public function __construct(
+        private readonly UserRepositoryContract $userRepository,
+        private readonly RoleRepositoryContract $roleRepository
+    )
+    {
+    }
+
     public function register(RegisterRequest $request): Response
     {
-        Log::info('reg');
-
         $data = $request->safe()->except(['password_confirmation']);
 
-        $user = User::create($data);
+        [$user, $success] = $this->userRepository->create($data);
 
-        $userRole = Role::where('name', 'user')->first();
+        if (!$success) {
+            return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
-        $user->roles()->attach($userRole->id);
+        $role = Role::where('name', 'user')->first();
+
+        if (!$role || !$this->roleRepository->attach($role, $user)) {
+            $user->delete();
+
+            return response('', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 

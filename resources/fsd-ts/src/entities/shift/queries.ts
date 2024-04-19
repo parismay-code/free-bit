@@ -7,148 +7,175 @@ import { Collection } from '~shared/types';
 import {
     createShiftMutation,
     deleteShiftMutation,
-    getUserShiftsQuery,
+    getShiftQuery,
+    getShiftsByOrganizationQuery,
+    getShiftsByUserQuery,
     updateShiftMutation,
 } from './api';
 import { Shift } from './types';
 
 const keys = {
     root: () => ['shift'] as const,
-    getAll: (organizationId: number) =>
-        [...keys.root(), 'all', organizationId] as const,
-    get: (organizationId: number, userId: number, shiftId: number) =>
-        [...keys.root(), 'get', organizationId, userId, shiftId] as const,
-    create: (organizationId: number, userId: number) =>
-        [...keys.root(), 'create', organizationId, userId] as const,
-    update: (organizationId: number, userId: number, shiftId: number) =>
-        [...keys.root(), 'update', organizationId, userId, shiftId] as const,
-    delete: (organizationId: number, userId: number, shiftId: number) =>
-        [...keys.root(), 'delete', organizationId, userId, shiftId] as const,
+    getByOrganization: (organizationId: number) =>
+        [...keys.root(), 'organization', organizationId] as const,
+    getByUser: (userId: number) => [...keys.root(), 'user', userId] as const,
+    get: (shiftId: number) => [...keys.root(), 'get', shiftId] as const,
+    create: (userId: number) => [...keys.root(), 'create', userId] as const,
+    update: (shiftId: number) => [...keys.root(), 'update', shiftId] as const,
+    delete: (shiftId: number) => [...keys.root(), 'delete', shiftId] as const,
 };
 
 export const shiftService = {
-    allQueryKey: (organizationId: number) => keys.getAll(organizationId),
-    shiftQueryKey: (organizationId: number, userId: number, shiftId: number) =>
-        keys.get(organizationId, userId, shiftId),
-
-    getCache: (
-        organizationId: number,
-        userId: number = -1,
-        shiftId: number = -1,
-    ) => {
-        if (userId >= 0 && shiftId >= 0) {
-            return queryClient.getQueryData<Shift>(
-                shiftService.shiftQueryKey(organizationId, userId, shiftId),
-            );
-        }
-
-        return queryClient.getQueryData<Collection<Shift>>(
-            shiftService.allQueryKey(organizationId),
-        );
+    queryKey(shiftId: number) {
+        return keys.get(shiftId);
     },
 
-    setCache: (
-        data: Collection<Shift> | Shift | null,
-        organizationId: number,
-        userId: number = -1,
-        shiftId: number = -1,
-    ) => {
-        const queryKey =
-            userId >= 0 && shiftId >= 0
-                ? shiftService.shiftQueryKey(organizationId, userId, shiftId)
-                : shiftService.allQueryKey(organizationId);
-
-        return queryClient.setQueryData(queryKey, data);
+    getCache(shiftId: number) {
+        return queryClient.getQueryData<Shift>(this.queryKey(shiftId));
     },
 
-    removeCache: (
-        organizationId: number,
-        userId: number = -1,
-        shiftId: number = -1,
-    ) => {
-        const queryKey =
-            userId >= 0 && shiftId >= 0
-                ? shiftService.shiftQueryKey(organizationId, userId, shiftId)
-                : shiftService.allQueryKey(organizationId);
-
-        return queryClient.removeQueries({ queryKey });
+    setCache(data: Shift | null, shiftId: number) {
+        return queryClient.setQueryData(this.queryKey(shiftId), data);
     },
 
-    queryOptions: (
-        organizationId: number,
-        userId: number = -1,
-        shiftId: number = -1,
-    ) => {
-        const isAllQuery = userId < 0 || shiftId < 0;
+    removeCache(shiftId: number) {
+        return queryClient.removeQueries({
+            queryKey: this.queryKey(shiftId),
+        });
+    },
 
-        const queryKey = isAllQuery
-            ? shiftService.allQueryKey(organizationId)
-            : shiftService.shiftQueryKey(organizationId, userId, shiftId);
+    queryOptions(shiftId: number) {
+        const queryKey = this.queryKey(shiftId);
 
         return tsqQueryOptions({
             queryKey,
-            queryFn: async ({ signal }) =>
-                getUserShiftsQuery(organizationId, userId, signal),
-            initialData: () =>
-                shiftService.getCache(organizationId, userId, shiftId)!,
+            queryFn: async ({ signal }) => getShiftQuery(shiftId, signal),
+            initialData: () => this.getCache(shiftId)!,
             initialDataUpdatedAt: () =>
                 queryClient.getQueryState(queryKey)?.dataUpdatedAt,
         });
     },
 
-    prefetchQuery: async (
-        organizationId: number,
-        userId: number = -1,
-        shiftId: number = -1,
-    ) =>
-        queryClient.prefetchQuery(
-            shiftService.queryOptions(organizationId, userId, shiftId),
-        ),
+    async prefetchQuery(shiftId: number) {
+        return queryClient.prefetchQuery(this.queryOptions(shiftId));
+    },
 
-    ensureQueryData: async (
-        organizationId: number,
-        userId: number = -1,
-        shiftId: number = -1,
-    ) =>
-        queryClient.ensureQueryData(
-            shiftService.queryOptions(organizationId, userId, shiftId),
-        ),
+    async ensureQueryData(shiftId: number) {
+        return queryClient.ensureQueryData(this.queryOptions(shiftId));
+    },
 };
 
-export function useCreateShiftMutation(organizationId: number, userId: number) {
+export const userShiftsService = {
+    queryKey(userId: number) {
+        return keys.getByUser(userId);
+    },
+
+    getCache(userId: number) {
+        return queryClient.getQueryData<Collection<Shift>>(
+            this.queryKey(userId),
+        );
+    },
+
+    setCache(data: Collection<Shift> | null, userId: number) {
+        return queryClient.setQueryData(this.queryKey(userId), data);
+    },
+
+    removeCache(userId: number) {
+        return queryClient.removeQueries({
+            queryKey: this.queryKey(userId),
+        });
+    },
+
+    queryOptions(userId: number) {
+        const queryKey = this.queryKey(userId);
+
+        return tsqQueryOptions({
+            queryKey,
+            queryFn: async ({ signal }) => getShiftsByUserQuery(userId, signal),
+            initialData: () => this.getCache(userId)!,
+            initialDataUpdatedAt: () =>
+                queryClient.getQueryState(queryKey)?.dataUpdatedAt,
+        });
+    },
+
+    async prefetchQuery(userId: number) {
+        return queryClient.prefetchQuery(this.queryOptions(userId));
+    },
+
+    async ensureQueryData(userId: number) {
+        return queryClient.ensureQueryData(this.queryOptions(userId));
+    },
+};
+
+export const organizationShiftsService = {
+    queryKey(organizationId: number) {
+        return keys.getByOrganization(organizationId);
+    },
+
+    getCache(organizationId: number) {
+        return queryClient.getQueryData<Collection<Shift>>(
+            this.queryKey(organizationId),
+        );
+    },
+
+    setCache(data: Collection<Shift> | null, organizationId: number) {
+        return queryClient.setQueryData(this.queryKey(organizationId), data);
+    },
+
+    removeCache(organizationId: number) {
+        return queryClient.removeQueries({
+            queryKey: this.queryKey(organizationId),
+        });
+    },
+
+    queryOptions(organizationId: number) {
+        const queryKey = this.queryKey(organizationId);
+
+        return tsqQueryOptions({
+            queryKey,
+            queryFn: async ({ signal }) =>
+                getShiftsByOrganizationQuery(organizationId, signal),
+            initialData: () => this.getCache(organizationId)!,
+            initialDataUpdatedAt: () =>
+                queryClient.getQueryState(queryKey)?.dataUpdatedAt,
+        });
+    },
+
+    async prefetchQuery(organizationId: number) {
+        return queryClient.prefetchQuery(this.queryOptions(organizationId));
+    },
+
+    async ensureQueryData(organizationId: number) {
+        return queryClient.ensureQueryData(this.queryOptions(organizationId));
+    },
+};
+
+export function useCreateShiftMutation(userId: number) {
     return useMutation({
-        mutationKey: keys.create(organizationId, userId),
+        mutationKey: keys.create(userId),
         mutationFn: createShiftMutation,
         onSuccess: async (shift) => {
-            shiftService.setCache(shift, organizationId, userId, shift.id);
+            shiftService.setCache(shift, shift.id);
         },
     });
 }
 
-export function useUpdateShiftMutation(
-    organizationId: number,
-    userId: number,
-    shiftId: number,
-) {
+export function useUpdateShiftMutation(shiftId: number) {
     return useMutation({
-        mutationKey: keys.update(organizationId, userId, shiftId),
+        mutationKey: keys.update(shiftId),
         mutationFn: updateShiftMutation,
         onSuccess: async (shift) => {
-            shiftService.setCache(shift, organizationId, userId, shiftId);
+            shiftService.setCache(shift, shiftId);
         },
     });
 }
 
-export function useDeleteShiftMutation(
-    organizationId: number,
-    userId: number,
-    shiftId: number,
-) {
+export function useDeleteShiftMutation(shiftId: number) {
     return useMutation({
-        mutationKey: keys.delete(organizationId, userId, shiftId),
+        mutationKey: keys.delete(shiftId),
         mutationFn: deleteShiftMutation,
         onSuccess: async () => {
-            shiftService.setCache(null, organizationId, userId, shiftId);
+            shiftService.setCache(null, shiftId);
             await queryClient.invalidateQueries();
         },
     });

@@ -16,7 +16,7 @@ export async function getShiftsByOrganizationQuery(
 ) {
     return createJsonQuery({
         request: {
-            url: baseUrl(`/organizations/${organizationId}/shifts`),
+            url: baseUrl(`/shifts/organization/${organizationId}`),
             method: 'GET',
         },
         response: {
@@ -27,36 +27,44 @@ export async function getShiftsByOrganizationQuery(
     });
 }
 
-export async function getUserShiftsQuery(
-    organizationId: number,
+export async function getShiftsByUserQuery(
     userId: number,
     signal?: AbortSignal,
 ) {
     return createJsonQuery({
         request: {
-            url: baseUrl(
-                `/organizations/${organizationId}/employee/${userId}/shifts`,
-            ),
+            url: baseUrl(`/shifts/user/${userId}`),
             method: 'GET',
         },
         response: {
             contract: zodContract(CollectionSchema(ShiftSchema)),
             mapData: defaultMap<Collection<Shift>>,
+        },
+        abort: signal,
+    });
+}
+
+export async function getShiftQuery(shiftId: number, signal?: AbortSignal) {
+    return createJsonQuery({
+        request: {
+            url: baseUrl(`/shifts/${shiftId}`),
+            method: 'GET',
+        },
+        response: {
+            contract: zodContract(ShiftSchema),
+            mapData: defaultMap<Shift>,
         },
         abort: signal,
     });
 }
 
 export async function createShiftMutation(params: {
-    organizationId: number;
     userId: number;
     shift: ShiftDto;
 }) {
     return createJsonMutation({
         request: {
-            url: baseUrl(
-                `/organizations/${params.organizationId}/employee/${params.userId}/shifts`,
-            ),
+            url: baseUrl(`/shifts/user/${params.userId}`),
             method: 'POST',
             body: JSON.stringify(params.shift),
         },
@@ -68,16 +76,12 @@ export async function createShiftMutation(params: {
 }
 
 export async function updateShiftMutation(params: {
-    organizationId: number;
-    userId: number;
     shiftId: number;
     shift: ShiftDto;
 }) {
     return createJsonMutation({
         request: {
-            url: baseUrl(
-                `/organizations/${params.organizationId}/employee/${params.userId}/shifts/${params.shiftId}`,
-            ),
+            url: baseUrl(`/shifts/${params.shiftId}`),
             method: 'PATCH',
             body: JSON.stringify(params.shift),
         },
@@ -88,16 +92,10 @@ export async function updateShiftMutation(params: {
     });
 }
 
-export async function deleteShiftMutation(params: {
-    organizationId: number;
-    userId: number;
-    shiftId: number;
-}) {
+export async function deleteShiftMutation(params: { shiftId: number }) {
     return createJsonMutation({
         request: {
-            url: baseUrl(
-                `/organizations/${params.organizationId}/employee/${params.userId}/shifts/${params.shiftId}`,
-            ),
+            url: baseUrl(`/shifts/${params.shiftId}`),
             method: 'DELETE',
         },
     });

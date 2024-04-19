@@ -1,5 +1,17 @@
 import { FetchApiRecord } from './types';
 
+export function prepareFormData<T extends Object>(data: T): FormData {
+    const formData = new FormData();
+
+    Object.entries(data).forEach(([key, value]) => {
+        if (value) {
+            formData.append(key, value);
+        }
+    });
+
+    return formData;
+}
+
 export function defaultMap<T>(data: T): T {
     return data;
 }

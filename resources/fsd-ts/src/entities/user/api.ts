@@ -4,6 +4,7 @@ import {
     createJsonMutation,
     createJsonQuery,
     defaultMap,
+    prepareFormData,
 } from '~shared/lib/fetch';
 import { zodContract } from '~shared/lib/zod';
 import { Paginated } from '~shared/types';
@@ -49,7 +50,7 @@ export async function updateUserMutation(params: {
         request: {
             url: baseUrl(`/users/${params.userId}`),
             method: 'POST',
-            body: JSON.stringify(params.user),
+            body: prepareFormData(params.user),
         },
         response: {
             contract: zodContract(UserSchema),

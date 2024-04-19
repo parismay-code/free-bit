@@ -100,13 +100,13 @@ export async function deleteOrganizationRoleMutation(params: {
 
 export async function attachOrganizationRoleMutation(params: {
     organizationId: number;
-    userId: number;
     organizationRoleId: number;
+    userId: number;
 }) {
     return createJsonMutation({
         request: {
             url: baseUrl(
-                `organizations/${params.organizationId}/employees/${params.userId}/roles/${params.organizationRoleId}/attach`,
+                `organizations/${params.organizationId}/roles/${params.organizationRoleId}/user/${params.userId}/attach`,
             ),
             method: 'POST',
         },
@@ -115,13 +115,13 @@ export async function attachOrganizationRoleMutation(params: {
 
 export async function detachOrganizationRoleMutation(params: {
     organizationId: number;
-    userId: number;
     organizationRoleId: number;
+    userId: number;
 }) {
     return createJsonMutation({
         request: {
             url: baseUrl(
-                `organizations/${params.organizationId}/employees/${params.userId}/roles/${params.organizationRoleId}/detach`,
+                `organizations/${params.organizationId}/roles/${params.organizationRoleId}/user/${params.userId}/detach`,
             ),
             method: 'POST',
         },

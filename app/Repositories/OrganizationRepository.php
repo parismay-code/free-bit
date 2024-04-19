@@ -47,6 +47,12 @@ class OrganizationRepository implements OrganizationRepositoryContract
 
         $organization = $user->ownedOrganization()->create([...$data, 'avatar' => $avatarUrl, 'banner' => $bannerUrl]);
 
+        if (!$organization) {
+            StorageHelpers::removeFile($this->avatarsPath, $avatarUrl);
+            StorageHelpers::removeFile($this->bannersPath, $bannerUrl);
+            return [null, false];
+        }
+
         if (!$user->organization()->associate($organization)->save()) {
             $organization->delete();
             return [null, false];
@@ -115,6 +121,9 @@ class OrganizationRepository implements OrganizationRepositoryContract
         }
 
         if (!$organization->update([...$data, 'avatar' => $avatarUrl, 'banner' => $bannerUrl])) {
+            StorageHelpers::removeFile($this->avatarsPath, $avatarUrl);
+            StorageHelpers::removeFile($this->bannersPath, $bannerUrl);
+
             return [null, false];
         }
 
